@@ -38,7 +38,7 @@ export default function HanziStrokes({ char, size = 180, showOutline = true, aut
           showOutline,
           strokeColor: '#1a2030',
           outlineColor: '#cdd4e0',
-          radicalColor: '#1e50a2',
+          radicalColor: '#21348c',
           delayBetweenStrokes: 200,
           strokeAnimationSpeed: 1,
         });

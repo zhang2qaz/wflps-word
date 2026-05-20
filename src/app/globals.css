@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* 世外品牌色系 —— 主色「世外蓝」，象征科技、睿智、大气谦和 */
+  /* WFLPS 校徽色系 —— 主色对准世外校徽盾身蓝 */
   --color-ink: #1a2030;
   --color-ink-soft: #5b6478;
   --color-paper: #fafbfd;
-  --color-paper-warm: #eef2f8;
-  --color-vermilion: #1e50a2;       /* 世外蓝 · 品牌主色 */
-  --color-vermilion-soft: #8aa4cf;
-  --color-cinnabar: #d6453b;        /* 错误红（写错、错题）*/
+  --color-paper-warm: #eef1f8;
+  --color-vermilion: #21348c;       /* WFLPS 校徽蓝 · 品牌主色 */
+  --color-vermilion-soft: #8b96c5;
+  --color-cinnabar: #e3242b;        /* WFLPS 校徽红 · 错误状态 */
   --color-jade: #2d8a6f;            /* 正确绿 */
-  --color-mustard: #e0a32a;         /* 提示金 · 校徽五角星 */
-  --color-stone: #e3e7ef;
-  --color-stone-dark: #bdc5d6;
+  --color-mustard: #e0a32a;         /* 提示金 */
+  --color-stone: #e3e6ef;
+  --color-stone-dark: #bdc4d6;
   --color-grid: #d98a8a;            /* 米字格 · 沿用红色书写习惯 */
   --color-grid-soft: #ebb9b9;
 
@@ -81,7 +81,7 @@
   letter-spacing: 0.15em;
   padding: 0.5rem 0.9rem;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(30,80,162,0.25);
+  box-shadow: 0 2px 8px rgba(33,52,140,0.25);
 }
 
 .brush-underline {
@@ -93,7 +93,7 @@
 .brush-cursor { cursor: crosshair; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(30,80,162,0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(30,80,162,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(33,52,140,0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(33,52,140,0); }
 }
 .glow-vermilion { animation: pulse-glow 2s ease-in-out infinite; }

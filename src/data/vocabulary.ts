@@ -40,6 +40,7 @@ export type Word = {
 };
 
 const UNIT = { semester: '下' as const, unit: 5, unitTitle: '办法' };
+const U6 = { semester: '下' as const, unit: 6, unitTitle: '大自然的秘密' };
 
 // ---- 可复用的常见字拆解 ----
 const C = {
@@ -523,6 +524,615 @@ export const WORDS: Word[] = [
       { c: '筋', pinyin: 'jīn', radical: '⺮', strokes: 12, split: '⺮ + 月 + 力', kind: '会意', hook: '同「筋疲力尽」的「筋」——「月」(肉)+「力」，身上有力的部分。' },
     ],
   },
+
+  // ===================== 第六单元 · 课文 15 雷雨 =====================
+  {
+    id: 'd6-01', char: '乌云', pinyin: 'wū yún',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '黑色的云，常预示着要下雨。',
+    examples: ['乌云密布', '满天乌云'],
+    sentence: '满天的乌云，黑沉沉地压下来。',
+    tip: '「乌」是「鸟」字少一点——乌鸦全身黑，黑得连眼睛都看不见，所以少一点。',
+    chars: [
+      { c: '乌', pinyin: 'wū', radical: '丿', strokes: 4, split: '鸟 − 一点', kind: '象形', hook: '「乌」比「鸟」少中间一点——乌鸦通体黑，看不见眼睛。', warn: '「乌」比「鸟」少一点，别写成「鸟」。' },
+      { c: '云', pinyin: 'yún', radical: '二', strokes: 4, split: '二 + 厶', kind: '象形', hook: '「云」古时画的就是天上卷曲的云。' },
+    ],
+  },
+  {
+    id: 'd6-02', char: '黑沉沉', pinyin: 'hēi chén chén',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '形容黑暗、天色又黑又重的样子。',
+    examples: ['黑沉沉的天', '黑沉沉一片'],
+    sentence: '天空黑沉沉的，好像要塌下来。',
+    tip: 'ABB 式词语：「黑」后面叠用两个「沉」。「沉」是三点水——水多就往下沉。',
+    chars: [
+      { c: '黑', pinyin: 'hēi', radical: '黑', strokes: 12, split: '里 + 灬', kind: '会意', hook: '下面四点「灬」是火——烟火熏出来的颜色就是黑。' },
+      { c: '沉', pinyin: 'chén', radical: '氵', strokes: 7, split: '氵 + 冗', kind: '形声', hook: '「氵」三点水——东西在水里往下「沉」。', family: '氵(三点水)：沉、清、淋、浴、河——都和「水」有关。' },
+    ],
+  },
+  {
+    id: 'd6-03', char: '压下来', pinyin: 'yā xià lái',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '从上往下压过来。',
+    examples: ['压下来', '压住'],
+    sentence: '乌云越来越低，像要压下来。',
+    tip: '「压」是「厂」字头里面一个「土」加一点——大山(厂)把土往下压。',
+    chars: [
+      { c: '压', pinyin: 'yā', radical: '厂', strokes: 6, split: '厂 + 土 + 丶', kind: '形声', hook: '「厂」像山崖，崖下压着「土」——又重又往下。', warn: '里面「土」的右下别忘了那一点。' },
+      { c: '下', pinyin: 'xià', radical: '一', strokes: 3, split: '独体字', kind: '指事', hook: '一横下面加笔——指「下方」。' },
+      { c: '来', pinyin: 'lái', radical: '一', strokes: 7, split: '独体字', kind: '象形' },
+    ],
+  },
+  {
+    id: 'd6-04', char: '越来越响', pinyin: 'yuè lái yuè xiǎng',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '声音渐渐变得更大。',
+    examples: ['雷声越来越响', '越来越大'],
+    sentence: '雷声越来越响，闪电越来越亮。',
+    tip: '「越…越…」是固定句式，表示程度加深。「响」是口字旁——声音从嘴/口发出。',
+    chars: [
+      { c: '越', pinyin: 'yuè', radical: '走', strokes: 12, split: '走 + 戉', kind: '形声', hook: '「走」字旁——本意是跨过去。', family: '走字旁：越、趣、起、超。' },
+      { c: '响', pinyin: 'xiǎng', radical: '口', strokes: 9, split: '口 + 向', kind: '形声', hook: '「口」(发出声音)+「向」(声旁)。' },
+    ],
+  },
+  {
+    id: 'd6-05', char: '清新', pinyin: 'qīng xīn',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '清爽、新鲜（多形容空气）。',
+    examples: ['空气清新', '清新的空气'],
+    sentence: '雷雨过后，空气格外清新。',
+    tip: '「清」是三点水 +「青」——水很「青」(纯净)就是清。记住「青」家族：清、晴、情、请、睛。',
+    chars: [
+      { c: '清', pinyin: 'qīng', radical: '氵', strokes: 11, split: '氵 + 青', kind: '形声', hook: '「氵」(水)+「青」(声旁 qīng)。水清澈见底。', family: '「青」家族：清(氵)、晴(日)、情(忄)、请(讠)、睛(目)——换部首换意思。' },
+      { c: '新', pinyin: 'xīn', radical: '斤', strokes: 13, split: '亲 + 斤', kind: '形声', hook: '右边「斤」(斧头)。「新」与「旧」相对。' },
+    ],
+  },
+  {
+    id: 'd6-06', char: '迎面扑来', pinyin: 'yíng miàn pū lái',
+    ...U6, lesson: '雷雨', type: 'word',
+    examples: ['凉风迎面扑来'],
+    meaning: '正对着脸冲过来。',
+    sentence: '一股清新的空气迎面扑来。',
+    tip: '「迎」是走之旁——迎接要走过去。「扑」是提手旁——扑是手的动作。',
+    chars: [
+      { c: '迎', pinyin: 'yíng', radical: '辶', strokes: 7, split: '辶 + 卬', kind: '形声', hook: '「辶」走之旁——迎接别人要走上前去。', family: '辶(走之旁)：迎、逃、过、进。' },
+      { c: '面', pinyin: 'miàn', radical: '面', strokes: 9, split: '独体字', kind: '象形', hook: '「面」本意是脸。' },
+      { c: '扑', pinyin: 'pū', radical: '扌', strokes: 5, split: '扌 + 卜', kind: '形声', hook: '「扌」提手旁——猛地用身体或手冲过去。', family: '扌(提手旁)：扑、拦、挡、摆。' },
+      { c: '来', pinyin: 'lái', radical: '一', strokes: 7, split: '独体字', kind: '象形' },
+    ],
+  },
+  {
+    id: 'd6-07', char: '雷雨', pinyin: 'léi yǔ',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '伴有雷电的阵雨。',
+    examples: ['一场雷雨', '雷雨天气'],
+    sentence: '夏天的午后常常下雷雨。',
+    tip: '「雷」「雨」都是雨字头——和下雨、天气有关的字常带「雨」。',
+    chars: [
+      { c: '雷', pinyin: 'léi', radical: '雨', strokes: 13, split: '雨 + 田', kind: '形声', hook: '「雨」字头——打雷常和下雨一起来。', family: '雨字头：雷、雪、霜、雾——都和「天气」有关。' },
+      { c: '雨', pinyin: 'yǔ', radical: '雨', strokes: 8, split: '独体字', kind: '象形', hook: '「雨」里的四点就是落下的雨滴。' },
+    ],
+  },
+  {
+    id: 'd6-08', char: '逃走', pinyin: 'táo zǒu',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '为躲避而跑掉。',
+    examples: ['逃走了', '吓得逃走'],
+    sentence: '一只蜘蛛从网上垂下来，逃走了。',
+    tip: '「逃」是走之旁 +「兆」——逃跑当然和「走」有关。',
+    chars: [
+      { c: '逃', pinyin: 'táo', radical: '辶', strokes: 9, split: '辶 + 兆', kind: '形声', hook: '「辶」走之旁(行走)+「兆」(声旁)。', family: '辶(走之旁)：逃、迎、过、进、这。' },
+      { c: '走', pinyin: 'zǒu', radical: '走', strokes: 7, split: '土 + 龰', kind: '会意', hook: '下面像两只脚——迈步走。' },
+    ],
+  },
+  {
+    id: 'd6-09', char: '窗户', pinyin: 'chuāng hu',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '房屋墙上通风、采光的开口。',
+    examples: ['打开窗户', '关窗户'],
+    sentence: '雷雨来了，妈妈赶紧关上窗户。',
+    tip: '「窗」是穴宝盖「穴」——房屋墙上的洞口。「户」是单扇门的样子。',
+    chars: [
+      { c: '窗', pinyin: 'chuāng', radical: '穴', strokes: 12, split: '穴 + 囱', kind: '形声', hook: '「穴」(墙上的孔洞)——窗就是墙上的洞口。', family: '穴宝盖：窗、空、突、穿。' },
+      { c: '户', pinyin: 'hù', radical: '户', strokes: 4, split: '独体字', kind: '象形', hook: '「户」古时画的是一扇门。' },
+    ],
+  },
+  {
+    id: 'd6-10', char: '闪电', pinyin: 'shǎn diàn',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '雷雨时天空中一闪而过的电光。',
+    examples: ['一道闪电', '电闪雷鸣'],
+    sentence: '一道闪电划过，照亮了整个天空。',
+    tip: '绝妙画面：「闪」=「门」里有个「人」——人在门里一闪而过！',
+    chars: [
+      { c: '闪', pinyin: 'shǎn', radical: '门', strokes: 5, split: '门 + 人', kind: '会意', hook: '「门」里一个「人」——一闪身就过去了，所以叫「闪」。' },
+      { c: '电', pinyin: 'diàn', radical: '电', strokes: 5, split: '独体字', kind: '象形', hook: '「电」古时画的是闪电的样子。' },
+    ],
+  },
+  {
+    id: 'd6-11', char: '彩虹', pinyin: 'cǎi hóng',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '雨后天空中出现的七色弧。',
+    examples: ['美丽的彩虹', '雨后彩虹'],
+    sentence: '雷雨过后，天边挂起一道彩虹。',
+    tip: '冷知识：「虹」是虫字旁——古人以为彩虹是天上的大虫！',
+    chars: [
+      { c: '彩', pinyin: 'cǎi', radical: '彡', strokes: 11, split: '采 + 彡', kind: '形声', hook: '右边「彡」表示花纹、色彩。' },
+      { c: '虹', pinyin: 'hóng', radical: '虫', strokes: 9, split: '虫 + 工', kind: '形声', hook: '「虫」字旁——古人以为彩虹是天上一条会喝水的大虫！「工」表音。', family: '虫字旁：虹、蚂、蚁、蜘、蛛。' },
+    ],
+  },
+  {
+    id: 'd6-12', char: '垂下来', pinyin: 'chuí xià lái',
+    ...U6, lesson: '雷雨', type: 'word',
+    meaning: '一头固定，另一头向下挂着。',
+    examples: ['柳枝垂下来', '垂下'],
+    sentence: '一只蜘蛛从网上垂下来。',
+    tip: '「垂」笔画多要数清：上面一撇，中间两横夹两竖，下面一横——像枝条往下挂。',
+    chars: [
+      { c: '垂', pinyin: 'chuí', radical: '土', strokes: 8, split: '丿 + 龶 + 土', kind: '象形', hook: '「垂」像枝叶往下挂的样子。', warn: '中间是两横两竖，笔画容易写错，要数清。' },
+      { c: '下', pinyin: 'xià', radical: '一', strokes: 3, split: '独体字', kind: '指事' },
+      { c: '来', pinyin: 'lái', radical: '一', strokes: 7, split: '独体字', kind: '象形' },
+    ],
+  },
+  {
+    id: 'd6-13', char: '一动不动', pinyin: 'yí dòng bú dòng',
+    ...U6, lesson: '雷雨', type: 'idiom',
+    meaning: '形容完全不动。',
+    examples: ['一动不动地站着'],
+    sentence: '雷雨前，蜘蛛在网上一动不动。',
+    tip: '「一…不…」式词语：中间嵌同一个字「动」。意思是「一点也不动」。',
+    chars: [
+      { c: '一', pinyin: 'yī', radical: '一', strokes: 1, split: '独体字', kind: '指事' },
+      { c: '动', pinyin: 'dòng', radical: '力', strokes: 6, split: '云 + 力', kind: '形声', hook: '右边「力」——用力气才能动。' },
+      { c: '不', pinyin: 'bù', radical: '一', strokes: 4, split: '独体字', kind: '指事' },
+    ],
+  },
+
+  // ============== 第六单元 · 课文 16 要是你在野外迷了路 ==============
+  {
+    id: 'd6-14', char: '野外', pinyin: 'yě wài',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '离居民点较远的地方。',
+    examples: ['野外探险', '到野外去'],
+    sentence: '要是你在野外迷了路，可别慌张。',
+    tip: '「野」是「里」+「予」——田里、村里以外的地方就是野外。',
+    chars: [
+      { c: '野', pinyin: 'yě', radical: '里', strokes: 11, split: '里 + 予', kind: '形声', hook: '「里」(村里、田里)+「予」(声旁)——村里之外就是野。' },
+      { c: '外', pinyin: 'wài', radical: '夕', strokes: 5, split: '夕 + 卜', kind: '会意', hook: '「外」与「内」相对。' },
+    ],
+  },
+  {
+    id: 'd6-15', char: '时候', pinyin: 'shí hou',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '时间里的某一点或某一段。',
+    examples: ['小时候', '什么时候'],
+    sentence: '天黑的时候，可以看北极星辨方向。',
+    tip: '「时」是日字旁——时间和太阳(日)有关。「候」中间别忘那一小竖。',
+    chars: [
+      { c: '时', pinyin: 'shí', radical: '日', strokes: 7, split: '日 + 寸', kind: '形声', hook: '「日」(太阳)告诉你和时间有关。', family: '日字旁：时、明、晚、晴、星。' },
+      { c: '候', pinyin: 'hòu', radical: '亻', strokes: 10, split: '亻 + 𠉢', kind: '形声', hook: '注意中间有一短竖，别漏写。', warn: '「候」中间有一竖，「侯」没有。' },
+    ],
+  },
+  {
+    id: 'd6-16', char: '帮助', pinyin: 'bāng zhù',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '替别人出力、出主意。',
+    examples: ['互相帮助', '帮助别人'],
+    sentence: '大自然能帮助我们辨别方向。',
+    tip: '「助」右边是「力」——帮助就是出力气。',
+    chars: [
+      { c: '帮', pinyin: 'bāng', radical: '巾', strokes: 9, split: '邦 + 巾', kind: '形声', hook: '下面「巾」(布)。「邦」表音。' },
+      { c: '助', pinyin: 'zhù', radical: '力', strokes: 7, split: '且 + 力', kind: '形声', hook: '右边「力」——帮助就是出力。', family: '力字旁：助、动、劝、加。' },
+    ],
+  },
+  {
+    id: 'd6-17', char: '向导', pinyin: 'xiàng dǎo',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '带路的人。',
+    examples: ['当向导', '天然的向导'],
+    sentence: '太阳是个忠实的向导。',
+    tip: '「导」上面是「巳」下面是「寸」——用手(寸)带着方向走。',
+    chars: [
+      { c: '向', pinyin: 'xiàng', radical: '口', strokes: 6, split: '丿 + 冂 + 口', kind: '象形', hook: '「向」表示方向、朝着。' },
+      { c: '导', pinyin: 'dǎo', radical: '寸', strokes: 6, split: '巳 + 寸', kind: '会意', hook: '下面「寸」表示用手——带领、引导。' },
+    ],
+  },
+  {
+    id: 'd6-18', char: '永远', pinyin: 'yǒng yuǎn',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '时间长久，没有终止。',
+    examples: ['永远不忘', '永远快乐'],
+    sentence: '北极星永远挂在北方的天空。',
+    tip: '「永」字是练书法的范字，八种基本笔画都在里面（永字八法）。',
+    chars: [
+      { c: '永', pinyin: 'yǒng', radical: '水', strokes: 5, split: '独体字', kind: '会意', hook: '「永」本意是水流长远——「永字八法」包含汉字八种基本笔画。' },
+      { c: '远', pinyin: 'yuǎn', radical: '辶', strokes: 7, split: '辶 + 元', kind: '形声', hook: '「辶」走之旁——要走很久才到的地方。', family: '辶(走之旁)：远、迎、逃、过。' },
+    ],
+  },
+  {
+    id: 'd6-19', char: '碰上', pinyin: 'pèng shàng',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '遇到、碰见。',
+    examples: ['碰上difficulty', '路上碰上'],
+    sentence: '要是碰上阴天，就看不到太阳了。',
+    tip: '「碰」是石字旁——本意是石头相撞。',
+    chars: [
+      { c: '碰', pinyin: 'pèng', radical: '石', strokes: 13, split: '石 + 并', kind: '形声', hook: '「石」字旁——本意是石头相撞，引申为遇到。', family: '石字旁：碰、磁、码、砖。' },
+      { c: '上', pinyin: 'shàng', radical: '一', strokes: 3, split: '独体字', kind: '指事' },
+    ],
+  },
+  {
+    id: 'd6-20', char: '特别', pinyin: 'tè bié',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '与众不同；非常。',
+    examples: ['特别好', '特别的礼物'],
+    sentence: '北极星特别亮，很容易找到。',
+    tip: '「特」是牛字旁——本指公牛，引申为「特殊、与众不同」。',
+    chars: [
+      { c: '特', pinyin: 'tè', radical: '牜', strokes: 10, split: '牜 + 寺', kind: '形声', hook: '「牜」牛字旁 +「寺」(声旁)。' },
+      { c: '别', pinyin: 'bié', radical: '刂', strokes: 7, split: '另 + 刂', kind: '会意', hook: '右边「刂」立刀旁——用刀分开，所以有「区别」之意。' },
+    ],
+  },
+  {
+    id: 'd6-21', char: '积雪', pinyin: 'jī xuě',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '积存在地上的雪。',
+    examples: ['一层积雪', '山顶积雪'],
+    sentence: '沟渠里积雪化得快的一边是南方。',
+    tip: '「积」是禾字旁——本指堆积谷物。「雪」是雨字头。',
+    chars: [
+      { c: '积', pinyin: 'jī', radical: '禾', strokes: 10, split: '禾 + 只', kind: '形声', hook: '「禾」(庄稼)——本指把谷物堆积起来。' },
+      { c: '雪', pinyin: 'xuě', radical: '雨', strokes: 11, split: '雨 + 彐', kind: '会意', hook: '「雨」字头——雪是从天上落下的。', family: '雨字头：雪、雷、霜、雾。' },
+    ],
+  },
+  {
+    id: 'd6-22', char: '慌张', pinyin: 'huāng zhāng',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '心里不沉着，动作忙乱。',
+    examples: ['别慌张', '神色慌张'],
+    sentence: '在野外迷了路，可千万别慌张。',
+    tip: '「慌」是竖心旁「忄」——心里发慌是一种心情。回忆忄家族：慌、悔、悦、惊、情。',
+    chars: [
+      { c: '慌', pinyin: 'huāng', radical: '忄', strokes: 12, split: '忄 + 荒', kind: '形声', hook: '「忄」(竖心旁=心情)+「荒」(声旁)。心里发慌。', family: '忄(竖心旁)：慌、惊、悔、悦、情——都是心里的感觉。' },
+      { c: '张', pinyin: 'zhāng', radical: '弓', strokes: 7, split: '弓 + 长', kind: '形声', hook: '「弓」字旁——本意是把弓拉开。' },
+    ],
+  },
+  {
+    id: 'd6-23', char: '忠实', pinyin: 'zhōng shí',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '忠诚可靠。',
+    examples: ['忠实的朋友', '忠实可靠'],
+    sentence: '太阳是个忠实的向导。',
+    tip: '「忠」是「中」+「心」——心放得端端正正、不偏不倚，就是忠。',
+    chars: [
+      { c: '忠', pinyin: 'zhōng', radical: '心', strokes: 8, split: '中 + 心', kind: '形声', hook: '「中」(端正)+「心」——心摆正，就是忠诚。', family: '心字底：忠、急、想、意、愿。' },
+      { c: '实', pinyin: 'shí', radical: '宀', strokes: 8, split: '宀 + 头', kind: '会意', hook: '「宀」(屋子)里装满东西——充实、真实。' },
+    ],
+  },
+  {
+    id: 'd6-24', char: '分辨', pinyin: 'fēn biàn',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '辨别、区分清楚。',
+    examples: ['分辨方向', '分辨是非'],
+    sentence: '我们可以靠太阳来分辨方向。',
+    tip: '关键易混！「辨」中间是一撇一点(辨别要靠眼/刀分)；「辩」中间是「讠」(辩论靠嘴)；「辫」中间是「纟」(辫子是丝线)。',
+    chars: [
+      { c: '分', pinyin: 'fēn', radical: '刀', strokes: 4, split: '八 + 刀', kind: '会意', hook: '「八」(分开)+「刀」——用刀分开。' },
+      { c: '辨', pinyin: 'biàn', radical: '辛', strokes: 16, split: '辛 + 刂 + 辛', kind: '形声', hook: '中间是一撇一点（像把刀）——分辨要把东西分清。', warn: '辨(中间一撇一点) ≠ 辩(中间讠) ≠ 辫(中间纟)。记：分辨用眼，辩论用嘴，辫子用丝线。' },
+    ],
+  },
+  {
+    id: 'd6-25', char: '北极星', pinyin: 'běi jí xīng',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '北方天空中一颗较亮的星，可指示北方。',
+    examples: ['找到北极星', '北极星指北'],
+    sentence: '夜晚，北极星永远高挂在北方。',
+    tip: '「北」像两个人背对背——所以「北」也有「相背」的意思。',
+    chars: [
+      { c: '北', pinyin: 'běi', radical: '匕', strokes: 5, split: '丬 + 匕', kind: '会意', hook: '「北」像两个人背靠背站着——本意是「背」。' },
+      { c: '极', pinyin: 'jí', radical: '木', strokes: 7, split: '木 + 及', kind: '形声', hook: '「木」字旁 +「及」(声旁)。「极」表示最高、尽头。' },
+      { c: '星', pinyin: 'xīng', radical: '日', strokes: 9, split: '日 + 生', kind: '形声', hook: '「日」(发光)+「生」(声旁)——天上发光的就是星。' },
+    ],
+  },
+  {
+    id: 'd6-26', char: '指南针', pinyin: 'zhǐ nán zhēn',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '利用磁针指示方向的仪器，是中国古代四大发明之一。',
+    examples: ['用指南针', '一只指南针'],
+    sentence: '大自然有很多天然的指南针。',
+    tip: '「针」是金字旁「钅」——针是金属做的。',
+    chars: [
+      { c: '指', pinyin: 'zhǐ', radical: '扌', strokes: 9, split: '扌 + 旨', kind: '形声', hook: '「扌」提手旁——用手指。', family: '扌(提手旁)：指、扑、拦、挡、摆。' },
+      { c: '南', pinyin: 'nán', radical: '十', strokes: 9, split: '十 + 冂 + 龶', kind: '象形', hook: '「南」表示南方。' },
+      { c: '针', pinyin: 'zhēn', radical: '钅', strokes: 7, split: '钅 + 十', kind: '形声', hook: '「钅」金字旁——针是金属做的细长物。', family: '钅(金字旁)：针、钉、钱、铁。' },
+    ],
+  },
+  {
+    id: 'd6-27', char: '黑夜', pinyin: 'hēi yè',
+    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    meaning: '天黑的夜晚。',
+    examples: ['黑夜里', '漫漫黑夜'],
+    sentence: '黑夜里，北极星给人们指路。',
+    tip: '「夜」里藏着一个「亻」(人)和「夕」(月亮)——人在月夜下。',
+    chars: [
+      { c: '黑', pinyin: 'hēi', radical: '黑', strokes: 12, split: '里 + 灬', kind: '会意', hook: '下面四点「灬」是火——烟火熏黑。' },
+      { c: '夜', pinyin: 'yè', radical: '夕', strokes: 8, split: '亠 + 亻 + 夕', kind: '会意', hook: '里面有「夕」(月亮)——有月亮的时候就是夜。' },
+    ],
+  },
+
+  // ============== 第六单元 · 课文 17 太空生活趣事多 ==============
+  {
+    id: 'd6-28', char: '舒服', pinyin: 'shū fu',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '身体或精神感到轻松愉快。',
+    examples: ['很舒服', '舒舒服服'],
+    sentence: '在太空睡觉，得把自己绑住才舒服。',
+    tip: '「舒」=「舍」+「予」：把心里的东西舍出去、给出去，人就舒展了。',
+    chars: [
+      { c: '舒', pinyin: 'shū', radical: '舌', strokes: 12, split: '舍 + 予', kind: '会意', hook: '「舍」(舍得)+「予」(给予)——心里放开，就舒服了。' },
+      { c: '服', pinyin: 'fú', radical: '月', strokes: 8, split: '月 + 𠬝', kind: '形声', hook: '多音字：舒服 fu / 衣服 fú。' },
+    ],
+  },
+  {
+    id: 'd6-29', char: '即使', pinyin: 'jí shǐ',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '连词，表示假设的让步，相当于「就算」。',
+    examples: ['即使…也…'],
+    sentence: '即使在太空，宇航员也要好好工作。',
+    tip: '易混！「即」(jí) 右边是「卩」；「既」(jì) 右边是「旡」。「即使」用「即」。',
+    chars: [
+      { c: '即', pinyin: 'jí', radical: '卩', strokes: 7, split: '皀 + 卩', kind: '会意', hook: '右边是「卩」。', warn: '「即」(右边卩) ≠ 「既」(右边旡，多一点一撇)。「即使」用「即」。' },
+      { c: '使', pinyin: 'shǐ', radical: '亻', strokes: 8, split: '亻 + 吏', kind: '形声', hook: '「亻」单人旁——本意是派人去做事。' },
+    ],
+  },
+  {
+    id: 'd6-30', char: '难题', pinyin: 'nán tí',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '不容易解决的问题。',
+    examples: ['解决难题', '一道难题'],
+    sentence: '在太空喝水是个难题。',
+    tip: '「题」是页字旁——和「头、脸」有关的字常带「页」。',
+    chars: [
+      { c: '难', pinyin: 'nán', radical: '隹', strokes: 10, split: '又 + 隹', kind: '形声', hook: '右边「隹」是短尾鸟。多音字：难题 nán / 灾难 nàn。' },
+      { c: '题', pinyin: 'tí', radical: '页', strokes: 15, split: '是 + 页', kind: '形声', hook: '「页」字旁——和头脸有关，本指额头，引申为题目。', family: '页字旁：题、颜、额、顶。' },
+    ],
+  },
+  {
+    id: 'd6-31', char: '有趣', pinyin: 'yǒu qù',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '有意思、引人喜欢。',
+    examples: ['很有趣', '有趣的事'],
+    sentence: '在太空中生活，是不是很有趣？',
+    tip: '「趣」是走字旁——本意是快步走向感兴趣的东西。',
+    chars: [
+      { c: '有', pinyin: 'yǒu', radical: '月', strokes: 6, split: '𠂇 + 月', kind: '会意', hook: '像一只手拿着肉(月)——手里有东西。' },
+      { c: '趣', pinyin: 'qù', radical: '走', strokes: 15, split: '走 + 取', kind: '形声', hook: '「走」字旁——快步走向喜欢的东西。', family: '走字旁：趣、越、起、超。' },
+    ],
+  },
+  {
+    id: 'd6-32', char: '杯子', pinyin: 'bēi zi',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '盛水或饮料的器具。',
+    examples: ['一只杯子', '玻璃杯子'],
+    sentence: '在太空里，杯子里的水会飘起来。',
+    tip: '「杯」是木字旁——最早的杯子是木头做的。',
+    chars: [
+      { c: '杯', pinyin: 'bēi', radical: '木', strokes: 8, split: '木 + 不', kind: '形声', hook: '「木」字旁——古时的杯子用木头做。', family: '木字旁：杯、板、桶、树。' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, split: '独体字', kind: '象形' },
+    ],
+  },
+  {
+    id: 'd6-33', char: '地板', pinyin: 'dì bǎn',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '房间地面铺的板。',
+    examples: ['擦地板', '木地板'],
+    sentence: '在太空，地板和天花板都一样。',
+    tip: '「板」是木字旁——板子多用木头做。「反」表读音。',
+    chars: [
+      { c: '地', pinyin: 'dì', radical: '土', strokes: 6, split: '土 + 也', kind: '形声', hook: '「土」字旁——大地是土做的。', family: '土字旁：地、场、坏、堵。' },
+      { c: '板', pinyin: 'bǎn', radical: '木', strokes: 8, split: '木 + 反', kind: '形声', hook: '「木」(木头)+「反」(声旁 fǎn→bǎn)。', family: '木字旁：板、杯、桶、树。' },
+    ],
+  },
+  {
+    id: 'd6-34', char: '容易', pinyin: 'róng yì',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '不难、不费事。',
+    examples: ['很容易', '容易学'],
+    sentence: '在太空里走路，可不像在地球上那么容易。',
+    tip: '「容」是宝盖头「宀」——屋子能容纳东西。',
+    chars: [
+      { c: '容', pinyin: 'róng', radical: '宀', strokes: 10, split: '宀 + 谷', kind: '形声', hook: '「宀」(屋子)——屋子能容纳、装得下。', family: '宀(宝盖头)：容、室、家、宝。' },
+      { c: '易', pinyin: 'yì', radical: '日', strokes: 8, split: '日 + 勿', kind: '象形', hook: '「易」有「容易」和「改变」两个意思。' },
+    ],
+  },
+  {
+    id: 'd6-35', char: '浴室', pinyin: 'yù shì',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '专供洗澡的房间。',
+    examples: ['进浴室', '宽敞的浴室'],
+    sentence: '太空里的浴室和地球上很不一样。',
+    tip: '「浴」是三点水——洗澡当然和水有关。「室」是宝盖头——房间。',
+    chars: [
+      { c: '浴', pinyin: 'yù', radical: '氵', strokes: 10, split: '氵 + 谷', kind: '形声', hook: '「氵」三点水——沐浴、洗澡和水有关。', family: '氵(三点水)：浴、淋、清、沉。' },
+      { c: '室', pinyin: 'shì', radical: '宀', strokes: 9, split: '宀 + 至', kind: '形声', hook: '「宀」宝盖头——房间。', family: '宀(宝盖头)：室、容、家、宝。' },
+    ],
+  },
+  {
+    id: 'd6-36', char: '方向', pinyin: 'fāng xiàng',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '东、南、西、北等指向。',
+    examples: ['辨别方向', '前进方向'],
+    sentence: '在太空中很难分清方向。',
+    tip: '「方」「向」都是独体字，结构简单，重点是写端正。',
+    chars: [
+      { c: '方', pinyin: 'fāng', radical: '方', strokes: 4, split: '独体字', kind: '象形' },
+      { c: '向', pinyin: 'xiàng', radical: '口', strokes: 6, split: '丿 + 冂 + 口', kind: '象形', hook: '「向」表示朝着、方向。' },
+    ],
+  },
+  {
+    id: 'd6-37', char: '淋湿', pinyin: 'lín shī',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '被水浇湿。',
+    examples: ['淋湿了', '被雨淋湿'],
+    sentence: '太空洗澡，水珠会到处飘，容易淋湿别处。',
+    tip: '「淋」「湿」都是三点水——都和水有关。「淋」=氵+林，水多得像下雨淋在树林上。',
+    chars: [
+      { c: '淋', pinyin: 'lín', radical: '氵', strokes: 11, split: '氵 + 林', kind: '形声', hook: '「氵」(水)+「林」(声旁)——水浇下来。', family: '氵(三点水)：淋、浴、清、沉。' },
+      { c: '湿', pinyin: 'shī', radical: '氵', strokes: 12, split: '氵 + 显', kind: '形声', hook: '「氵」三点水——沾了水就「湿」。' },
+    ],
+  },
+  {
+    id: 'd6-38', char: '必须', pinyin: 'bì xū',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '一定要，表示事理上、情理上的必要。',
+    examples: ['必须完成', '必须这样'],
+    sentence: '在太空喝水，必须用带吸管的杯子。',
+    tip: '「必」的笔顺要记牢：先写中间一点和卧钩，再写左右两点。',
+    chars: [
+      { c: '必', pinyin: 'bì', radical: '心', strokes: 5, split: '心 + 丿', kind: '指事', hook: '像在「心」上加一撇——表示必定、一定。', warn: '笔顺：先点、卧钩，再写两旁的点。别按「心」的写法。' },
+      { c: '须', pinyin: 'xū', radical: '页', strokes: 9, split: '彡 + 页', kind: '会意', hook: '「页」(头脸)+「彡」(毛发)——本意是胡须，借作「必须」。' },
+    ],
+  },
+  {
+    id: 'd6-39', char: '水桶', pinyin: 'shuǐ tǒng',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '提水、装水的桶。',
+    examples: ['一只水桶', '提水桶'],
+    sentence: '在太空里，水桶里的水不会自己流出来。',
+    tip: '「桶」是木字旁——桶常用木头做。「甬」表读音。',
+    chars: [
+      { c: '水', pinyin: 'shuǐ', radical: '水', strokes: 4, split: '独体字', kind: '象形', hook: '「水」像流动的水流。' },
+      { c: '桶', pinyin: 'tǒng', radical: '木', strokes: 11, split: '木 + 甬', kind: '形声', hook: '「木」(木头)+「甬」(声旁 yǒng→tǒng)。', family: '木字旁：桶、杯、板、树。' },
+    ],
+  },
+  {
+    id: 'd6-40', char: '宇航员', pinyin: 'yǔ háng yuán',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '驾驶或乘坐宇宙飞船在太空飞行的人。',
+    examples: ['一名宇航员', '宇航员训练'],
+    sentence: '宇航员在太空中要克服许多难题。',
+    tip: '「航」是舟字旁——飞行、航行最早和「船(舟)」有关。',
+    chars: [
+      { c: '宇', pinyin: 'yǔ', radical: '宀', strokes: 6, split: '宀 + 于', kind: '形声', hook: '「宀」(宝盖)——本指屋檐，引申为天地空间。', family: '宀(宝盖头)：宇、宙、室、家。' },
+      { c: '航', pinyin: 'háng', radical: '舟', strokes: 10, split: '舟 + 亢', kind: '形声', hook: '「舟」字旁——航行最早指坐船。', family: '舟字旁：航、船。' },
+      { c: '员', pinyin: 'yuán', radical: '口', strokes: 7, split: '口 + 贝', kind: '会意', hook: '「员」表示某种身份的人。' },
+    ],
+  },
+  {
+    id: 'd6-41', char: '宇宙飞船', pinyin: 'yǔ zhòu fēi chuán',
+    ...U6, lesson: '太空生活趣事多', type: 'idiom',
+    meaning: '在太空中航行的飞行器。',
+    examples: ['乘坐宇宙飞船'],
+    sentence: '宇宙飞船把宇航员送上了太空。',
+    tip: '「宇」「宙」都是宝盖头——合起来「宇宙」就是无边无际的天地空间。',
+    chars: [
+      { c: '宇', pinyin: 'yǔ', radical: '宀', strokes: 6, split: '宀 + 于', kind: '形声', hook: '「宀」宝盖头——天地四方叫「宇」。' },
+      { c: '宙', pinyin: 'zhòu', radical: '宀', strokes: 8, split: '宀 + 由', kind: '形声', hook: '「宀」宝盖头——古往今来叫「宙」。', family: '宀(宝盖头)：宙、宇、室、家。' },
+      { c: '飞', pinyin: 'fēi', radical: '飞', strokes: 3, split: '独体字', kind: '象形', hook: '「飞」像鸟展翅飞翔。' },
+      { c: '船', pinyin: 'chuán', radical: '舟', strokes: 11, split: '舟 + 㕣', kind: '形声', hook: '「舟」字旁——船在水上行。', family: '舟字旁：船、航。' },
+    ],
+  },
+  {
+    id: 'd6-42', char: '或者', pinyin: 'huò zhě',
+    ...U6, lesson: '太空生活趣事多', type: 'word',
+    meaning: '连词，表示选择关系。',
+    examples: ['或者…或者…'],
+    sentence: '在太空喝水，得用吸管或者特制的杯子。',
+    tip: '「或」字别漏写右上角那一点和那一撇——里面是「口」「一」加「戈」。',
+    chars: [
+      { c: '或', pinyin: 'huò', radical: '戈', strokes: 8, split: '戈 + 口 + 一', kind: '会意', hook: '「或」里有「戈」(兵器)、「口」(人)、「一」(土地)——本指守卫疆土。', warn: '右上角的一点别漏写。' },
+      { c: '者', pinyin: 'zhě', radical: '耂', strokes: 8, split: '耂 + 日', kind: '形声', hook: '「者」常用来指人或事物，读轻声 zhe。' },
+    ],
+  },
+];
+
+// ============================================================
+// 古诗（整首背默）
+// ============================================================
+
+export type PoemLine = {
+  text: string;       // 诗句
+  pinyin: string;     // 整句拼音
+  meaning: string;    // 这句的意思
+};
+
+export type Poem = {
+  id: string;
+  title: string;
+  author: string;
+  dynasty: string;
+  semester: '上' | '下';
+  unit: number;
+  unitTitle: string;
+  lesson: string;
+  theme: string;      // 整首诗写什么（一句话）
+  lines: PoemLine[];
+};
+
+export const POEMS: Poem[] = [
+  {
+    id: 'p6-1',
+    title: '晓出净慈寺送林子方',
+    author: '杨万里',
+    dynasty: '宋',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '古诗二首',
+    theme: '清晨在净慈寺送别朋友，诗人写下了六月西湖的荷花美景——莲叶碧、荷花红，色彩鲜明动人。',
+    lines: [
+      { text: '毕竟西湖六月中', pinyin: 'bì jìng xī hú liù yuè zhōng', meaning: '到底是六月里的西湖啊，' },
+      { text: '风光不与四时同', pinyin: 'fēng guāng bù yǔ sì shí tóng', meaning: '这风光和其他季节就是不一样。' },
+      { text: '接天莲叶无穷碧', pinyin: 'jiē tiān lián yè wú qióng bì', meaning: '碧绿的莲叶一直连到天边，无边无际，' },
+      { text: '映日荷花别样红', pinyin: 'yìng rì hé huā bié yàng hóng', meaning: '荷花被朝阳一照，红得格外鲜艳。' },
+    ],
+  },
+  {
+    id: 'p6-2',
+    title: '绝句',
+    author: '杜甫',
+    dynasty: '唐',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '古诗二首',
+    theme: '诗人凭窗远望，用黄、翠、白、青四种颜色，画出一幅明媚生动的早春图。',
+    lines: [
+      { text: '两个黄鹂鸣翠柳', pinyin: 'liǎng gè huáng lí míng cuì liǔ', meaning: '两只黄鹂在翠绿的柳树上欢快鸣叫，' },
+      { text: '一行白鹭上青天', pinyin: 'yì háng bái lù shàng qīng tiān', meaning: '一行白鹭飞向蔚蓝的天空。' },
+      { text: '窗含西岭千秋雪', pinyin: 'chuāng hán xī lǐng qiān qiū xuě', meaning: '窗口正好框住西岭上终年不化的积雪，' },
+      { text: '门泊东吴万里船', pinyin: 'mén bó dōng wú wàn lǐ chuán', meaning: '门外停泊着将要驶往万里之外东吴的船。' },
+    ],
+  },
+];
+
+// ============================================================
+// 句子（整句听写）
+// ============================================================
+
+export type Sentence = {
+  id: string;
+  text: string;
+  semester: '上' | '下';
+  unit: number;
+  unitTitle: string;
+  lesson: string;
+  tip: string;        // 写之前的提醒（易错点 / 标点）
+};
+
+export const SENTENCES: Sentence[] = [
+  {
+    id: 's6-1',
+    text: '忽然一阵大风，吹得树枝乱摆。一只蜘蛛从网上垂下来，逃走了。',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '雷雨',
+    tip: '两句话，中间有逗号和句号，别漏标点。注意「蜘蛛」两个字都是虫字旁，「垂」笔画要数清。',
+  },
+  {
+    id: 's6-2',
+    text: '要是你在野外迷了路，可千万别慌张。大自然有很多天然的指南针，需要你细细观察，多多去想。',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '要是你在野外迷了路',
+    tip: '句子较长，分两句写。注意「慌」是竖心旁，「指南针」的「针」是金字旁。',
+  },
+  {
+    id: 's6-3',
+    text: '你看，在太空中生活，是不是很有趣？',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '太空生活趣事多',
+    tip: '这是一个问句，结尾是问号「？」。注意「趣」是走字旁。',
+  },
 ];
 
 // ============================================================
@@ -531,6 +1141,18 @@ export const WORDS: Word[] = [
 
 export function getWord(id: string): Word | undefined {
   return WORDS.find(w => w.id === id);
+}
+
+export function getPoem(id: string): Poem | undefined {
+  return POEMS.find(p => p.id === id);
+}
+
+export function poemsByUnit(unit: number): Poem[] {
+  return POEMS.filter(p => p.unit === unit);
+}
+
+export function sentencesByUnit(unit: number): Sentence[] {
+  return SENTENCES.filter(s => s.unit === unit);
 }
 
 export function getUnits(semester: '上' | '下'): { unit: number; title: string; count: number }[] {
@@ -557,4 +1179,37 @@ export function wordsByLesson(): { lesson: string; words: Word[] }[] {
     map.get(w.lesson)!.push(w);
   }
   return order.map(lesson => ({ lesson, words: map.get(lesson)! }));
+}
+
+// 按单元分组 → 每个单元下按课文分组（学新字 / 听写页用）
+export type UnitGroup = {
+  unit: number;
+  unitTitle: string;
+  lessons: { lesson: string; words: Word[] }[];
+  poems: Poem[];
+  sentences: Sentence[];
+};
+
+export function unitGroups(): UnitGroup[] {
+  const unitOrder: number[] = [];
+  const byUnit = new Map<number, { unitTitle: string; lessons: Map<string, Word[]>; lessonOrder: string[] }>();
+  for (const w of WORDS) {
+    if (!byUnit.has(w.unit)) {
+      byUnit.set(w.unit, { unitTitle: w.unitTitle, lessons: new Map(), lessonOrder: [] });
+      unitOrder.push(w.unit);
+    }
+    const u = byUnit.get(w.unit)!;
+    if (!u.lessons.has(w.lesson)) { u.lessons.set(w.lesson, []); u.lessonOrder.push(w.lesson); }
+    u.lessons.get(w.lesson)!.push(w);
+  }
+  return unitOrder.sort((a, b) => a - b).map(unit => {
+    const u = byUnit.get(unit)!;
+    return {
+      unit,
+      unitTitle: u.unitTitle,
+      lessons: u.lessonOrder.map(lesson => ({ lesson, words: u.lessons.get(lesson)! })),
+      poems: poemsByUnit(unit),
+      sentences: sentencesByUnit(unit),
+    };
+  });
 }

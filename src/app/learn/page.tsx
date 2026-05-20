@@ -6,7 +6,8 @@ import Nav from '@/components/Nav';
 import CharBreakdown from '@/components/CharBreakdown';
 import HanziStrokes from '@/components/HanziStrokes';
 import WriteCanvas from '@/components/WriteCanvas';
-import { WORDS, wordsByLesson, type Word } from '@/data/vocabulary';
+import Link from 'next/link';
+import { unitGroups, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { speak } from '@/lib/tts';
@@ -19,7 +20,7 @@ export default function LearnPage() {
   const [idx, setIdx] = useState(0);
   const markLearned = useStore(s => s.markLearned);
 
-  const lessons = useMemo(() => wordsByLesson(), []);
+  const groups = useMemo(() => unitGroups(), []);
 
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
@@ -35,7 +36,7 @@ export default function LearnPage() {
         <Nav />
         <main className="max-w-3xl mx-auto px-5 py-10">
           <div className="mb-2 text-xs tracking-wide" style={{ color: 'var(--color-vermilion)' }}>
-            上海世界外国语小学 · 国际部 P2 · 二下第五单元「办法」
+            上海世界外国语小学 · 国际部 P2 · 二年级下册
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
             学新字 · 科学记忆四步法
@@ -45,48 +46,84 @@ export default function LearnPage() {
             把陌生的字拆成你已经认识的部件，弄懂它「为什么这样写」，记得又快又牢。
           </p>
 
-          <div className="space-y-3">
-            {lessons.map(({ lesson, words }) => {
-              const learned = words.filter(w => progress[w.id]?.lastReview).length;
+          <div className="space-y-8">
+            {groups.map(g => {
+              const allWords = g.lessons.flatMap(l => l.words);
               return (
-                <button
-                  key={lesson}
-                  onClick={() => start(words, lesson)}
-                  className="w-full text-left p-5 rounded-xl border hover:shadow-md transition-all flex items-center gap-4"
-                  style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-                >
-                  <div className="flex-1">
-                    <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>
-                      课文《{lesson}》
-                    </div>
-                    <div className="text-xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                      {words.slice(0, 4).map(w => w.char).join('  ')} …
-                    </div>
-                    <div className="h-1.5 rounded-full" style={{ background: 'var(--color-stone)' }}>
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${(learned / words.length) * 100}%`, background: 'var(--color-jade)' }}
-                      />
-                    </div>
+                <div key={g.unit}>
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span
+                      className="text-sm font-bold px-2 py-0.5 rounded"
+                      style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+                    >
+                      第 {g.unit} 单元
+                    </span>
+                    <span className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink-soft)' }}>
+                      {g.unitTitle}
+                    </span>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-2xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                      {learned}/{words.length}
-                    </div>
-                    <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>已学</div>
+                  <div className="space-y-2">
+                    {g.lessons.map(({ lesson, words }) => {
+                      const learned = words.filter(w => progress[w.id]?.lastReview).length;
+                      return (
+                        <button
+                          key={lesson}
+                          onClick={() => start(words, lesson)}
+                          className="w-full text-left p-4 rounded-xl border hover:shadow-md transition-all flex items-center gap-4"
+                          style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>
+                              课文《{lesson}》
+                            </div>
+                            <div className="text-lg font-bold mb-2 truncate" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+                              {words.slice(0, 4).map(w => w.char).join('  ')} …
+                            </div>
+                            <div className="h-1.5 rounded-full" style={{ background: 'var(--color-stone)' }}>
+                              <div
+                                className="h-full rounded-full"
+                                style={{ width: `${(learned / words.length) * 100}%`, background: 'var(--color-jade)' }}
+                              />
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <div className="text-xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+                              {learned}/{words.length}
+                            </div>
+                            <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>已学</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+
+                    {/* 古诗入口 */}
+                    {g.poems.length > 0 && (
+                      <Link
+                        href="/recite"
+                        className="w-full block text-left p-4 rounded-xl border hover:shadow-md transition-all"
+                        style={{ borderColor: 'var(--color-mustard)', background: 'rgba(224,163,42,0.08)' }}
+                      >
+                        <div className="text-xs mb-1" style={{ color: 'var(--color-mustard)' }}>古诗 · 句子</div>
+                        <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+                          📜 {g.poems.map(p => `《${p.title}》`).join('')} 等
+                        </div>
+                        <div className="text-xs mt-0.5" style={{ color: 'var(--color-ink-soft)' }}>
+                          去「古诗句子」页背默 →
+                        </div>
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={() => start(allWords, `第${g.unit}单元全部`)}
+                      className="w-full text-center p-2.5 rounded-xl border text-sm font-medium"
+                      style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
+                    >
+                      一次学完第 {g.unit} 单元（{allWords.length} 个词）
+                    </button>
                   </div>
-                </button>
+                </div>
               );
             })}
-
-            {/* 全部 */}
-            <button
-              onClick={() => start(WORDS, '第五单元全部')}
-              className="w-full text-center p-3 rounded-xl border text-sm font-medium"
-              style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
-            >
-              一次学完整个单元（{WORDS.length} 个词）
-            </button>
 
             {/* 自定义导入 */}
             {customWords.length > 0 && (

@@ -26,6 +26,14 @@ const MODES = [
     method: '主动回忆',
   },
   {
+    href: '/recite',
+    title: '古诗 · 句子',
+    sub: '读懂诗意 · 逐句默写',
+    desc: '古诗先读懂意思再一句一句默写；课文长句听一整句写下来，标点也不漏。',
+    accent: 'var(--color-mustard)',
+    method: '分块记忆',
+  },
+  {
     href: '/review',
     title: '今日复习',
     sub: '按时间到点的字，必复习',
@@ -77,7 +85,7 @@ export default function Home() {
                     上海市世界外国语小学 · 校本版
                   </span>
                   <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                    WFLPS 国际部 P2 · 二下第五单元
+                    WFLPS 国际部 P2 · 二年级下册（第五、六单元）
                   </span>
                 </div>
               </div>

@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/', label: '首页' },
   { href: '/learn', label: '学新字' },
   { href: '/dictate', label: '听写' },
+  { href: '/recite', label: '古诗句子' },
   { href: '/review', label: '复习' },
   { href: '/mistakes', label: '错题本' },
   { href: '/import', label: '导入' },

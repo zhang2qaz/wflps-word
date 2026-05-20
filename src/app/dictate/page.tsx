@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import Nav from '@/components/Nav';
 import DictationCard, { type DictationResult } from '@/components/DictationCard';
-import { WORDS, wordsByLesson, type Word } from '@/data/vocabulary';
+import { WORDS, unitGroups, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { stopSpeak } from '@/lib/tts';
@@ -21,7 +22,7 @@ export default function DictatePage() {
   const [done, setDone] = useState(false);
   const [result, setResult] = useState<RoundResult[]>([]);
 
-  const lessons = useMemo(() => wordsByLesson(), []);
+  const groups = useMemo(() => unitGroups(), []);
   const allWords = useMemo(() => [...WORDS, ...customWords], [customWords]);
 
   const customLists = useMemo(() => {
@@ -68,31 +69,60 @@ export default function DictatePage() {
             老师读词 → 你写 → <b>卡住有提示，写错能诊断，错了当场订正</b>。
           </p>
 
-          <div className="text-xs tracking-wide mb-2" style={{ color: 'var(--color-vermilion)' }}>
-            世外小学 · 国际部 P2 · 二下第五单元
+          <div className="text-xs tracking-wide mb-3" style={{ color: 'var(--color-vermilion)' }}>
+            世外小学 · 国际部 P2 · 二年级下册
           </div>
-          <div className="space-y-2 mb-6">
-            {lessons.map(({ lesson, words }) => (
-              <button
-                key={lesson}
-                onClick={() => start(words, `《${lesson}》`)}
-                className="w-full text-left p-4 rounded-xl border hover:shadow flex items-center justify-between"
-                style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-              >
-                <div>
-                  <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>《{lesson}》</div>
-                  <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>{words.length} 个词</div>
+          <div className="space-y-7 mb-6">
+            {groups.map(g => {
+              const unitWords = g.lessons.flatMap(l => l.words);
+              return (
+                <div key={g.unit}>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span
+                      className="text-sm font-bold px-2 py-0.5 rounded"
+                      style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+                    >
+                      第 {g.unit} 单元
+                    </span>
+                    <span className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink-soft)' }}>
+                      {g.unitTitle}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {g.lessons.map(({ lesson, words }) => (
+                      <button
+                        key={lesson}
+                        onClick={() => start(words, `《${lesson}》`)}
+                        className="w-full text-left p-4 rounded-xl border hover:shadow flex items-center justify-between"
+                        style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+                      >
+                        <div>
+                          <div className="text-base font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>《{lesson}》</div>
+                          <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>{words.length} 个词</div>
+                        </div>
+                        <span style={{ color: 'var(--color-vermilion)' }}>开始 →</span>
+                      </button>
+                    ))}
+                    {(g.poems.length > 0 || g.sentences.length > 0) && (
+                      <Link
+                        href="/recite"
+                        className="w-full block p-3 rounded-xl border text-sm text-center"
+                        style={{ borderColor: 'var(--color-mustard)', color: 'var(--color-mustard)', background: 'rgba(224,163,42,0.08)' }}
+                      >
+                        📜 本单元古诗 / 句子默写 →
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => start(unitWords, `第${g.unit}单元全部`)}
+                      className="w-full text-center p-2.5 rounded-xl border text-sm font-medium"
+                      style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
+                    >
+                      整单元一起听写（{unitWords.length} 词）
+                    </button>
+                  </div>
                 </div>
-                <span style={{ color: 'var(--color-vermilion)' }}>开始 →</span>
-              </button>
-            ))}
-            <button
-              onClick={() => start(WORDS, '第五单元全部')}
-              className="w-full text-center p-3 rounded-xl border text-sm font-medium"
-              style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
-            >
-              整个单元一起听写（{WORDS.length} 词）
-            </button>
+              );
+            })}
           </div>
 
           <div className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>

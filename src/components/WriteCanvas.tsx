@@ -13,6 +13,9 @@ type Props = {
   className?: string;
 };
 
+const INK = '#1a2030';
+const BASE_WIDTH = 6;
+
 const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
   { size = 260, guideChar, className = '' },
   ref,
@@ -37,7 +40,8 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     if (!c) return;
     const ctx = c.getContext('2d');
     if (!ctx) return;
-    // 高 DPI 支持
+
+    // 高 DPI（iPad 通常 dpr=2）
     const dpr = window.devicePixelRatio || 1;
     c.width = size * dpr;
     c.height = size * dpr;
@@ -46,10 +50,13 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     ctx.scale(dpr, dpr);
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#1a1a1a';
-    ctx.lineWidth = 6;
+    ctx.strokeStyle = INK;
+    ctx.fillStyle = INK;
 
+    // —— iPad / Apple Pencil 适配 ——
     let drawing = false;
+    let activeId: number | null = null;  // 一次只跟踪一个指针
+    let penSeen = false;                 // 用过手写笔后，忽略手指/手掌（防误触）
     let lastX = 0;
     let lastY = 0;
 
@@ -58,42 +65,71 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     };
 
+    // 笔压决定笔画粗细（Apple Pencil 有压感，手指/鼠标用固定值）
+    const lineW = (e: PointerEvent) => {
+      if (e.pointerType === 'pen' && e.pressure > 0) {
+        return BASE_WIDTH * (0.55 + e.pressure * 0.9); // 约 0.55x ~ 1.45x
+      }
+      return BASE_WIDTH;
+    };
+
     const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'pen') penSeen = true;
+      // 已用手写笔 → 拒绝手指/手掌触点（手掌防误触）
+      if (penSeen && e.pointerType !== 'pen') return;
+      // 已经在写了 → 忽略第二个触点（手掌另一处落下）
+      if (activeId !== null) return;
+
       e.preventDefault();
       drawing = true;
+      activeId = e.pointerId;
       const { x, y } = getPos(e);
       lastX = x; lastY = y;
       ctx.beginPath();
-      ctx.arc(x, y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#1a1a1a';
+      ctx.arc(x, y, lineW(e) / 2, 0, Math.PI * 2);
       ctx.fill();
       setEmpty(false);
-      c.setPointerCapture(e.pointerId);
+      try { c.setPointerCapture(e.pointerId); } catch {}
     };
-    const onMove = (e: PointerEvent) => {
-      if (!drawing) return;
+
+    const drawSeg = (e: PointerEvent) => {
       const { x, y } = getPos(e);
+      ctx.lineWidth = lineW(e);
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
       ctx.lineTo(x, y);
       ctx.stroke();
       lastX = x; lastY = y;
     };
+
+    const onMove = (e: PointerEvent) => {
+      if (!drawing || e.pointerId !== activeId) return;
+      e.preventDefault();
+      // 用 coalesced events 取出手写笔的高频采样点 → 笔画更顺滑
+      const evs = typeof e.getCoalescedEvents === 'function'
+        ? e.getCoalescedEvents()
+        : [e];
+      for (const ev of (evs.length ? evs : [e])) drawSeg(ev as PointerEvent);
+    };
+
     const onUp = (e: PointerEvent) => {
+      if (e.pointerId !== activeId) return;
       drawing = false;
+      activeId = null;
       try { c.releasePointerCapture(e.pointerId); } catch {}
     };
+
     c.addEventListener('pointerdown', onDown);
     c.addEventListener('pointermove', onMove);
     c.addEventListener('pointerup', onUp);
     c.addEventListener('pointercancel', onUp);
-    c.addEventListener('pointerleave', onUp);
+    // 注意：不监听 pointerleave —— 写字时笔尖常会划到格子边缘外，
+    // setPointerCapture 已保证继续收到事件，不能因离开就断笔。
     return () => {
       c.removeEventListener('pointerdown', onDown);
       c.removeEventListener('pointermove', onMove);
       c.removeEventListener('pointerup', onUp);
       c.removeEventListener('pointercancel', onUp);
-      c.removeEventListener('pointerleave', onUp);
     };
   }, [size]);
 
@@ -105,7 +141,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
           style={{
             fontFamily: 'var(--font-display, var(--font-serif-cn))',
             fontSize: size * 0.6,
-            color: '#e8e2d0',
+            color: '#dfe3ec',
             lineHeight: 1,
             zIndex: 5,
           }}
@@ -113,7 +149,17 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
           {guideChar}
         </div>
       )}
-      <canvas ref={canvasRef} className="absolute inset-0 brush-cursor touch-none" style={{ zIndex: 10 }} />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 brush-cursor touch-none select-none"
+        style={{
+          zIndex: 10,
+          touchAction: 'none',
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
+          WebkitTouchCallout: 'none',
+        }}
+      />
     </div>
   );
 });

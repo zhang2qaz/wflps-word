@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Nav from '@/components/Nav';
 import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { wordsByLesson, reciteRefs, type Word } from '@/data/vocabulary';
+import { unitGroups, reciteRefs } from '@/data/vocabulary';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -35,24 +35,31 @@ export default function ProgressPage() {
 
   const maxBar = Math.max(1, ...last7.map(d => d.reviewed + d.learned));
 
-  const lessonProgress = useMemo(() => {
-    const groups: { lesson: string; words: Word[] }[] = [...wordsByLesson()];
-    if (customWords.length > 0) {
-      const byList = new Map<string, Word[]>();
-      for (const w of customWords) {
-        if (!byList.has(w.lesson)) byList.set(w.lesson, []);
-        byList.get(w.lesson)!.push(w);
+  const unitProgress = useMemo(() => {
+    const rows: { label: string; total: number; learned: number; mastered: number }[] = [];
+    for (const sem of ['上', '下'] as const) {
+      for (const g of unitGroups(sem)) {
+        const words = g.lessons.flatMap(l => l.words);
+        const learned = words.filter(w => progress[w.id]?.lastReview).length;
+        const mastered = words.filter(w => {
+          const p = progress[w.id];
+          return p ? p.reps >= 4 && p.interval >= 7 : false;
+        }).length;
+        rows.push({
+          label: `${sem}册 第${g.unit}单元 · ${g.unitTitle}`,
+          total: words.length, learned, mastered,
+        });
       }
-      for (const [lesson, words] of byList) groups.push({ lesson, words });
     }
-    return groups.map(({ lesson, words }) => {
-      const learned = words.filter(w => progress[w.id]?.lastReview).length;
-      const mastered = words.filter(w => {
+    if (customWords.length > 0) {
+      const learned = customWords.filter(w => progress[w.id]?.lastReview).length;
+      const mastered = customWords.filter(w => {
         const p = progress[w.id];
         return p ? p.reps >= 4 && p.interval >= 7 : false;
       }).length;
-      return { lesson, total: words.length, learned, mastered };
-    });
+      rows.push({ label: '我导入的词单', total: customWords.length, learned, mastered });
+    }
+    return rows;
   }, [progress, customWords]);
 
   const reciteProgress = useMemo(() => {
@@ -140,21 +147,21 @@ export default function ProgressPage() {
           </p>
         </section>
 
-        {/* Per-lesson mastery */}
+        {/* Per-unit mastery */}
         <section className="mb-10">
-          <h2 className="text-lg font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>各课文掌握情况</h2>
+          <h2 className="text-lg font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>各单元掌握情况</h2>
           <div className="grid sm:grid-cols-2 gap-2">
-            {lessonProgress.map(u => (
+            {unitProgress.map(u => (
               <div
-                key={u.lesson}
+                key={u.label}
                 className="p-3 rounded-lg border"
                 style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
               >
-                <div className="flex items-baseline justify-between mb-2">
+                <div className="flex items-baseline justify-between mb-2 gap-2">
                   <div className="text-sm font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                    《{u.lesson}》
+                    {u.label}
                   </div>
-                  <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+                  <div className="text-xs flex-shrink-0" style={{ color: 'var(--color-ink-soft)' }}>
                     {u.mastered}/{u.total}
                   </div>
                 </div>

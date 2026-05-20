@@ -59,8 +59,14 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
   const progress = useStore(s => s.progress);
   const dueRecite = useStore(useShallow(s => selectDueRecite(s)));
 
-  // 按单元归集
-  const units = Array.from(new Set([...POEMS, ...SENTENCES].map(x => x.unit))).sort((a, b) => a - b);
+  // 按学期 + 单元归集
+  const groups = Array.from(
+    new Map(
+      [...POEMS, ...SENTENCES].map(x => [`${x.semester}-${x.unit}`, { semester: x.semester, unit: x.unit }]),
+    ).values(),
+  ).sort((a, b) =>
+    a.semester !== b.semester ? (a.semester === '上' ? -1 : 1) : a.unit - b.unit,
+  );
 
   return (
     <>
@@ -85,13 +91,13 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
         </div>
       )}
 
-      {units.map(unit => {
-        const poems = POEMS.filter(p => p.unit === unit);
-        const sentences = SENTENCES.filter(s => s.unit === unit);
+      {groups.map(({ semester, unit }) => {
+        const poems = POEMS.filter(p => p.semester === semester && p.unit === unit);
+        const sentences = SENTENCES.filter(s => s.semester === semester && s.unit === unit);
         return (
-          <div key={unit} className="mb-7">
+          <div key={`${semester}${unit}`} className="mb-7">
             <div className="text-xs font-bold mb-2" style={{ color: 'var(--color-vermilion)' }}>
-              第 {unit} 单元
+              二年级{semester}册 · 第 {unit} 单元
             </div>
             <div className="space-y-2">
               {poems.map(p => {

@@ -18,9 +18,10 @@ export default function LearnPage() {
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
+  const [semester, setSemester] = useState<'上' | '下'>('下');
   const markLearned = useStore(s => s.markLearned);
 
-  const groups = useMemo(() => unitGroups(), []);
+  const groups = useMemo(() => unitGroups(semester), [semester]);
 
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
@@ -46,7 +47,7 @@ export default function LearnPage() {
             把陌生的字拆成你已经认识的部件，弄懂它「为什么这样写」，记得又快又牢。
           </p>
           <div
-            className="mb-6 p-3 rounded-lg text-sm flex gap-2"
+            className="mb-4 p-3 rounded-lg text-sm flex gap-2"
             style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
           >
             <span>💡</span>
@@ -54,6 +55,23 @@ export default function LearnPage() {
               <b>建议每次只学 6–8 个字</b>，学完马上去「听写」检验，明天再学几个。
               一口气学一整单元，记得快、忘得也快。
             </span>
+          </div>
+
+          <div className="flex gap-2 mb-6">
+            {(['上', '下'] as const).map(s => (
+              <button
+                key={s}
+                onClick={() => setSemester(s)}
+                className="px-4 py-2 rounded-md text-sm font-medium"
+                style={
+                  semester === s
+                    ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
+                    : { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
+                }
+              >
+                二年级{s}册
+              </button>
+            ))}
           </div>
 
           <div className="space-y-8">

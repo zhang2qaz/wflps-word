@@ -1055,18 +1055,20 @@ export const WORDS: Word[] = [
 type DraftWord = [char: string, pinyin: string, meaning: string];
 
 function pushDraftUnit(
+  semester: '上' | '下',
   unit: number,
   unitTitle: string,
   lessons: { lesson: string; words: DraftWord[] }[],
 ) {
   let n = 0;
+  const prefix = semester === '上' ? 'u' : 'd';
   for (const { lesson, words } of lessons) {
     for (const [char, pinyin, meaning] of words) {
       n += 1;
       WORDS.push({
-        id: `d${unit}-${String(n).padStart(2, '0')}`,
+        id: `${prefix}${unit}-${String(n).padStart(2, '0')}`,
         char, pinyin, meaning,
-        semester: '下', unit, unitTitle, lesson,
+        semester, unit, unitTitle, lesson,
         type: char.length >= 4 ? 'idiom' : 'word',
         examples: [],
         sentence: '',
@@ -1078,7 +1080,7 @@ function pushDraftUnit(
   }
 }
 
-pushDraftUnit(1, '春天里', [
+pushDraftUnit('下', 1, '春天里', [
   { lesson: '古诗二首', words: [
     ['古诗', 'gǔ shī', '古代的诗'],
     ['杨柳', 'yáng liǔ', '柳树'],
@@ -1102,7 +1104,7 @@ pushDraftUnit(1, '春天里', [
   ] },
 ]);
 
-pushDraftUnit(2, '关爱他人', [
+pushDraftUnit('下', 2, '关爱他人', [
   { lesson: '雷锋叔叔，你在哪里', words: [
     ['叔叔', 'shū shu', '爸爸的弟弟；也称呼成年男子'],
     ['足迹', 'zú jì', '脚印'],
@@ -1122,7 +1124,7 @@ pushDraftUnit(2, '关爱他人', [
   ] },
 ]);
 
-pushDraftUnit(3, '中华传统', [
+pushDraftUnit('下', 3, '中华传统', [
   { lesson: '神州谣', words: [
     ['神州', 'shén zhōu', '中国的代称'],
     ['长江', 'cháng jiāng', '中国第一大河'],
@@ -1145,7 +1147,7 @@ pushDraftUnit(3, '中华传统', [
   ] },
 ]);
 
-pushDraftUnit(4, '奇妙的想象', [
+pushDraftUnit('下', 4, '奇妙的想象', [
   { lesson: '彩色的梦', words: [
     ['彩色', 'cǎi sè', '多种颜色'],
     ['铅笔', 'qiān bǐ', '一种写字画画的笔'],
@@ -1168,7 +1170,7 @@ pushDraftUnit(4, '奇妙的想象', [
   ] },
 ]);
 
-pushDraftUnit(7, '改变', [
+pushDraftUnit('下', 7, '改变', [
   { lesson: '大象的耳朵', words: [
     ['大象', 'dà xiàng', '体型很大的动物'],
     ['耳朵', 'ěr duo', '听声音的器官'],
@@ -1191,7 +1193,7 @@ pushDraftUnit(7, '改变', [
   ] },
 ]);
 
-pushDraftUnit(8, '世界之初', [
+pushDraftUnit('下', 8, '世界之初', [
   { lesson: '祖先的摇篮', words: [
     ['祖先', 'zǔ xiān', '一个家族的上代'],
     ['摇篮', 'yáo lán', '哄婴儿睡觉的篮子'],
@@ -1208,6 +1210,178 @@ pushDraftUnit(8, '世界之初', [
     ['炎热', 'yán rè', '天气很热'],
     ['庄稼', 'zhuāng jia', '田里的农作物'],
     ['灾难', 'zāi nàn', '天灾人祸'],
+  ] },
+]);
+
+// ============ 二年级上册 —— 统编版标准词表（草稿，待家长核对）============
+pushDraftUnit('上', 1, '大自然', [
+  { lesson: '小蝌蚪找妈妈', words: [
+    ['蝌蚪', 'kē dǒu', '青蛙的幼体'],
+    ['脑袋', 'nǎo dai', '头'],
+    ['欢迎', 'huān yíng', '高兴地迎接'],
+    ['阿姨', 'ā yí', '称呼成年女子'],
+  ] },
+  { lesson: '我是什么', words: [
+    ['飘浮', 'piāo fú', '在空中或水面浮动'],
+    ['灾害', 'zāi hài', '自然或人为造成的祸害'],
+    ['温和', 'wēn hé', '不冷不热；性情柔和'],
+  ] },
+  { lesson: '植物妈妈有办法', words: [
+    ['植物', 'zhí wù', '草木等生物'],
+    ['旅行', 'lǚ xíng', '到外地游历'],
+    ['准备', 'zhǔn bèi', '事先安排好'],
+  ] },
+]);
+
+pushDraftUnit('上', 2, '识字', [
+  { lesson: '场景歌', words: [
+    ['海鸥', 'hǎi ōu', '海边的一种鸟'],
+    ['帆船', 'fān chuán', '靠帆行驶的船'],
+    ['稻田', 'dào tián', '种水稻的田'],
+  ] },
+  { lesson: '树之歌', words: [
+    ['杨树', 'yáng shù', '一种高大的树'],
+    ['梧桐', 'wú tóng', '一种树木'],
+    ['松柏', 'sōng bǎi', '松树和柏树'],
+  ] },
+  { lesson: '拍手歌', words: [
+    ['孔雀', 'kǒng què', '羽毛美丽的大鸟'],
+    ['老鹰', 'lǎo yīng', '凶猛的猛禽'],
+    ['大雁', 'dà yàn', '排队飞行的候鸟'],
+  ] },
+  { lesson: '田家四季歌', words: [
+    ['蝴蝶', 'hú dié', '会飞的美丽昆虫'],
+    ['麦苗', 'mài miáo', '麦子的幼苗'],
+    ['归仓', 'guī cāng', '粮食收进仓库'],
+  ] },
+]);
+
+pushDraftUnit('上', 3, '儿童生活', [
+  { lesson: '曹冲称象', words: [
+    ['称象', 'chēng xiàng', '量出大象的重量'],
+    ['官员', 'guān yuán', '当官的人'],
+    ['柱子', 'zhù zi', '支撑房屋的木桩'],
+    ['果然', 'guǒ rán', '果真如此'],
+  ] },
+  { lesson: '玲玲的画', words: [
+    ['评奖', 'píng jiǎng', '评选出获奖的'],
+    ['满意', 'mǎn yì', '符合心意'],
+    ['收拾', 'shōu shi', '整理'],
+  ] },
+  { lesson: '一封信', words: [
+    ['一封信', 'yì fēng xìn', '一份书信'],
+    ['台灯', 'tái dēng', '放在桌上的灯'],
+    ['孤单', 'gū dān', '单身无伴；冷清'],
+  ] },
+  { lesson: '妈妈睡了', words: [
+    ['睡梦', 'shuì mèng', '睡眠中做梦'],
+    ['梳头', 'shū tóu', '用梳子整理头发'],
+    ['汗珠', 'hàn zhū', '一颗颗的汗'],
+  ] },
+]);
+
+pushDraftUnit('上', 4, '祖国山河', [
+  { lesson: '古诗二首', words: [
+    ['楼台', 'lóu tái', '楼房亭台'],
+    ['香炉', 'xiāng lú', '烧香的器具；这里指香炉峰'],
+    ['高山', 'gāo shān', '高大的山'],
+  ] },
+  { lesson: '黄山奇石', words: [
+    ['黄山', 'huáng shān', '安徽著名的山'],
+    ['风景', 'fēng jǐng', '可供观赏的景物'],
+    ['闻名', 'wén míng', '有名'],
+    ['巨石', 'jù shí', '巨大的石头'],
+  ] },
+  { lesson: '日月潭', words: [
+    ['日月潭', 'rì yuè tán', '台湾著名的湖'],
+    ['群山', 'qún shān', '众多的山'],
+    ['名胜古迹', 'míng shèng gǔ jì', '有名的风景和古老的遗迹'],
+  ] },
+  { lesson: '葡萄沟', words: [
+    ['葡萄', 'pú táo', '一种水果'],
+    ['茂密', 'mào mì', '草木长得多而密'],
+    ['五光十色', 'wǔ guāng shí sè', '形容色彩鲜艳、样式繁多'],
+  ] },
+]);
+
+pushDraftUnit('上', 5, '想办法', [
+  { lesson: '坐井观天', words: [
+    ['井沿', 'jǐng yán', '井口的边'],
+    ['回答', 'huí dá', '对问题作出答复'],
+    ['抬头', 'tái tóu', '把头抬起'],
+    ['无边无际', 'wú biān wú jì', '没有边际，非常广阔'],
+  ] },
+  { lesson: '寒号鸟', words: [
+    ['山崖', 'shān yá', '山的陡峭侧面'],
+    ['阳光', 'yáng guāng', '太阳的光'],
+    ['得过且过', 'dé guò qiě guò', '只顾眼前，不作长远打算'],
+  ] },
+  { lesson: '我要的是葫芦', words: [
+    ['葫芦', 'hú lu', '一种藤蔓植物的果实'],
+    ['邻居', 'lín jū', '住在旁边的人家'],
+    ['自言自语', 'zì yán zì yǔ', '自己跟自己说话'],
+    ['奇怪', 'qí guài', '出乎意料，难以理解'],
+  ] },
+]);
+
+pushDraftUnit('上', 6, '革命伟人', [
+  { lesson: '大禹治水', words: [
+    ['洪水', 'hóng shuǐ', '河水泛滥成的大水'],
+    ['灾难', 'zāi nàn', '天灾人祸'],
+    ['教训', 'jiào xun', '从失败中得到的经验'],
+    ['安居乐业', 'ān jū lè yè', '安定地生活，愉快地劳动'],
+  ] },
+  { lesson: '朱德的扁担', words: [
+    ['扁担', 'biǎn dan', '挑东西的木条'],
+    ['会师', 'huì shī', '几支队伍聚集在一起'],
+    ['敬爱', 'jìng ài', '尊敬热爱'],
+  ] },
+  { lesson: '难忘的泼水节', words: [
+    ['泼水节', 'pō shuǐ jié', '傣族的传统节日'],
+    ['敲鼓', 'qiāo gǔ', '打鼓'],
+    ['难忘', 'nán wàng', '不容易忘记'],
+  ] },
+]);
+
+pushDraftUnit('上', 7, '想象世界', [
+  { lesson: '古诗二首', words: [
+    ['危楼', 'wēi lóu', '高楼'],
+    ['星辰', 'xīng chén', '星星的总称'],
+    ['苍苍', 'cāng cāng', '深蓝色；这里形容天空'],
+    ['茫茫', 'máng máng', '辽阔、看不清边际'],
+  ] },
+  { lesson: '雾在哪里', words: [
+    ['大雾', 'dà wù', '浓厚的雾'],
+    ['淘气', 'táo qì', '顽皮'],
+    ['躲藏', 'duǒ cáng', '藏起来'],
+  ] },
+  { lesson: '雪孩子', words: [
+    ['雪孩子', 'xuě hái zi', '用雪堆成的孩子'],
+    ['浑身', 'hún shēn', '全身'],
+    ['激动', 'jī dòng', '感情强烈、不平静'],
+  ] },
+]);
+
+pushDraftUnit('上', 8, '故事与道理', [
+  { lesson: '狐假虎威', words: [
+    ['狐假虎威', 'hú jiǎ hǔ wēi', '借别人的威势吓唬人'],
+    ['爪子', 'zhuǎ zi', '动物的脚趾'],
+    ['神气活现', 'shén qì huó xiàn', '形容自以为了不起的样子'],
+  ] },
+  { lesson: '狐狸分奶酪', words: [
+    ['奶酪', 'nǎi lào', '用牛羊奶做的食品'],
+    ['整块', 'zhěng kuài', '完整的一块'],
+    ['拌嘴', 'bàn zuǐ', '争吵'],
+  ] },
+  { lesson: '纸船和风筝', words: [
+    ['纸船', 'zhǐ chuán', '纸折的小船'],
+    ['风筝', 'fēng zheng', '能在空中飞的玩具'],
+    ['幸福', 'xìng fú', '生活愉快美满'],
+  ] },
+  { lesson: '风娃娃', words: [
+    ['风娃娃', 'fēng wá wa', '童话里把风比作娃娃'],
+    ['责怪', 'zé guài', '责备、埋怨'],
+    ['伤心', 'shāng xīn', '心里难过'],
   ] },
 ]);
 
@@ -1235,6 +1409,65 @@ export type Poem = {
 };
 
 export const POEMS: Poem[] = [
+  {
+    id: 'up4-1',
+    title: '登鹳雀楼',
+    author: '王之涣',
+    dynasty: '唐',
+    semester: '上', unit: 4, unitTitle: '祖国山河', lesson: '古诗二首',
+    theme: '诗人登上鹳雀楼远望，写下壮阔的景色，并悟出「想看得更远，就要站得更高」的道理。',
+    lines: [
+      { text: '白日依山尽', pinyin: 'bái rì yī shān jìn', meaning: '太阳挨着群山慢慢落下，' },
+      { text: '黄河入海流', pinyin: 'huáng hé rù hǎi liú', meaning: '黄河奔腾着流向大海。' },
+      { text: '欲穷千里目', pinyin: 'yù qióng qiān lǐ mù', meaning: '想要看到千里之外的风光，' },
+      { text: '更上一层楼', pinyin: 'gèng shàng yì céng lóu', meaning: '就要再登上更高的一层楼。' },
+    ],
+  },
+  {
+    id: 'up4-2',
+    title: '望庐山瀑布',
+    author: '李白',
+    dynasty: '唐',
+    semester: '上', unit: 4, unitTitle: '祖国山河', lesson: '古诗二首',
+    theme: '李白远望庐山瀑布，用夸张和想象写出瀑布的雄伟壮观。',
+    lines: [
+      { text: '日照香炉生紫烟', pinyin: 'rì zhào xiāng lú shēng zǐ yān', meaning: '阳光照着香炉峰，升起紫色的云烟，' },
+      { text: '遥看瀑布挂前川', pinyin: 'yáo kàn pù bù guà qián chuān', meaning: '远远望去，瀑布像挂在山前的大河。' },
+      { text: '飞流直下三千尺', pinyin: 'fēi liú zhí xià sān qiān chǐ', meaning: '水流飞快地直泻下来，足有三千尺，' },
+      { text: '疑是银河落九天', pinyin: 'yí shì yín hé luò jiǔ tiān', meaning: '让人怀疑是银河从天上落了下来。' },
+    ],
+  },
+  {
+    id: 'up7-1',
+    title: '夜宿山寺',
+    author: '李白',
+    dynasty: '唐',
+    semester: '上', unit: 7, unitTitle: '想象世界', lesson: '古诗二首',
+    theme: '夜里住在山顶的寺庙，李白用夸张的想象写出楼之高、夜之静。',
+    lines: [
+      { text: '危楼高百尺', pinyin: 'wēi lóu gāo bǎi chǐ', meaning: '山顶的高楼有一百尺高，' },
+      { text: '手可摘星辰', pinyin: 'shǒu kě zhāi xīng chén', meaning: '伸手仿佛就能摘到星星。' },
+      { text: '不敢高声语', pinyin: 'bù gǎn gāo shēng yǔ', meaning: '我不敢大声说话，' },
+      { text: '恐惊天上人', pinyin: 'kǒng jīng tiān shàng rén', meaning: '怕惊扰了天上的神仙。' },
+    ],
+  },
+  {
+    id: 'up7-2',
+    title: '敕勒歌',
+    author: '北朝民歌',
+    dynasty: '北朝',
+    semester: '上', unit: 7, unitTitle: '想象世界', lesson: '古诗二首',
+    theme: '一首北方民歌，描绘草原辽阔、牛羊成群的壮美风光。',
+    lines: [
+      { text: '敕勒川', pinyin: 'chì lè chuān', meaning: '敕勒族居住的大平原，' },
+      { text: '阴山下', pinyin: 'yīn shān xià', meaning: '就在阴山的脚下。' },
+      { text: '天似穹庐', pinyin: 'tiān sì qióng lú', meaning: '天空像一顶大帐篷，' },
+      { text: '笼盖四野', pinyin: 'lǒng gài sì yě', meaning: '罩住了四面的原野。' },
+      { text: '天苍苍', pinyin: 'tiān cāng cāng', meaning: '天空蓝蓝的，' },
+      { text: '野茫茫', pinyin: 'yě máng máng', meaning: '原野广阔得看不到边，' },
+      { text: '风吹草低见牛羊', pinyin: 'fēng chuī cǎo dī xiàn niú yáng', meaning: '风吹过，草低下头，露出成群的牛羊。' },
+    ],
+  },
   {
     id: 'p1-1',
     title: '村居',
@@ -1344,12 +1577,12 @@ export function getSentence(id: string): Sentence | undefined {
   return SENTENCES.find(s => s.id === id);
 }
 
-export function poemsByUnit(unit: number): Poem[] {
-  return POEMS.filter(p => p.unit === unit);
+export function poemsByUnit(semester: '上' | '下', unit: number): Poem[] {
+  return POEMS.filter(p => p.semester === semester && p.unit === unit);
 }
 
-export function sentencesByUnit(unit: number): Sentence[] {
-  return SENTENCES.filter(s => s.unit === unit);
+export function sentencesByUnit(semester: '上' | '下', unit: number): Sentence[] {
+  return SENTENCES.filter(s => s.semester === semester && s.unit === unit);
 }
 
 // 古诗 / 句子的统一引用（错题本、家长报告、SRS 用）
@@ -1416,10 +1649,11 @@ export type UnitGroup = {
   draft: boolean;   // 是否为草稿单元（统编版标准词表，待核对）
 };
 
-export function unitGroups(): UnitGroup[] {
+export function unitGroups(semester: '上' | '下'): UnitGroup[] {
   const unitOrder: number[] = [];
   const byUnit = new Map<number, { unitTitle: string; lessons: Map<string, Word[]>; lessonOrder: string[] }>();
   for (const w of WORDS) {
+    if (w.semester !== semester) continue;
     if (!byUnit.has(w.unit)) {
       byUnit.set(w.unit, { unitTitle: w.unitTitle, lessons: new Map(), lessonOrder: [] });
       unitOrder.push(w.unit);
@@ -1436,8 +1670,8 @@ export function unitGroups(): UnitGroup[] {
       unit,
       unitTitle: u.unitTitle,
       lessons,
-      poems: poemsByUnit(unit),
-      sentences: sentencesByUnit(unit),
+      poems: poemsByUnit(semester, unit),
+      sentences: sentencesByUnit(semester, unit),
       draft,
     };
   });

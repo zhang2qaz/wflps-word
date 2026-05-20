@@ -59,10 +59,13 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
   const progress = useStore(s => s.progress);
   const dueRecite = useStore(useShallow(s => selectDueRecite(s)));
 
+  // 按单元归集
+  const units = Array.from(new Set([...POEMS, ...SENTENCES].map(x => x.unit))).sort((a, b) => a - b);
+
   return (
     <>
       <div className="text-xs tracking-wide mb-1" style={{ color: 'var(--color-vermilion)' }}>
-        世外小学 · 国际部 P2 · 二下第六单元
+        世外小学 · 国际部 P2 · 二年级下册
       </div>
       <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
         古诗 · 句子 背默
@@ -82,59 +85,59 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
         </div>
       )}
 
-      {/* 古诗 */}
-      <div className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>
-        古诗二首
-      </div>
-      <div className="space-y-2 mb-6">
-        {POEMS.map(p => {
-          const st = statusOf(progress[p.id]);
-          return (
-            <button
-              key={p.id}
-              onClick={() => onPick({ kind: 'poem', poem: p })}
-              className="w-full text-left p-4 rounded-xl border hover:shadow flex items-center justify-between"
-              style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-            >
-              <div>
-                <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                  《{p.title}》
-                </div>
-                <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                  〔{p.dynasty}〕{p.author} · {p.lines.length} 句
-                </div>
-              </div>
-              <span className="text-xs flex-shrink-0" style={{ color: STATUS_COLOR[st] }}>{STATUS_LABEL[st]}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 句子 */}
-      <div className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>
-        课文句子
-      </div>
-      <div className="space-y-2">
-        {SENTENCES.map(s => {
-          const st = statusOf(progress[s.id]);
-          return (
-            <button
-              key={s.id}
-              onClick={() => onPick({ kind: 'sentence', sentence: s })}
-              className="w-full text-left p-4 rounded-xl border hover:shadow"
-              style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-            >
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs" style={{ color: 'var(--color-vermilion)' }}>《{s.lesson}》</span>
-                <span className="text-xs" style={{ color: STATUS_COLOR[st] }}>{STATUS_LABEL[st]}</span>
-              </div>
-              <div className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink)' }}>
-                {s.text}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      {units.map(unit => {
+        const poems = POEMS.filter(p => p.unit === unit);
+        const sentences = SENTENCES.filter(s => s.unit === unit);
+        return (
+          <div key={unit} className="mb-7">
+            <div className="text-xs font-bold mb-2" style={{ color: 'var(--color-vermilion)' }}>
+              第 {unit} 单元
+            </div>
+            <div className="space-y-2">
+              {poems.map(p => {
+                const st = statusOf(progress[p.id]);
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => onPick({ kind: 'poem', poem: p })}
+                    className="w-full text-left p-4 rounded-xl border hover:shadow flex items-center justify-between"
+                    style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+                  >
+                    <div>
+                      <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+                        📜《{p.title}》
+                      </div>
+                      <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+                        〔{p.dynasty}〕{p.author} · {p.lines.length} 句
+                      </div>
+                    </div>
+                    <span className="text-xs flex-shrink-0" style={{ color: STATUS_COLOR[st] }}>{STATUS_LABEL[st]}</span>
+                  </button>
+                );
+              })}
+              {sentences.map(s => {
+                const st = statusOf(progress[s.id]);
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => onPick({ kind: 'sentence', sentence: s })}
+                    className="w-full text-left p-4 rounded-xl border hover:shadow"
+                    style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs" style={{ color: 'var(--color-vermilion)' }}>✍️《{s.lesson}》句子</span>
+                      <span className="text-xs" style={{ color: STATUS_COLOR[st] }}>{STATUS_LABEL[st]}</span>
+                    </div>
+                    <div className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink)' }}>
+                      {s.text}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </>
   );
 }

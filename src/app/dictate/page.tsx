@@ -84,7 +84,7 @@ export default function DictatePage() {
               const unitWords = g.lessons.flatMap(l => l.words);
               return (
                 <div key={g.unit}>
-                  <div className="flex items-baseline gap-2 mb-2">
+                  <div className="flex items-baseline gap-2 mb-2 flex-wrap">
                     <span
                       className="text-sm font-bold px-2 py-0.5 rounded"
                       style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
@@ -94,6 +94,14 @@ export default function DictatePage() {
                     <span className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink-soft)' }}>
                       {g.unitTitle}
                     </span>
+                    {g.draft && (
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded"
+                        style={{ background: 'rgba(224,163,42,0.18)', color: 'var(--color-mustard)' }}
+                      >
+                        草稿 · 待核对
+                      </span>
+                    )}
                   </div>
                   <div className="space-y-2">
                     {g.lessons.map(({ lesson, words }) => (

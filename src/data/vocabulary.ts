@@ -37,6 +37,7 @@ export type Word = {
   chars: CharInfo[];     // 逐字拆解
   story?: string;        // 寓言 / 成语故事
   custom?: boolean;      // 用户导入
+  draft?: boolean;       // 草稿（统编版标准词表，待家长核对）
 };
 
 const UNIT = { semester: '下' as const, unit: 5, unitTitle: '办法' };
@@ -1047,6 +1048,170 @@ export const WORDS: Word[] = [
 ];
 
 // ============================================================
+// 第一·二·三·四·七·八单元 —— 统编版标准词表（草稿，待家长核对）
+// 仅收录字词表（不含课文原文）。学校实际默写卷可能略有出入，
+// 拿到学校卷子后可用「导入」替换或重建。
+// ============================================================
+type DraftWord = [char: string, pinyin: string, meaning: string];
+
+function pushDraftUnit(
+  unit: number,
+  unitTitle: string,
+  lessons: { lesson: string; words: DraftWord[] }[],
+) {
+  let n = 0;
+  for (const { lesson, words } of lessons) {
+    for (const [char, pinyin, meaning] of words) {
+      n += 1;
+      WORDS.push({
+        id: `d${unit}-${String(n).padStart(2, '0')}`,
+        char, pinyin, meaning,
+        semester: '下', unit, unitTitle, lesson,
+        type: char.length >= 4 ? 'idiom' : 'word',
+        examples: [],
+        sentence: '',
+        tip: '统编版标准词表（草稿，待核对）。把这个词拆成单个字记，再用它造个句子。',
+        chars: Array.from(char).map(c => ({ c, pinyin: '' })),
+        draft: true,
+      });
+    }
+  }
+}
+
+pushDraftUnit(1, '春天里', [
+  { lesson: '古诗二首', words: [
+    ['古诗', 'gǔ shī', '古代的诗'],
+    ['杨柳', 'yáng liǔ', '柳树'],
+    ['儿童', 'ér tóng', '小孩子'],
+    ['碧绿', 'bì lǜ', '青绿色'],
+  ] },
+  { lesson: '找春天', words: [
+    ['寻找', 'xún zhǎo', '到处找'],
+    ['姑娘', 'gū niang', '年轻女子'],
+    ['嫩芽', 'nèn yá', '刚长出的芽'],
+    ['小溪', 'xiǎo xī', '小河沟'],
+  ] },
+  { lesson: '开满鲜花的小路', words: [
+    ['鲜花', 'xiān huā', '新鲜的花'],
+    ['礼物', 'lǐ wù', '赠送的东西'],
+    ['邮递员', 'yóu dì yuán', '送信送包裹的人'],
+  ] },
+  { lesson: '邓小平爷爷植树', words: [
+    ['植树', 'zhí shù', '种树'],
+    ['节日', 'jié rì', '值得纪念的日子'],
+  ] },
+]);
+
+pushDraftUnit(2, '关爱他人', [
+  { lesson: '雷锋叔叔，你在哪里', words: [
+    ['叔叔', 'shū shu', '爸爸的弟弟；也称呼成年男子'],
+    ['足迹', 'zú jì', '脚印'],
+    ['温暖', 'wēn nuǎn', '不冷，让人舒服'],
+    ['年迈', 'nián mài', '年纪老了'],
+  ] },
+  { lesson: '千人糕', words: [
+    ['米糕', 'mǐ gāo', '用米粉做的糕'],
+    ['应该', 'yīng gāi', '理所当然'],
+    ['工具', 'gōng jù', '做事用的器具'],
+    ['劳动', 'láo dòng', '出力气做事'],
+  ] },
+  { lesson: '一匹出色的马', words: [
+    ['出色', 'chū sè', '特别好'],
+    ['景色', 'jǐng sè', '风景'],
+    ['恋恋不舍', 'liàn liàn bù shě', '舍不得离开'],
+  ] },
+]);
+
+pushDraftUnit(3, '中华传统', [
+  { lesson: '神州谣', words: [
+    ['神州', 'shén zhōu', '中国的代称'],
+    ['长江', 'cháng jiāng', '中国第一大河'],
+    ['黄河', 'huáng hé', '中国第二大河'],
+    ['民族', 'mín zú', '有共同语言文化的人群'],
+  ] },
+  { lesson: '传统节日', words: [
+    ['传统', 'chuán tǒng', '世代相传的风俗'],
+    ['春节', 'chūn jié', '农历新年'],
+    ['清明', 'qīng míng', '扫墓踏青的节日'],
+    ['端午', 'duān wǔ', '农历五月初五的节日'],
+    ['团圆', 'tuán yuán', '亲人聚在一起'],
+  ] },
+  { lesson: '“贝”的故事', words: [
+    ['贝壳', 'bèi ké', '贝类的硬壳'],
+    ['珍贵', 'zhēn guì', '宝贵、价值高'],
+  ] },
+  { lesson: '中国美食', words: [
+    ['美食', 'měi shí', '好吃的食物'],
+  ] },
+]);
+
+pushDraftUnit(4, '奇妙的想象', [
+  { lesson: '彩色的梦', words: [
+    ['彩色', 'cǎi sè', '多种颜色'],
+    ['铅笔', 'qiān bǐ', '一种写字画画的笔'],
+    ['苹果', 'píng guǒ', '一种水果'],
+  ] },
+  { lesson: '枫树上的喜鹊', words: [
+    ['枫树', 'fēng shù', '叶子秋天变红的树'],
+    ['喜鹊', 'xǐ què', '一种鸟'],
+    ['母亲', 'mǔ qīn', '妈妈'],
+  ] },
+  { lesson: '沙滩上的童话', words: [
+    ['沙滩', 'shā tān', '水边的沙地'],
+    ['童话', 'tóng huà', '儿童故事'],
+    ['城堡', 'chéng bǎo', '坚固的大型建筑'],
+    ['皇宫', 'huáng gōng', '皇帝住的宫殿'],
+  ] },
+  { lesson: '我是一只小虫子', words: [
+    ['虫子', 'chóng zi', '昆虫等小动物'],
+    ['脾气', 'pí qi', '人的性情'],
+  ] },
+]);
+
+pushDraftUnit(7, '改变', [
+  { lesson: '大象的耳朵', words: [
+    ['大象', 'dà xiàng', '体型很大的动物'],
+    ['耳朵', 'ěr duo', '听声音的器官'],
+    ['扇子', 'shàn zi', '扇风的用具'],
+    ['跳舞', 'tiào wǔ', '随音乐做动作'],
+  ] },
+  { lesson: '蜘蛛开店', words: [
+    ['蜘蛛', 'zhī zhū', '会织网的小动物'],
+    ['寂寞', 'jì mò', '孤单冷清'],
+    ['决定', 'jué dìng', '拿定主意'],
+    ['围巾', 'wéi jīn', '围在脖子上的布'],
+  ] },
+  { lesson: '青蛙卖泥塘', words: [
+    ['青蛙', 'qīng wā', '会捉害虫的两栖动物'],
+    ['泥塘', 'ní táng', '有泥的小水坑'],
+  ] },
+  { lesson: '小毛虫', words: [
+    ['可怜', 'kě lián', '值得同情'],
+    ['尽心竭力', 'jìn xīn jié lì', '用尽全部心思和力气'],
+  ] },
+]);
+
+pushDraftUnit(8, '世界之初', [
+  { lesson: '祖先的摇篮', words: [
+    ['祖先', 'zǔ xiān', '一个家族的上代'],
+    ['摇篮', 'yáo lán', '哄婴儿睡觉的篮子'],
+    ['森林', 'sēn lín', '大片树木'],
+    ['野果', 'yě guǒ', '野生的果子'],
+  ] },
+  { lesson: '当世界年纪还小的时候', words: [
+    ['世界', 'shì jiè', '地球上所有的地方'],
+    ['年纪', 'nián jì', '人的岁数'],
+    ['规则', 'guī zé', '大家要遵守的规定'],
+    ['简单', 'jiǎn dān', '不复杂'],
+  ] },
+  { lesson: '羿射九日', words: [
+    ['炎热', 'yán rè', '天气很热'],
+    ['庄稼', 'zhuāng jia', '田里的农作物'],
+    ['灾难', 'zāi nàn', '天灾人祸'],
+  ] },
+]);
+
+// ============================================================
 // 古诗（整首背默）
 // ============================================================
 
@@ -1070,6 +1235,34 @@ export type Poem = {
 };
 
 export const POEMS: Poem[] = [
+  {
+    id: 'p1-1',
+    title: '村居',
+    author: '高鼎',
+    dynasty: '清',
+    semester: '下', unit: 1, unitTitle: '春天里', lesson: '古诗二首',
+    theme: '写早春二月的乡村风光，和孩子们放学回来、趁着春风放风筝的快乐。',
+    lines: [
+      { text: '草长莺飞二月天', pinyin: 'cǎo zhǎng yīng fēi èr yuè tiān', meaning: '二月里，小草生长，黄莺飞舞，' },
+      { text: '拂堤杨柳醉春烟', pinyin: 'fú dī yáng liǔ zuì chūn yān', meaning: '杨柳轻拂着堤岸，像陶醉在春天的雾气里。' },
+      { text: '儿童散学归来早', pinyin: 'ér tóng sàn xué guī lái zǎo', meaning: '孩子们放学回来得早，' },
+      { text: '忙趁东风放纸鸢', pinyin: 'máng chèn dōng fēng fàng zhǐ yuān', meaning: '急忙趁着东风放起了风筝（纸鸢就是风筝）。' },
+    ],
+  },
+  {
+    id: 'p1-2',
+    title: '咏柳',
+    author: '贺知章',
+    dynasty: '唐',
+    semester: '下', unit: 1, unitTitle: '春天里', lesson: '古诗二首',
+    theme: '用碧玉、丝带、剪刀打比方，赞美春天柳树的美，和春风的灵巧。',
+    lines: [
+      { text: '碧玉妆成一树高', pinyin: 'bì yù zhuāng chéng yí shù gāo', meaning: '高高的柳树，像是用碧玉打扮成的，' },
+      { text: '万条垂下绿丝绦', pinyin: 'wàn tiáo chuí xià lǜ sī tāo', meaning: '千万条柳枝垂下来，像绿色的丝带。' },
+      { text: '不知细叶谁裁出', pinyin: 'bù zhī xì yè shuí cái chū', meaning: '不知道这细细的柳叶是谁裁剪出来的，' },
+      { text: '二月春风似剪刀', pinyin: 'èr yuè chūn fēng sì jiǎn dāo', meaning: '原来二月的春风就像一把剪刀。' },
+    ],
+  },
   {
     id: 'p6-1',
     title: '晓出净慈寺送林子方',
@@ -1220,6 +1413,7 @@ export type UnitGroup = {
   lessons: { lesson: string; words: Word[] }[];
   poems: Poem[];
   sentences: Sentence[];
+  draft: boolean;   // 是否为草稿单元（统编版标准词表，待核对）
 };
 
 export function unitGroups(): UnitGroup[] {
@@ -1236,12 +1430,15 @@ export function unitGroups(): UnitGroup[] {
   }
   return unitOrder.sort((a, b) => a - b).map(unit => {
     const u = byUnit.get(unit)!;
+    const lessons = u.lessonOrder.map(lesson => ({ lesson, words: u.lessons.get(lesson)! }));
+    const draft = lessons.every(l => l.words.every(w => w.draft));
     return {
       unit,
       unitTitle: u.unitTitle,
-      lessons: u.lessonOrder.map(lesson => ({ lesson, words: u.lessons.get(lesson)! })),
+      lessons,
       poems: poemsByUnit(unit),
       sentences: sentencesByUnit(unit),
+      draft,
     };
   });
 }

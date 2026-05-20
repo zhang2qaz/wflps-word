@@ -21,9 +21,8 @@ export default function DictatePage() {
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState(false);
   const [result, setResult] = useState<RoundResult[]>([]);
-  const [semester, setSemester] = useState<'上' | '下'>('下');
 
-  const groups = useMemo(() => unitGroups(semester), [semester]);
+  const groups = useMemo(() => unitGroups('下'), []);
   const allWords = useMemo(() => [...WORDS, ...customWords], [customWords]);
 
   const customLists = useMemo(() => {
@@ -77,22 +76,6 @@ export default function DictatePage() {
             <span>一次练 <b>一篇课文</b>（十几个词）刚好。整单元一起听写较长，建议分两三次完成。</span>
           </div>
 
-          <div className="flex gap-2 mb-6">
-            {(['上', '下'] as const).map(s => (
-              <button
-                key={s}
-                onClick={() => setSemester(s)}
-                className="px-4 py-2 rounded-md text-sm font-medium"
-                style={
-                  semester === s
-                    ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
-                    : { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
-                }
-              >
-                二年级{s}册
-              </button>
-            ))}
-          </div>
 
           <div className="text-xs tracking-wide mb-3" style={{ color: 'var(--color-vermilion)' }}>
             世外小学 · 国际部 P2 · 二年级下册

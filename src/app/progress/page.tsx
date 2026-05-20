@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Nav from '@/components/Nav';
 import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { unitGroups, reciteRefs } from '@/data/vocabulary';
+import { unitGroups, reciteRefs, books } from '@/data/vocabulary';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -37,8 +37,8 @@ export default function ProgressPage() {
 
   const unitProgress = useMemo(() => {
     const rows: { label: string; total: number; learned: number; mastered: number }[] = [];
-    for (const sem of ['上', '下'] as const) {
-      for (const g of unitGroups(sem)) {
+    for (const b of books()) {
+      for (const g of unitGroups(b.grade, b.semester)) {
         const words = g.lessons.flatMap(l => l.words);
         const learned = words.filter(w => progress[w.id]?.lastReview).length;
         const mastered = words.filter(w => {
@@ -46,7 +46,7 @@ export default function ProgressPage() {
           return p ? p.reps >= 4 && p.interval >= 7 : false;
         }).length;
         rows.push({
-          label: `${sem}册 第${g.unit}单元 · ${g.unitTitle}`,
+          label: `${b.label} 第${g.unit}单元 · ${g.unitTitle}`,
           total: words.length, learned, mastered,
         });
       }

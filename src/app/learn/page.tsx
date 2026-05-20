@@ -7,7 +7,7 @@ import CharBreakdown from '@/components/CharBreakdown';
 import HanziStrokes from '@/components/HanziStrokes';
 import WriteCanvas from '@/components/WriteCanvas';
 import Link from 'next/link';
-import { unitGroups, type Word } from '@/data/vocabulary';
+import { unitGroups, books, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { speak } from '@/lib/tts';
@@ -18,9 +18,12 @@ export default function LearnPage() {
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
+  const [bookIdx, setBookIdx] = useState(0);
   const markLearned = useStore(s => s.markLearned);
 
-  const groups = useMemo(() => unitGroups('下'), []);
+  const bookList = useMemo(() => books(), []);
+  const book = bookList[bookIdx] ?? bookList[0];
+  const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
 
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
@@ -54,6 +57,23 @@ export default function LearnPage() {
               <b>建议每次只学 6–8 个字</b>，学完马上去「听写」检验，明天再学几个。
               一口气学一整单元，记得快、忘得也快。
             </span>
+          </div>
+
+          <div className="flex gap-2 mb-6 flex-wrap">
+            {bookList.map((b, i) => (
+              <button
+                key={b.label}
+                onClick={() => setBookIdx(i)}
+                className="px-4 py-2 rounded-md text-sm font-medium"
+                style={
+                  i === bookIdx
+                    ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
+                    : { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
+                }
+              >
+                {b.label}
+              </button>
+            ))}
           </div>
 
           <div className="space-y-8">

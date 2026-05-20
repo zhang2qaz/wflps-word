@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Logo from './Logo';
 
 const LINKS = [
   { href: '/', label: '首页' },
@@ -18,11 +19,11 @@ export default function Nav() {
   return (
     <header className="border-b border-stone bg-paper-warm/70 backdrop-blur sticky top-0 z-30">
       <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3">
-        <Link href="/" className="flex items-center gap-2 mr-2">
-          <span className="seal text-sm">世外</span>
+        <Link href="/" className="flex items-center gap-2.5 mr-2">
+          <Logo size={34} />
           <span className="flex flex-col leading-none">
-            <span className="font-bold text-lg tracking-wider" style={{ fontFamily: 'var(--font-serif-cn)' }}>默写本</span>
-            <span className="text-[9px] tracking-wide" style={{ color: 'var(--color-ink-soft)' }}>WFLPS · 国际部</span>
+            <span className="font-bold text-lg tracking-wider" style={{ fontFamily: 'var(--font-serif-cn)' }}>世外默写本</span>
+            <span className="text-[9px] tracking-wide mt-0.5" style={{ color: 'var(--color-ink-soft)' }}>WFLPS · 国际部 P2</span>
           </span>
         </Link>
         <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">

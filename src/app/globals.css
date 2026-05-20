@@ -1,17 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #1a1a1a;
-  --color-ink-soft: #4a4a4a;
-  --color-paper: #fefcf7;
-  --color-paper-warm: #faf6ec;
-  --color-vermilion: #c83b3b;
-  --color-vermilion-soft: #e07a7a;
-  --color-cinnabar: #d4493d;
-  --color-jade: #2d8a6f;
-  --color-mustard: #d4a72c;
-  --color-stone: #e8e2d0;
-  --color-stone-dark: #c9c1a8;
+  /* 世外品牌色系 —— 主色「世外蓝」，象征科技、睿智、大气谦和 */
+  --color-ink: #1a2030;
+  --color-ink-soft: #5b6478;
+  --color-paper: #fafbfd;
+  --color-paper-warm: #eef2f8;
+  --color-vermilion: #1e50a2;       /* 世外蓝 · 品牌主色 */
+  --color-vermilion-soft: #8aa4cf;
+  --color-cinnabar: #d6453b;        /* 错误红（写错、错题）*/
+  --color-jade: #2d8a6f;            /* 正确绿 */
+  --color-mustard: #e0a32a;         /* 提示金 · 校徽五角星 */
+  --color-stone: #e3e7ef;
+  --color-stone-dark: #bdc5d6;
+  --color-grid: #d98a8a;            /* 米字格 · 沿用红色书写习惯 */
+  --color-grid-soft: #ebb9b9;
 
   --font-serif-cn: "Noto Serif SC", "Songti SC", "STSong", serif;
   --font-display: "Ma Shan Zheng", "ZCOOL XiaoWei", "STKaiti", serif;
@@ -27,24 +30,24 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* 田字格 — 学写字用 */
+  /* 田字格 */
   .tianzige {
     background-image:
-      linear-gradient(to right, var(--color-vermilion-soft) 50%, transparent 50%),
-      linear-gradient(to bottom, var(--color-vermilion-soft) 50%, transparent 50%);
+      linear-gradient(to right, var(--color-grid-soft) 50%, transparent 50%),
+      linear-gradient(to bottom, var(--color-grid-soft) 50%, transparent 50%);
     background-size: 4px 1px, 1px 4px;
     background-position: center top, left center;
     background-repeat: repeat-x, repeat-y;
-    border: 1.5px solid var(--color-vermilion);
+    border: 1.5px solid var(--color-grid);
     border-radius: 6px;
-    background-color: var(--color-paper-warm);
+    background-color: #fffdfb;
   }
 
   /* 米字格 */
   .mizige {
     position: relative;
-    border: 1.5px solid var(--color-vermilion);
-    background: var(--color-paper-warm);
+    border: 1.5px solid var(--color-grid);
+    background: #fffdfb;
     border-radius: 6px;
   }
   .mizige::before,
@@ -56,17 +59,17 @@
   }
   .mizige::before {
     background:
-      linear-gradient(to right, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-      linear-gradient(to bottom, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+      linear-gradient(to right, transparent calc(50% - 0.5px), var(--color-grid-soft) calc(50% - 0.5px), var(--color-grid-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(to bottom, transparent calc(50% - 0.5px), var(--color-grid-soft) calc(50% - 0.5px), var(--color-grid-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
   }
   .mizige::after {
     background:
-      linear-gradient(135deg, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+      linear-gradient(135deg, transparent calc(50% - 0.5px), var(--color-grid-soft) calc(50% - 0.5px), var(--color-grid-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--color-grid-soft) calc(50% - 0.5px), var(--color-grid-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
   }
 }
 
-/* 印章效果 */
+/* 徽章 / 印章 —— 世外蓝 */
 .seal {
   display: inline-flex;
   align-items: center;
@@ -77,9 +80,8 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   padding: 0.5rem 0.9rem;
-  border-radius: 6px;
-  transform: rotate(-2deg);
-  box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(30,80,162,0.25);
 }
 
 .brush-underline {
@@ -88,11 +90,10 @@
   background-size: 100% 100%;
 }
 
-/* 写字板光标 */
 .brush-cursor { cursor: crosshair; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200,59,59,0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(200,59,59,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(30,80,162,0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(30,80,162,0); }
 }
 .glow-vermilion { animation: pulse-glow 2s ease-in-out infinite; }

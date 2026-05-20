@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Nav from '@/components/Nav';
+import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
 import { useStore, selectStats, selectDueWords, selectMistakeWords, selectNewWords } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
@@ -66,16 +67,19 @@ export default function Home() {
             className="flex items-start gap-6 flex-wrap"
           >
             <div className="flex-1 min-w-[280px]">
-              <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <span
-                  className="text-[11px] tracking-wide px-2 py-0.5 rounded"
-                  style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
-                >
-                  上海市世界外国语小学 · 校本版
-                </span>
-                <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                  WFLPS 国际部 P2 · 二下第五单元
-                </span>
+              <div className="flex items-center gap-3 mb-4">
+                <Logo size={48} />
+                <div className="flex flex-col gap-1">
+                  <span
+                    className="text-[11px] tracking-wide px-2 py-0.5 rounded self-start"
+                    style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+                  >
+                    上海市世界外国语小学 · 校本版
+                  </span>
+                  <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+                    WFLPS 国际部 P2 · 二下第五单元
+                  </span>
+                </div>
               </div>
               <h1
                 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-4"

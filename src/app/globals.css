@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #4a4a4a;
+  --color-paper: #fefcf7;
+  --color-paper-warm: #faf6ec;
+  --color-vermilion: #c83b3b;
+  --color-vermilion-soft: #e07a7a;
+  --color-cinnabar: #d4493d;
+  --color-jade: #2d8a6f;
+  --color-mustard: #d4a72c;
+  --color-stone: #e8e2d0;
+  --color-stone-dark: #c9c1a8;
+
+  --font-serif-cn: "Noto Serif SC", "Songti SC", "STSong", serif;
+  --font-display: "Ma Shan Zheng", "ZCOOL XiaoWei", "STKaiti", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+@layer base {
+  html, body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 田字格 — 学写字用 */
+  .tianzige {
+    background-image:
+      linear-gradient(to right, var(--color-vermilion-soft) 50%, transparent 50%),
+      linear-gradient(to bottom, var(--color-vermilion-soft) 50%, transparent 50%);
+    background-size: 4px 1px, 1px 4px;
+    background-position: center top, left center;
+    background-repeat: repeat-x, repeat-y;
+    border: 1.5px solid var(--color-vermilion);
+    border-radius: 6px;
+    background-color: var(--color-paper-warm);
+  }
+
+  /* 米字格 */
+  .mizige {
+    position: relative;
+    border: 1.5px solid var(--color-vermilion);
+    background: var(--color-paper-warm);
+    border-radius: 6px;
+  }
+  .mizige::before,
+  .mizige::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .mizige::before {
+    background:
+      linear-gradient(to right, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(to bottom, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  }
+  .mizige::after {
+    background:
+      linear-gradient(135deg, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% - 0.5px), var(--color-vermilion-soft) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  }
+}
+
+/* 印章效果 */
+.seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-vermilion);
+  color: var(--color-paper);
+  font-family: var(--font-display, var(--font-serif-cn));
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  transform: rotate(-2deg);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+
+.brush-underline {
+  background-image: linear-gradient(transparent 65%, var(--color-mustard) 65%, var(--color-mustard) 90%, transparent 90%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* 写字板光标 */
+.brush-cursor { cursor: crosshair; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,59,59,0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(200,59,59,0); }
+}
+.glow-vermilion { animation: pulse-glow 2s ease-in-out infinite; }

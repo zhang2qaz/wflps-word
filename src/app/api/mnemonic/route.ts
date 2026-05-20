@@ -1,31 +1,37 @@
 import { anthropic } from '@ai-sdk/anthropic';
-import { streamText, convertToModelMessages, createUIMessageStreamResponse } from 'ai';
+import { generateText } from 'ai';
 
 export const runtime = 'edge';
 
+// 返回统一格式 { text: string }。无 API key 或出错时返回 { text: '' }，
+// 前端据此优雅降级（不显示「AI 联想」一栏）。
 export async function POST(req: Request) {
-  const { char, pinyin, meaning } = await req.json();
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return new Response(
-      JSON.stringify({
-        error: 'no_key',
-        fallback: defaultMnemonic(char, meaning),
-      }),
-      { status: 200, headers: { 'content-type': 'application/json' } },
-    );
+  let char = '', pinyin = '', meaning = '';
+  try {
+    const body = await req.json();
+    char = String(body.char ?? '');
+    pinyin = String(body.pinyin ?? '');
+    meaning = String(body.meaning ?? '');
+  } catch {
+    return Response.json({ text: '' });
   }
 
-  const result = streamText({
-    model: anthropic('claude-haiku-4-5-20251001'),
-    maxOutputTokens: 300,
-    system: `你是一位面向中国小学二年级（7-8 岁）孩子的中文老师，擅长用"字源记忆法"和"形象联想"帮孩子记字。\n\n要求：\n1. 用孩子能听懂的话（不超过 50 个字）\n2. 拆解汉字结构（偏旁部首+字形联想）\n3. 给一个生动的画面或小故事\n4. 不要空话，每一句都要有具体形象\n5. 用温暖、鼓励的语气`,
-    prompt: `请给"${char}"（拼音：${pinyin}，意思：${meaning}）写一个 50 字以内的记忆小故事，帮孩子记住怎么写、什么意思。`,
-  });
+  if (!process.env.ANTHROPIC_API_KEY || !char) {
+    return Response.json({ text: '' });
+  }
 
-  return result.toUIMessageStreamResponse();
-}
-
-function defaultMnemonic(char: string, meaning: string): string {
-  return `「${char}」的意思是"${meaning}"。多读几遍，再用它造个句子，就记住啦！`;
+  try {
+    const { text } = await generateText({
+      model: anthropic('claude-haiku-4-5'),
+      maxOutputTokens: 300,
+      system:
+        '你是一位面向中国小学二年级（7-8 岁）孩子的中文老师，擅长用「字源记忆法」和「形象联想」帮孩子记字。\n' +
+        '要求：1) 用孩子能听懂的话（不超过 50 个字）；2) 拆解汉字结构（偏旁部首 + 字形联想）；' +
+        '3) 给一个生动的画面或小故事；4) 每一句都要有具体形象；5) 语气温暖、鼓励。只输出故事本身，不要前缀。',
+      prompt: `请给"${char}"（拼音：${pinyin}，意思：${meaning}）写一个 50 字以内的记忆小故事，帮孩子记住怎么写、什么意思。`,
+    });
+    return Response.json({ text: text.trim() });
+  } catch {
+    return Response.json({ text: '' });
+  }
 }

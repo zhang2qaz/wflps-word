@@ -246,31 +246,46 @@ function HintLadder({ word, level, onMore }: { word: Word; level: number; onMore
     );
   }
 
+  // 注意：听写提示绝不能显示要写的字本身，只能用「第 N 个字」指代。
   const hints: { label: string; body: React.ReactNode }[] = [
     {
-      label: '提示 ① 结构',
+      label: '提示 ① 几个字、各几画',
       body: (
         <>这个词有 <b>{word.char.length}</b> 个字。
         {word.chars.map((c, i) => (
-          <span key={i}>{i > 0 ? '、' : ' '}第{i + 1}个字 <b>{c.strokes ?? '?'}</b> 画</span>
+          <span key={i}>{i > 0 ? '、' : ' '}第 {i + 1} 个字大约 <b>{c.strokes ?? '?'}</b> 画</span>
         ))}。</>
       ),
     },
     {
-      label: '提示 ② 偏旁',
+      label: '提示 ② 每个字的偏旁',
       body: (
-        <>{word.chars.map((c, i) => (
-          <span key={i}>{i > 0 ? '；' : ''}「{c.c}」是 <b>{c.radical ?? '独体字'}</b>
-            {c.kind === '形声' ? '（形声字）' : ''}</span>
-        ))}。</>
+        <>{word.chars.map((c, i) => {
+          const solo = !c.radical || c.kind === '独体' || c.radical === c.c;
+          return (
+            <span key={i}>
+              {i > 0 ? '；' : ''}第 {i + 1} 个字
+              {solo
+                ? '：独体字，没有偏旁'
+                : <>：「<b>{c.radical}</b>」旁{c.kind === '形声' ? '（形声字）' : ''}</>}
+            </span>
+          );
+        })}。</>
       ),
     },
     {
-      label: '提示 ③ 拆开看',
+      label: '提示 ③ 把字拆成部件',
       body: (
-        <>{word.chars.map((c, i) => (
-          <span key={i}>{i > 0 ? '；' : ''}「{c.c}」= <b>{c.split}</b></span>
-        ))}。{word.tip ? <><br />{word.tip}</> : null}</>
+        <>{word.chars.map((c, i) => {
+          const noSplit = !c.split || c.split === '独体字' || c.split === c.c;
+          return (
+            <span key={i}>
+              {i > 0 ? '；' : ''}第 {i + 1} 个字
+              {noSplit ? '是独体字，要靠记忆' : <> 由「<b>{c.split}</b>」组成</>}
+            </span>
+          );
+        })}。<br />
+        <span style={{ color: 'var(--color-ink-soft)' }}>把这些部件在脑子里拼起来，就是要写的字。</span></>
       ),
     },
   ];

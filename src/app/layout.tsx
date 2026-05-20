@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "默写大师 · 统编版二年级下册",
-  description: "用科学的记忆方法陪孩子练中文默写：拆字 + 形声字规律 + 字族 + 故事记成语 + 艾宾浩斯间隔重复。",
+  title: "世外默写 · 上海世界外国语小学校本版",
+  description: "上海市世界外国语小学（WFLPS）国际部 P2 校本定制 · 中文词语默写科学记忆 App：拆字 + 形声字规律 + 字族 + 故事记成语 + 艾宾浩斯间隔重复。",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

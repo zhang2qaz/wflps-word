@@ -34,8 +34,8 @@ export default function LearnPage() {
       <div className="min-h-screen">
         <Nav />
         <main className="max-w-3xl mx-auto px-5 py-10">
-          <div className="mb-2 text-xs tracking-widest uppercase" style={{ color: 'var(--color-vermilion)' }}>
-            统编版二年级下册 · 第五单元「办法」
+          <div className="mb-2 text-xs tracking-wide" style={{ color: 'var(--color-vermilion)' }}>
+            上海世界外国语小学 · 国际部 P2 · 二下第五单元「办法」
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
             学新字 · 科学记忆四步法

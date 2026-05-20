@@ -67,11 +67,14 @@ export default function Home() {
           >
             <div className="flex-1 min-w-[280px]">
               <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <span className="text-xs tracking-widest uppercase" style={{ color: 'var(--color-vermilion)' }}>
-                  统编版二年级下册 · 第五单元
+                <span
+                  className="text-[11px] tracking-wide px-2 py-0.5 rounded"
+                  style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+                >
+                  上海市世界外国语小学 · 校本版
                 </span>
                 <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                  寓言二则 · 画杨桃 · 小马过河
+                  WFLPS 国际部 P2 · 二下第五单元
                 </span>
               </div>
               <h1
@@ -214,8 +217,11 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="text-center text-xs text-ink-soft py-8" style={{ color: 'var(--color-ink-soft)' }}>
-          每天 10 分钟，胜过周末突击 2 小时。
+        <footer className="text-center text-xs py-8" style={{ color: 'var(--color-ink-soft)' }}>
+          <div className="mb-1">每天 10 分钟，胜过周末突击 2 小时。</div>
+          <div style={{ color: 'var(--color-stone-dark)' }}>
+            上海市世界外国语小学 · 国际部 P2 · 校本定制版
+          </div>
         </footer>
       </main>
     </div>

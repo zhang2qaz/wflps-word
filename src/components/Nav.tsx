@@ -19,8 +19,11 @@ export default function Nav() {
     <header className="border-b border-stone bg-paper-warm/70 backdrop-blur sticky top-0 z-30">
       <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3">
         <Link href="/" className="flex items-center gap-2 mr-2">
-          <span className="seal text-sm">默写</span>
-          <span className="font-serif-cn font-bold text-lg tracking-wider" style={{ fontFamily: 'var(--font-serif-cn)' }}>大师</span>
+          <span className="seal text-sm">世外</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-bold text-lg tracking-wider" style={{ fontFamily: 'var(--font-serif-cn)' }}>默写本</span>
+            <span className="text-[9px] tracking-wide" style={{ color: 'var(--color-ink-soft)' }}>WFLPS · 国际部</span>
+          </span>
         </Link>
         <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">
           {LINKS.slice(1).map(l => {

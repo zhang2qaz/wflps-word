@@ -68,8 +68,8 @@ export default function DictatePage() {
             老师读词 → 你写 → <b>卡住有提示，写错能诊断，错了当场订正</b>。
           </p>
 
-          <div className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>
-            统编版二下 · 第五单元
+          <div className="text-xs tracking-wide mb-2" style={{ color: 'var(--color-vermilion)' }}>
+            世外小学 · 国际部 P2 · 二下第五单元
           </div>
           <div className="space-y-2 mb-6">
             {lessons.map(({ lesson, words }) => (

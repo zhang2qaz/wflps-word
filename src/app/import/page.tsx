@@ -76,7 +76,7 @@ export default function ImportPage() {
           导入词单
         </h1>
         <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-          这个 App 内置的是<b>统编版二下第五单元</b>（已逐词核对，带科学记忆拆解）。
+          这个 App 内置的是<b>世外小学国际部 P2 · 二下第五单元</b>（按 WFL 默写卷逐词核对，带科学记忆拆解）。
           其他单元 / 其他学校的词单，把词语贴进来就能练 — 拼音会自动生成（<b>多音字请检查一下</b>）。
         </p>
 

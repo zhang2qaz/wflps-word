@@ -1,7 +1,7 @@
 // ============================================================
 // 上海市世界外国语小学（WFLPS）· 国际部 P2 · 校本版
 // 语文二年级下册 · 第五单元「办法」· 词语默写
-// 课文 12 寓言二则 / 课文 13 画杨桃 / 课文 14 小马过河
+// 课文：寓言二则 / 画杨桃 / 小马过河
 // 数据来源：WFL 国际部二下第五单元词语默写卷（已逐词核对）
 // 每个词条带「科学记忆」元数据：字形拆解、形声字规律、
 // 字族、易混字、寓言故事、语境例句
@@ -51,7 +51,7 @@ const C = {
 };
 
 export const WORDS: Word[] = [
-  // ===================== 课文 12 寓言二则 =====================
+  // ===================== 第五单元 · 寓言二则 =====================
   {
     id: 'd5-01', char: '亡羊补牢', pinyin: 'wáng yáng bǔ láo',
     meaning: '羊丢了再去修羊圈。比喻出了问题以后想办法补救，可以防止继续受损失。',
@@ -205,7 +205,7 @@ export const WORDS: Word[] = [
     ],
   },
 
-  // ===================== 课文 13 画杨桃 =====================
+  // ===================== 第五单元 · 画杨桃 =====================
   {
     id: 'd5-13', char: '教室', pinyin: 'jiào shì',
     meaning: '学校里上课的房间。',
@@ -354,7 +354,7 @@ export const WORDS: Word[] = [
     ],
   },
 
-  // ===================== 课文 14 小马过河 =====================
+  // ===================== 第五单元 · 小马过河 =====================
   {
     id: 'd5-25', char: '愿意', pinyin: 'yuàn yì',
     meaning: '心里同意、肯做某件事。',
@@ -525,7 +525,7 @@ export const WORDS: Word[] = [
     ],
   },
 
-  // ===================== 第六单元 · 课文 15 雷雨 =====================
+  // ===================== 第六单元 · 雷雨 =====================
   {
     id: 'd6-01', char: '乌云', pinyin: 'wū yún',
     ...U6, lesson: '雷雨', type: 'word',
@@ -688,7 +688,7 @@ export const WORDS: Word[] = [
     ],
   },
 
-  // ============== 第六单元 · 课文 16 要是你在野外迷了路 ==============
+  // ============== 第六单元 · 要是你在野外迷了路 ==============
   {
     id: 'd6-14', char: '野外', pinyin: 'yě wài',
     ...U6, lesson: '要是你在野外迷了路', type: 'word',
@@ -860,7 +860,7 @@ export const WORDS: Word[] = [
     ],
   },
 
-  // ============== 第六单元 · 课文 17 太空生活趣事多 ==============
+  // ============== 第六单元 · 太空生活趣事多 ==============
   {
     id: 'd6-28', char: '舒服', pinyin: 'shū fu',
     ...U6, lesson: '太空生活趣事多', type: 'word',
@@ -1147,12 +1147,44 @@ export function getPoem(id: string): Poem | undefined {
   return POEMS.find(p => p.id === id);
 }
 
+export function getSentence(id: string): Sentence | undefined {
+  return SENTENCES.find(s => s.id === id);
+}
+
 export function poemsByUnit(unit: number): Poem[] {
   return POEMS.filter(p => p.unit === unit);
 }
 
 export function sentencesByUnit(unit: number): Sentence[] {
   return SENTENCES.filter(s => s.unit === unit);
+}
+
+// 古诗 / 句子的统一引用（错题本、家长报告、SRS 用）
+export type ReciteRef = {
+  id: string;
+  kind: 'poem' | 'sentence';
+  title: string;   // 展示文字：诗题或句子
+  lesson: string;
+  unit: number;
+};
+
+export function reciteRefs(): ReciteRef[] {
+  return [
+    ...POEMS.map(p => ({
+      id: p.id, kind: 'poem' as const, title: `《${p.title}》`, lesson: p.lesson, unit: p.unit,
+    })),
+    ...SENTENCES.map(s => ({
+      id: s.id, kind: 'sentence' as const, title: s.text, lesson: s.lesson, unit: s.unit,
+    })),
+  ];
+}
+
+export function getReciteRef(id: string): ReciteRef | undefined {
+  return reciteRefs().find(r => r.id === id);
+}
+
+export function isReciteId(id: string): boolean {
+  return POEMS.some(p => p.id === id) || SENTENCES.some(s => s.id === id);
 }
 
 export function getUnits(semester: '上' | '下'): { unit: number; title: string; count: number }[] {

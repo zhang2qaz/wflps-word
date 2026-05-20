@@ -4,13 +4,28 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Nav from '@/components/Nav';
 import DictationCard, { type DictationResult } from '@/components/DictationCard';
+import Link from 'next/link';
 import { WORDS, type Word } from '@/data/vocabulary';
-import { useStore, selectDueWords } from '@/lib/store';
+import { useStore, selectDueWords, selectDueRecite } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { stopSpeak } from '@/lib/tts';
 
+function ReciteDueBanner({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <Link
+      href="/recite"
+      className="block mt-4 p-3 rounded-xl text-sm text-center"
+      style={{ border: '1px solid var(--color-mustard)', background: 'rgba(224,163,42,0.1)', color: 'var(--color-ink)' }}
+    >
+      🔔 还有 <b>{count}</b> 项古诗 / 句子今天该复习 —— 去「古诗句子」页 →
+    </Link>
+  );
+}
+
 export default function ReviewPage() {
   const dueIds = useStore(useShallow((s) => selectDueWords(s)));
+  const dueReciteCount = useStore(s => selectDueRecite(s).length);
   const customWords = useStore(useShallow(s => s.customWords));
   const recordAnswer = useStore(s => s.recordAnswer);
   const [queue, setQueue] = useState<Word[]>([]);
@@ -59,6 +74,9 @@ export default function ReviewPage() {
               随机听写
             </a>
           </div>
+          <div className="max-w-sm mx-auto">
+            <ReciteDueBanner count={dueReciteCount} />
+          </div>
         </main>
       </div>
     );
@@ -81,6 +99,9 @@ export default function ReviewPage() {
             <a href="/" className="px-5 py-2.5 rounded-md font-medium inline-block" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
               回到首页
             </a>
+            <div className="max-w-sm mx-auto">
+              <ReciteDueBanner count={dueReciteCount} />
+            </div>
           </motion.div>
         </main>
       </div>

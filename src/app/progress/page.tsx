@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Nav from '@/components/Nav';
 import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { wordsByLesson, type Word } from '@/data/vocabulary';
+import { wordsByLesson, reciteRefs, type Word } from '@/data/vocabulary';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -54,6 +54,23 @@ export default function ProgressPage() {
       return { lesson, total: words.length, learned, mastered };
     });
   }, [progress, customWords]);
+
+  const reciteProgress = useMemo(() => {
+    return reciteRefs().map(r => {
+      const p = progress[r.id];
+      let statusLabel = '未学', statusColor = '#5b6478';
+      if (p && p.lastReview !== 0) {
+        if (p.reps >= 4 && p.interval >= 7) { statusLabel = '已掌握'; statusColor = '#2d8a6f'; }
+        else if (p.nextDue <= Date.now()) { statusLabel = '待复习'; statusColor = '#21348c'; }
+        else { statusLabel = '学习中'; statusColor = '#e0a32a'; }
+      }
+      return {
+        id: r.id, kind: r.kind, title: r.title,
+        correct: p?.correct ?? 0, wrong: p?.wrong ?? 0,
+        statusLabel, statusColor,
+      };
+    });
+  }, [progress]);
 
   const accuracy7d = (() => {
     const c = last7.reduce((s, d) => s + d.correct, 0);
@@ -150,6 +167,39 @@ export default function ProgressPage() {
                   <span>● 学习中 {u.learned - u.mastered}</span>
                   <span>○ 未学 {u.total - u.learned}</span>
                 </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 古诗 · 句子 */}
+        <section className="mb-10">
+          <h2 className="text-lg font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>古诗 · 句子背默</h2>
+          <div className="space-y-2">
+            {reciteProgress.map(r => (
+              <div
+                key={r.id}
+                className="flex items-center gap-3 p-3 rounded-lg border"
+                style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+              >
+                <span className="text-lg flex-shrink-0">{r.kind === 'poem' ? '📜' : '✍️'}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold truncate" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+                    {r.title}
+                  </div>
+                  <div className="text-[11px]" style={{ color: 'var(--color-ink-soft)' }}>
+                    {r.kind === 'poem' ? '古诗' : '句子'} · 默对 {r.correct} 次 · 默错 {r.wrong} 次
+                  </div>
+                </div>
+                <span
+                  className="text-xs flex-shrink-0 px-2 py-0.5 rounded"
+                  style={{
+                    background: r.statusColor + '22',
+                    color: r.statusColor,
+                  }}
+                >
+                  {r.statusLabel}
+                </span>
               </div>
             ))}
           </div>

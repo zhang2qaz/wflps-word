@@ -65,9 +65,16 @@ export default function DictatePage() {
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
             听写练习
           </h1>
-          <p className="text-sm mb-6" style={{ color: 'var(--color-ink-soft)' }}>
+          <p className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
             老师读词 → 你写 → <b>卡住有提示，写错能诊断，错了当场订正</b>。
           </p>
+          <div
+            className="mb-6 p-3 rounded-lg text-sm flex gap-2"
+            style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
+          >
+            <span>💡</span>
+            <span>一次练 <b>一篇课文</b>（十几个词）刚好。整单元一起听写较长，建议分两三次完成。</span>
+          </div>
 
           <div className="text-xs tracking-wide mb-3" style={{ color: 'var(--color-vermilion)' }}>
             世外小学 · 国际部 P2 · 二年级下册
@@ -114,10 +121,10 @@ export default function DictatePage() {
                     )}
                     <button
                       onClick={() => start(unitWords, `第${g.unit}单元全部`)}
-                      className="w-full text-center p-2.5 rounded-xl border text-sm font-medium"
-                      style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
+                      className="w-full text-center p-2 text-xs underline"
+                      style={{ color: 'var(--color-ink-soft)' }}
                     >
-                      整单元一起听写（{unitWords.length} 词）
+                      （考前模拟）整单元一起听写 {unitWords.length} 词
                     </button>
                   </div>
                 </div>

@@ -76,7 +76,7 @@ export default function ImportPage() {
           导入词单
         </h1>
         <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-          这个 App 内置的是<b>世外小学国际部 P2 · 二下第五单元</b>（按 WFL 默写卷逐词核对，带科学记忆拆解）。
+          这个 App 已内置<b>世外小学国际部 P2 · 二下第五、六单元</b>（按 WFL 默写卷逐词核对，带科学记忆拆解）。
           其他单元 / 其他学校的词单，把词语贴进来就能练 — 拼音会自动生成（<b>多音字请检查一下</b>）。
         </p>
 
@@ -103,7 +103,7 @@ export default function ImportPage() {
             value={raw}
             onChange={e => setRaw(e.target.value)}
             rows={6}
-            placeholder="把词语贴进来，用空格、逗号或换行分开。例如：&#10;雷雨　乌云　闪电　窗户　彩虹"
+            placeholder="把词语贴进来，用空格、逗号或换行分开。例如：&#10;妈妈　学校　朋友　高兴　星期"
             className="w-full border rounded-lg px-3 py-2.5 text-sm bg-transparent outline-none resize-y"
             style={{ borderColor: 'var(--color-stone-dark)', fontFamily: 'var(--font-serif-cn)' }}
           />

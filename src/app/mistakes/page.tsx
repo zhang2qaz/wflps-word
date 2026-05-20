@@ -2,46 +2,55 @@
 
 import { useMemo } from 'react';
 import Nav from '@/components/Nav';
+import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { WORDS } from '@/data/vocabulary';
+import { WORDS, getReciteRef } from '@/data/vocabulary';
 import { masteryLevel } from '@/lib/srs';
-import Link from 'next/link';
+
+type Row = {
+  id: string;
+  kind: 'word' | 'recite';
+  title: string;        // 词语 / 《诗题》 / 句子
+  pinyin?: string;
+  meaning?: string;
+  lesson: string;
+  wrong: number;
+  correct: number;
+  accuracy: number;
+  errorTags?: string[];
+  level: 'new' | 'learning' | 'review' | 'mastered';
+};
 
 export default function MistakesPage() {
   const progress = useStore(s => s.progress);
   const customWords = useStore(useShallow(s => s.customWords));
 
-  const list = useMemo(() => {
-    const all = [...WORDS, ...customWords];
-    return Object.values(progress)
-      .filter(p => p.wrong > 0)
-      .map(p => {
-        const w = all.find(w => w.id === p.id);
-        if (!w) return null;
-        const accuracy = p.correct + p.wrong === 0 ? 0 : p.correct / (p.correct + p.wrong);
-        return { ...p, word: w, accuracy };
-      })
-      .filter(Boolean) as Array<{
-        id: string;
-        word: typeof WORDS[number];
-        wrong: number;
-        correct: number;
-        accuracy: number;
-        errorTags?: string[];
-        reps: number;
-        ease: number;
-        interval: number;
-        nextDue: number;
-        lapses: number;
-        lastReview: number;
-      }>;
+  const sorted = useMemo<Row[]>(() => {
+    const wordMap = new Map([...WORDS, ...customWords].map(w => [w.id, w]));
+    const rows: Row[] = [];
+    for (const p of Object.values(progress)) {
+      if (p.wrong <= 0) continue;
+      const accuracy = p.correct + p.wrong === 0 ? 0 : p.correct / (p.correct + p.wrong);
+      const level = masteryLevel(p);
+      const w = wordMap.get(p.id);
+      if (w) {
+        rows.push({
+          id: p.id, kind: 'word', title: w.char, pinyin: w.pinyin, meaning: w.meaning,
+          lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy, errorTags: p.errorTags, level,
+        });
+        continue;
+      }
+      const r = getReciteRef(p.id);
+      if (r) {
+        rows.push({
+          id: p.id, kind: 'recite', title: r.title, lesson: r.lesson,
+          wrong: p.wrong, correct: p.correct, accuracy, errorTags: p.errorTags, level,
+        });
+      }
+    }
+    return rows.sort((a, b) => (a.accuracy !== b.accuracy ? a.accuracy - b.accuracy : b.wrong - a.wrong));
   }, [progress, customWords]);
-
-  const sorted = [...list].sort((a, b) => {
-    if (a.accuracy !== b.accuracy) return a.accuracy - b.accuracy;
-    return b.wrong - a.wrong;
-  });
 
   if (sorted.length === 0) {
     return (
@@ -55,7 +64,7 @@ export default function MistakesPage() {
             错题本是空的
           </h1>
           <p className="text-sm mb-8" style={{ color: 'var(--color-ink-soft)' }}>
-            还没有写错过的字，或者你都已经把它们攻克了！👏
+            还没有写错过的字词，或者你都已经把它们攻克了！👏
           </p>
           <a href="/dictate" className="px-5 py-2.5 rounded-md font-medium inline-block" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
             去练听写
@@ -73,7 +82,7 @@ export default function MistakesPage() {
           <div>
             <h1 className="text-3xl font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>错题本</h1>
             <p className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>
-              错过的字，按「正确率最低」排序 · 共 {sorted.length} 字
+              错过的字词，按「正确率最低」排序 · 共 {sorted.length} 项
             </p>
           </div>
           <Link
@@ -88,35 +97,38 @@ export default function MistakesPage() {
         <div className="space-y-2">
           {sorted.map(item => {
             const acc = Math.round(item.accuracy * 100);
-            const level = masteryLevel({
-              reps: item.reps,
-              ease: item.ease,
-              interval: item.interval,
-              nextDue: item.nextDue,
-              lapses: item.lapses,
-              lastReview: item.lastReview,
-              correct: item.correct,
-              wrong: item.wrong,
-            });
+            const accColor = acc < 50 ? 'var(--color-cinnabar)' : acc < 80 ? 'var(--color-mustard)' : 'var(--color-jade)';
             return (
               <div
                 key={item.id}
                 className="flex items-center gap-4 p-3 rounded-lg border"
                 style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
               >
-                <div
-                  className="text-3xl font-bold flex-shrink-0 w-16 text-center"
-                  style={{ fontFamily: 'var(--font-serif-cn)' }}
-                >
-                  {item.word.char}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs mb-0.5" style={{ color: 'var(--color-ink-soft)', letterSpacing: '0.1em' }}>
-                    {item.word.pinyin}
+                {item.kind === 'word' ? (
+                  <div
+                    className="text-3xl font-bold flex-shrink-0 w-16 text-center"
+                    style={{ fontFamily: 'var(--font-serif-cn)' }}
+                  >
+                    {item.title}
                   </div>
-                  {item.word.meaning && (
-                    <div className="text-sm truncate" style={{ color: 'var(--color-ink)' }}>
-                      {item.word.meaning}
+                ) : (
+                  <div className="text-2xl flex-shrink-0 w-16 text-center">📜</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  {item.kind === 'word' ? (
+                    <>
+                      <div className="text-xs mb-0.5" style={{ color: 'var(--color-ink-soft)', letterSpacing: '0.1em' }}>
+                        {item.pinyin}
+                      </div>
+                      {item.meaning && (
+                        <div className="text-sm truncate" style={{ color: 'var(--color-ink)' }}>
+                          {item.meaning}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-sm font-bold" style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-serif-cn)' }}>
+                      {item.title}
                     </div>
                   )}
                   {item.errorTags && item.errorTags.length > 0 ? (
@@ -125,7 +137,7 @@ export default function MistakesPage() {
                         <span
                           key={t}
                           className="text-[10px] px-2 py-0.5 rounded-full"
-                          style={{ background: 'rgba(212,73,61,0.12)', color: 'var(--color-cinnabar)' }}
+                          style={{ background: 'rgba(227,36,43,0.12)', color: 'var(--color-cinnabar)' }}
                         >
                           {t}
                         </span>
@@ -133,22 +145,17 @@ export default function MistakesPage() {
                     </div>
                   ) : (
                     <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                      《{item.word.lesson}》
+                      《{item.lesson}》
                     </div>
                   )}
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-xl font-bold" style={{ color: acc < 50 ? 'var(--color-cinnabar)' : acc < 80 ? 'var(--color-mustard)' : 'var(--color-jade)' }}>
-                    {acc}%
-                  </div>
+                  <div className="text-xl font-bold" style={{ color: accColor }}>{acc}%</div>
                   <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
                     错 {item.wrong} · 对 {item.correct}
                   </div>
-                  <div
-                    className="text-[10px] mt-0.5 tracking-widest uppercase"
-                    style={{ color: 'var(--color-vermilion)' }}
-                  >
-                    {{ new: '新字', learning: '学习中', review: '复习中', mastered: '已掌握' }[level]}
+                  <div className="text-[10px] mt-0.5 tracking-widest uppercase" style={{ color: 'var(--color-vermilion)' }}>
+                    {{ new: '新', learning: '学习中', review: '复习中', mastered: '已掌握' }[item.level]}
                   </div>
                 </div>
               </div>

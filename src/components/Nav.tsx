@@ -4,15 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Logo from './Logo';
 
-const LINKS = [
-  { href: '/', label: '首页' },
-  { href: '/learn', label: '学新字' },
-  { href: '/dictate', label: '听写' },
-  { href: '/recite', label: '古诗句子' },
-  { href: '/review', label: '复习' },
-  { href: '/mistakes', label: '错题本' },
-  { href: '/import', label: '导入' },
-  { href: '/progress', label: '家长报告' },
+type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
+
+const LINKS: NavLink[] = [
+  { href: '/learn', label: '学新字', group: 'kid' },
+  { href: '/dictate', label: '听写', group: 'kid' },
+  { href: '/recite', label: '古诗句子', group: 'kid' },
+  { href: '/review', label: '复习', group: 'kid' },
+  { href: '/mistakes', label: '错题本', group: 'kid' },
+  { href: '/import', label: '导入', group: 'parent' },
+  { href: '/progress', label: '家长报告', group: 'parent' },
 ];
 
 export default function Nav() {
@@ -28,21 +29,32 @@ export default function Nav() {
           </span>
         </Link>
         <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">
-          {LINKS.slice(1).map(l => {
+          {LINKS.map((l, i) => {
             const active = pathname === l.href;
+            const showDivider = i > 0 && LINKS[i - 1].group === 'kid' && l.group === 'parent';
             return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  active
-                    ? 'bg-ink text-paper'
-                    : 'text-ink-soft hover:bg-stone/50 hover:text-ink'
-                }`}
-                style={active ? { background: 'var(--color-ink)', color: 'var(--color-paper)' } : undefined}
-              >
-                {l.label}
-              </Link>
+              <span key={l.href} className="flex items-center">
+                {showDivider && (
+                  <span
+                    className="mx-1.5 hidden sm:inline-block h-4 w-px"
+                    style={{ background: 'var(--color-stone-dark)' }}
+                    aria-hidden
+                  />
+                )}
+                <Link
+                  href={l.href}
+                  className="px-3 py-1.5 rounded-md transition-colors"
+                  style={
+                    active
+                      ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
+                      : l.group === 'parent'
+                        ? { color: 'var(--color-stone-dark)' }
+                        : { color: 'var(--color-ink-soft)' }
+                  }
+                >
+                  {l.label}
+                </Link>
+              </span>
             );
           })}
         </nav>

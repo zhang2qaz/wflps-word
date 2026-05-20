@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { defaultSrs, review, isDue, binaryToGrade, type SrsState, type Grade } from './srs';
-import { WORDS, type Word } from '@/data/vocabulary';
+import { WORDS, POEMS, SENTENCES, isReciteId, type Word } from '@/data/vocabulary';
 
 type WordProgress = SrsState & { id: string; errorTags?: string[] };
 
@@ -128,11 +128,21 @@ export function allWords(state: State): Word[] {
   return [...WORDS, ...state.customWords];
 }
 
-export function selectDueWords(state: State, now: number = Date.now()): string[] {
+function selectAllDue(state: State, now: number): string[] {
   return Object.values(state.progress)
     .filter(p => p.lastReview !== 0 && isDue(p, now))
     .sort((a, b) => a.nextDue - b.nextDue)
     .map(p => p.id);
+}
+
+// 到期的「词语」（学新字/听写跟踪的项），不含古诗句子
+export function selectDueWords(state: State, now: number = Date.now()): string[] {
+  return selectAllDue(state, now).filter(id => !isReciteId(id));
+}
+
+// 到期的「古诗 / 句子」
+export function selectDueRecite(state: State, now: number = Date.now()): string[] {
+  return selectAllDue(state, now).filter(id => isReciteId(id));
 }
 
 export function selectMistakeWords(state: State): string[] {
@@ -152,10 +162,11 @@ export function selectNewWords(state: State): string[] {
 }
 
 export function selectStats(state: State) {
-  const total = allWords(state).length;
+  // 总数 = 词语（含导入）+ 古诗 + 句子
+  const total = allWords(state).length + POEMS.length + SENTENCES.length;
   const learned = Object.values(state.progress).filter(p => p.lastReview !== 0).length;
   const mastered = Object.values(state.progress).filter(p => p.reps >= 4 && p.interval >= 7).length;
-  const due = selectDueWords(state).length;
+  const due = selectDueWords(state).length + selectDueRecite(state).length;
   const todays = state.history.find(h => h.date === todayKey());
   const streak = computeStreak(state.history);
   return { total, learned, mastered, due, todays, streak };

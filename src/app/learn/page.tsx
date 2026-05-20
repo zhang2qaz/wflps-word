@@ -41,10 +41,20 @@ export default function LearnPage() {
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
             学新字 · 科学记忆四步法
           </h1>
-          <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+          <p className="text-sm mb-3 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
             不靠死记硬背。每个字带你走四步：<b>认词 → 拆字 → 记法 → 运用</b>。
             把陌生的字拆成你已经认识的部件，弄懂它「为什么这样写」，记得又快又牢。
           </p>
+          <div
+            className="mb-6 p-3 rounded-lg text-sm flex gap-2"
+            style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
+          >
+            <span>💡</span>
+            <span>
+              <b>建议每次只学 6–8 个字</b>，学完马上去「听写」检验，明天再学几个。
+              一口气学一整单元，记得快、忘得也快。
+            </span>
+          </div>
 
           <div className="space-y-8">
             {groups.map(g => {
@@ -115,10 +125,10 @@ export default function LearnPage() {
 
                     <button
                       onClick={() => start(allWords, `第${g.unit}单元全部`)}
-                      className="w-full text-center p-2.5 rounded-xl border text-sm font-medium"
-                      style={{ borderColor: 'var(--color-ink)', color: 'var(--color-ink)' }}
+                      className="w-full text-center p-2 text-xs underline"
+                      style={{ color: 'var(--color-ink-soft)' }}
                     >
-                      一次学完第 {g.unit} 单元（{allWords.length} 个词）
+                      （赶进度时）一次学完第 {g.unit} 单元 {allWords.length} 个词
                     </button>
                   </div>
                 </div>

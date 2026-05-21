@@ -10,19 +10,16 @@ type Props = {
   char: string;
   size?: number;
   showOutline?: boolean;
-  autoPlay?: boolean;
-  delay?: number;
 };
 
-export default function HanziStrokes({ char, size = 180, showOutline = true, autoPlay = true, delay = 300 }: Props) {
+// 笔顺演示：默认循环不断重复播放
+export default function HanziStrokes({ char, size = 180, showOutline = true }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const writerRef = useRef<WriterInstance | null>(null);
-  const [ready, setReady] = useState(false);
   const [err, setErr] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    setReady(false);
     setErr(false);
 
     (async () => {
@@ -40,17 +37,14 @@ export default function HanziStrokes({ char, size = 180, showOutline = true, aut
           outlineColor: '#cdd4e0',
           radicalColor: '#21348c',
           delayBetweenStrokes: 200,
+          delayBetweenLoops: 900,
           strokeAnimationSpeed: 1,
         });
         if (cancelled) return;
         writerRef.current = w;
-        setReady(true);
-        if (autoPlay) {
-          setTimeout(() => {
-            if (!cancelled) w.animateCharacter();
-          }, delay);
-        }
-      } catch (e) {
+        // 循环不断重复演示笔顺
+        w.loopCharacterAnimation();
+      } catch {
         if (!cancelled) setErr(true);
       }
     })();
@@ -59,25 +53,20 @@ export default function HanziStrokes({ char, size = 180, showOutline = true, aut
       cancelled = true;
       writerRef.current = null;
     };
-  }, [char, size, showOutline, autoPlay, delay]);
-
-  const replay = () => {
-    if (writerRef.current) writerRef.current.animateCharacter();
-  };
+  }, [char, size, showOutline]);
 
   return (
-    <div className="inline-flex flex-col items-center gap-2">
-      <div className="mizige" style={{ width: size, height: size }}>
+    <div className="mizige" style={{ width: size, height: size }}>
+      {err ? (
+        <div
+          className="absolute inset-0 flex items-center justify-center font-bold"
+          style={{ fontFamily: 'var(--font-serif-cn)', fontSize: size * 0.55 }}
+        >
+          {char}
+        </div>
+      ) : (
         <div ref={ref} className="relative z-10" style={{ width: size, height: size }} />
-      </div>
-      <button
-        onClick={replay}
-        disabled={!ready}
-        className="text-xs px-3 py-1 rounded border border-stone text-ink-soft hover:bg-stone/40 disabled:opacity-40"
-        style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
-      >
-        {err ? '加载失败' : ready ? '↻ 再演示一次笔顺' : '加载中...'}
-      </button>
+      )}
     </div>
   );
 }

@@ -161,8 +161,6 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [recorded, setRecorded] = useState(false);
   const [strokeLine, setStrokeLine] = useState<number | null>(null);
   const [wrongIdx, setWrongIdx] = useState<Set<number>>(new Set());
-  const [recognizing, setRecognizing] = useState(false);
-  const [recogDone, setRecogDone] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
   const allLinesDone = lineIdx >= poem.lines.length;
@@ -186,8 +184,6 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     setRevealed(false);
     setCorrecting(false);
     setWrongIdx(new Set());
-    setRecognizing(false);
-    setRecogDone(false);
     setLineIdx(i => i + 1);
   };
 
@@ -198,7 +194,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 
   const restart = () => {
     setLineIdx(0); setRevealed(false); setCorrecting(false);
-    setWrongIdx(new Set()); setRecognizing(false); setRecogDone(false); setRecorded(false);
+    setWrongIdx(new Set()); setRecorded(false);
   };
 
   const toggleWrong = (ci: number) => {
@@ -209,31 +205,13 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     });
   };
 
-  // 看答案：自动识别错字（空格子本地判错；写了的字交给视觉模型）
-  const onReveal = async () => {
+  // 看答案：空着没写的格子自动标错；写了的字由孩子点选
+  const onReveal = () => {
     setRevealed(true);
-    setRecogDone(false);
-    const cells = gridRef.current?.cells() ?? [];
+    const empties = gridRef.current?.emptyFlags() ?? [];
     const auto = new Set<number>();
-    cells.forEach((c, i) => { if (c.empty) auto.add(i); });
-    setWrongIdx(new Set(auto));
-    if (cells.some(c => !c.empty)) {
-      setRecognizing(true);
-      try {
-        const res = await fetch('/api/recognize', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ line: poem.lines[lineIdx].text, images: cells.map(c => c.image) }),
-        }).then(r => r.json());
-        if (res?.ok && Array.isArray(res.results)) {
-          const w = new Set<number>();
-          res.results.forEach((ok: boolean, i: number) => { if (!ok) w.add(i); });
-          setWrongIdx(w);
-          setRecogDone(true);
-        }
-      } catch { /* 网络/无 key —— 回退到手动点选 */ }
-      setRecognizing(false);
-    }
+    empties.forEach((isEmpty, i) => { if (isEmpty) auto.add(i); });
+    setWrongIdx(auto);
   };
 
   return (
@@ -432,11 +410,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
             ) : !correcting ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
                 <div className="text-xs mb-2" style={{ color: 'var(--color-vermilion)' }}>
-                  {recognizing
-                    ? '🔍 AI 正在识别你写的字…'
-                    : recogDone
-                      ? '正确答案 · AI 已自动标红写错的字，不准的话点一下改'
-                      : '正确答案 · 点一下你写错的字（空着没写的已自动标红）'}
+                  正确答案 · 点一下你写错的字（空着没写的已自动标红）
                 </div>
                 <div className="flex justify-center gap-1.5 flex-wrap mb-2">
                   {Array.from(poem.lines[lineIdx].text).map((c, ci) => {

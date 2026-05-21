@@ -5,7 +5,6 @@ import { useEffect, useRef, useImperativeHandle, forwardRef, useState } from 're
 export type WriteCanvasHandle = {
   clear: () => void;
   isEmpty: () => boolean;
-  toDataURL: () => string;   // 白底 PNG，用于错字自动识别
 };
 
 type Props = {
@@ -34,20 +33,6 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       setEmpty(true);
     },
     isEmpty: () => empty,
-    toDataURL: () => {
-      const c = canvasRef.current;
-      if (!c) return '';
-      // 合成到白底（孩子的笔迹是透明背景，OCR 需要白底）
-      const tmp = document.createElement('canvas');
-      tmp.width = c.width;
-      tmp.height = c.height;
-      const tctx = tmp.getContext('2d');
-      if (!tctx) return '';
-      tctx.fillStyle = '#ffffff';
-      tctx.fillRect(0, 0, tmp.width, tmp.height);
-      tctx.drawImage(c, 0, 0);
-      return tmp.toDataURL('image/png');
-    },
   }), [empty]);
 
   useEffect(() => {

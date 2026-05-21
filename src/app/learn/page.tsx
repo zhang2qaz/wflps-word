@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Nav from '@/components/Nav';
 import CharBreakdown from '@/components/CharBreakdown';
@@ -277,29 +277,10 @@ const STEPS: { key: Step; label: string; full: string }[] = [
 
 function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
   const [step, setStep] = useState<Step>('meet');
-  const [mnemonic, setMnemonic] = useState('');
-  const [aiState, setAiState] = useState<'idle' | 'loading' | 'done'>('idle');
   const [showStrokes, setShowStrokes] = useState(false);
 
   const stepIdx = STEPS.findIndex(s => s.key === step);
   const isLast = step === 'use';
-
-  // 进入「记」步骤时按需调用 AI 生成补充联想（只尝试一次）
-  useEffect(() => {
-    if (step !== 'memory' || aiState !== 'idle') return;
-    setAiState('loading');
-    fetch('/api/mnemonic', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ char: word.char, pinyin: word.pinyin, meaning: word.meaning }),
-    })
-      .then(r => r.json())
-      .then((d: { text?: string }) => {
-        setMnemonic(typeof d?.text === 'string' ? d.text.trim() : '');
-      })
-      .catch(() => setMnemonic(''))
-      .finally(() => setAiState('done'));
-  }, [step, aiState, word]);
 
   const goNext = () => {
     if (isLast) { onNext(); return; }
@@ -459,23 +440,6 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
                 <p className="text-xs mt-3" style={{ color: 'var(--color-ink-soft)' }}>
                   成语最好的记法就是记住它背后的故事 — 故事记住了，四个字自然就记住了。
                 </p>
-              </div>
-            )}
-
-            {/* AI 补充联想 —— 仅在加载中或确有内容时显示 */}
-            {(aiState === 'loading' || (aiState === 'done' && mnemonic)) && (
-              <div
-                className="border rounded-xl p-4"
-                style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper)' }}
-              >
-                <div className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-jade)' }}>
-                  ✨ AI 老师再给你一个联想
-                </div>
-                {aiState === 'loading' ? (
-                  <p className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>正在想一个更好玩的记法…</p>
-                ) : (
-                  <p className="text-sm leading-relaxed" style={{ fontFamily: 'var(--font-serif-cn)' }}>{mnemonic}</p>
-                )}
               </div>
             )}
           </section>

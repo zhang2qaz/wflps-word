@@ -156,8 +156,10 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [step, setStep] = useState<'learn' | 'recite'>('learn');
   const [lineIdx, setLineIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
   const [recorded, setRecorded] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
+  const redoRef = useRef<WriteGridHandle>(null);
   const allLinesDone = lineIdx >= poem.lines.length;
 
   useEffect(() => {
@@ -177,6 +179,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const nextLine = () => {
     gridRef.current?.clear();
     setRevealed(false);
+    setCorrecting(false);
     setLineIdx(i => i + 1);
   };
 
@@ -185,7 +188,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     setRecorded(true);
   };
 
-  const restart = () => { setLineIdx(0); setRevealed(false); setRecorded(false); };
+  const restart = () => { setLineIdx(0); setRevealed(false); setCorrecting(false); setRecorded(false); };
 
   return (
     <div>
@@ -332,9 +335,18 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
               </button>
             </div>
 
-            <div className="mb-4">
-              <WriteGrid ref={gridRef} count={poem.lines[lineIdx].text.length} />
-            </div>
+            {!correcting ? (
+              <div className="mb-4">
+                <WriteGrid ref={gridRef} count={poem.lines[lineIdx].text.length} />
+              </div>
+            ) : (
+              <div className="mb-4">
+                <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
+                  照着浅色的字，把这一句订正一遍 ✍️
+                </div>
+                <WriteGrid ref={redoRef} count={poem.lines[lineIdx].text.length} guide={poem.lines[lineIdx].text} />
+              </div>
+            )}
 
             {!revealed ? (
               <div className="flex justify-center gap-2">
@@ -353,7 +365,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                   写好了，看答案
                 </button>
               </div>
-            ) : (
+            ) : !correcting ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
                 <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>正确答案</div>
                 <div className="text-2xl font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>
@@ -362,14 +374,36 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 <div className="text-sm mb-5" style={{ color: 'var(--color-ink-soft)' }}>
                   {poem.lines[lineIdx].meaning}
                 </div>
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => setCorrecting(true)}
+                    className="px-5 py-2.5 rounded-md font-medium border-2"
+                    style={{ borderColor: 'var(--color-vermilion)', color: 'var(--color-vermilion)' }}
+                  >
+                    ✍️ 订正这一句
+                  </button>
+                  <button
+                    onClick={nextLine}
+                    className="px-5 py-2.5 rounded-md font-medium"
+                    style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
+                  >
+                    {lineIdx >= poem.lines.length - 1 ? '完成默写 →' : '写对了，下一句 →'}
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="text-center">
+                <div className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
+                  正确答案：<b style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-serif-cn)' }}>{poem.lines[lineIdx].text}</b>
+                </div>
                 <button
                   onClick={nextLine}
                   className="px-6 py-2.5 rounded-md font-medium"
                   style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
                 >
-                  {lineIdx >= poem.lines.length - 1 ? '完成默写 →' : '对照好了，下一句 →'}
+                  {lineIdx >= poem.lines.length - 1 ? '订正好了，完成默写 →' : '订正好了，下一句 →'}
                 </button>
-              </motion.div>
+              </div>
             )}
           </motion.div>
         )
@@ -383,18 +417,14 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 // ============================================================
 function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () => void }) {
   const recordAnswer = useStore(s => s.recordAnswer);
-  const [phase, setPhase] = useState<'write' | 'check' | 'done'>('write');
+  const [phase, setPhase] = useState<'write' | 'check' | 'redo' | 'done'>('write');
   const gridRef = useRef<WriteGridHandle>(null);
+  const redoRef = useRef<WriteGridHandle>(null);
 
   useEffect(() => {
     const t = setTimeout(() => speak(sentence.text, { rate: 0.72 }), 350);
     return () => clearTimeout(t);
   }, [sentence]);
-
-  const finish = (correct: boolean) => {
-    recordAnswer(sentence.id, correct);
-    setPhase('done');
-  };
 
   return (
     <div>
@@ -422,6 +452,27 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
             </button>
             <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
               完成
+            </button>
+          </div>
+        </motion.div>
+      ) : phase === 'redo' ? (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <div className="rounded-xl p-3 mb-4 text-sm text-center" style={{ background: 'var(--color-paper-warm)', border: '1px solid var(--color-stone-dark)' }}>
+            正确答案：<b style={{ fontFamily: 'var(--font-serif-cn)' }}>{sentence.text}</b>
+          </div>
+          <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
+            照着浅色的字，认真订正一遍 ✍️
+          </div>
+          <div className="mb-4">
+            <WriteGrid ref={redoRef} count={sentence.text.length} guide={sentence.text} />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={() => { recordAnswer(sentence.id, false); setPhase('done'); }}
+              className="px-6 py-2.5 rounded-md font-medium"
+              style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
+            >
+              订正好了，完成 →
             </button>
           </div>
         </motion.div>
@@ -478,14 +529,14 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
               <p className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>对照检查后——你写对了吗？</p>
               <div className="flex justify-center gap-3">
                 <button
-                  onClick={() => finish(false)}
+                  onClick={() => setPhase('redo')}
                   className="px-6 py-3 rounded-md font-medium"
                   style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
                 >
-                  有错的字
+                  有错 · 去订正
                 </button>
                 <button
-                  onClick={() => finish(true)}
+                  onClick={() => { recordAnswer(sentence.id, true); setPhase('done'); }}
                   className="px-6 py-3 rounded-md font-medium"
                   style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
                 >

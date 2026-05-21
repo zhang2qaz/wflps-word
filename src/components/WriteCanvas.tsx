@@ -18,7 +18,7 @@ const INK = '#1a2030';
 const BASE_WIDTH = 4;
 
 // —— 手写一笔进行中时锁住整页 ——
-// 防止孩子的手 / 手掌误触：页面滚动、选中文字、弹出「复制·查询」菜单。
+// 防止孩子的手 / 手掌误触：页面滚动、误触「擦这个」按钮。
 let writeLockCount = 0;
 function lockPageForWriting() {
   if (typeof document === 'undefined') return;
@@ -74,11 +74,10 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     ctx.fillStyle = INK;
 
     // —— iPad / Apple Pencil 适配 ——
+    // 田字格本身 = 纯写字区，不缩放、不滚动；要缩放请在格子外面双指操作。
     let drawing = false;
     let activeId: number | null = null;  // 一次只跟踪一个指针
     let penSeen = false;                 // 用过手写笔后，忽略手指/手掌（防误触）
-    let gesturing = false;               // 双指缩放手势进行中 → 不写字
-    let moved = false;                   // 这一笔有没有移动过（区分「点」和「划」）
     let lastX = 0;
     let lastY = 0;
 
@@ -95,41 +94,23 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       return BASE_WIDTH;
     };
 
-    // 数手指（不含 Apple Pencil）—— 用来区分「双指缩放」和「笔+手掌」
-    const fingerCount = (e: TouchEvent) => {
-      let n = 0;
-      for (let i = 0; i < e.touches.length; i++) {
-        const t = e.touches[i] as Touch & { touchType?: string };
-        if (t.touchType !== 'stylus') n += 1;
-      }
-      return n;
-    };
-
-    // 放弃当前这一笔（双指缩放时调用）
-    const abortStroke = () => {
-      if (!drawing) return;
-      drawing = false;
-      moved = false;
-      unlockPageForWriting();
-      if (activeId !== null) {
-        try { c.releasePointerCapture(activeId); } catch {}
-        activeId = null;
-      }
-    };
-
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'pen') penSeen = true;
-      if (gesturing) return;                              // 双指缩放中，不写字
-      if (penSeen && e.pointerType !== 'pen') return;     // 用笔后拒绝手指/手掌
-      if (activeId !== null) return;                      // 已经在写了
-
       e.preventDefault();
+      // 已用手写笔 → 拒绝手指/手掌触点（手掌防误触）
+      if (penSeen && e.pointerType !== 'pen') return;
+      // 已经在写了 → 忽略第二个触点
+      if (activeId !== null) return;
+
       drawing = true;
-      moved = false;
       lockPageForWriting();
       activeId = e.pointerId;
       const { x, y } = getPos(e);
       lastX = x; lastY = y;
+      ctx.beginPath();
+      ctx.arc(x, y, lineW(e) / 2, 0, Math.PI * 2);
+      ctx.fill();
+      setEmpty(false);
       try { c.setPointerCapture(e.pointerId); } catch {}
     };
 
@@ -146,7 +127,6 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     const onMove = (e: PointerEvent) => {
       if (!drawing || e.pointerId !== activeId) return;
       e.preventDefault();
-      if (!moved) { moved = true; setEmpty(false); }
       // 用 coalesced events 取出手写笔的高频采样点 → 笔画更顺滑
       const evs = typeof e.getCoalescedEvents === 'function'
         ? e.getCoalescedEvents()
@@ -156,45 +136,22 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
 
     const onUp = (e: PointerEvent) => {
       if (e.pointerId !== activeId) return;
-      // 没有移动过 → 是一个「点」，补一个圆点
-      if (drawing && !moved) {
-        const { x, y } = getPos(e);
-        ctx.beginPath();
-        ctx.arc(x, y, lineW(e) / 2, 0, Math.PI * 2);
-        ctx.fill();
-        setEmpty(false);
-      }
       drawing = false;
-      moved = false;
       unlockPageForWriting();
       activeId = null;
       try { c.releasePointerCapture(e.pointerId); } catch {}
     };
 
-    // —— touch 事件层：区分「双指缩放」和「单指写字」——
-    // 双指 → 放行给浏览器缩放田字格；单指 → 拦掉 iOS 选字 / 复制菜单 / 放大镜。
-    const onTouchStart = (e: TouchEvent) => {
-      if (fingerCount(e) >= 2) {
-        gesturing = true;
-        abortStroke();   // 放弃这一笔，把屏幕让给缩放
-      }
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      if (gesturing || fingerCount(e) >= 2) return;  // 双指 → 放行缩放
-      e.preventDefault();                            // 单指写字 → 拦掉选字/复制
-    };
-    const onTouchEnd = (e: TouchEvent) => {
-      if (e.touches.length === 0) gesturing = false;
-    };
+    // 田字格内：吞掉 touch 事件，杜绝 iOS 选字 / 复制菜单 / 放大镜。
+    // 缩放请在田字格外面进行（外部 touch 不受影响）。
+    const swallowTouch = (e: TouchEvent) => { e.preventDefault(); };
 
     c.addEventListener('pointerdown', onDown);
     c.addEventListener('pointermove', onMove);
     c.addEventListener('pointerup', onUp);
     c.addEventListener('pointercancel', onUp);
-    c.addEventListener('touchstart', onTouchStart, { passive: true });
-    c.addEventListener('touchmove', onTouchMove, { passive: false });
-    c.addEventListener('touchend', onTouchEnd, { passive: true });
-    c.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    c.addEventListener('touchstart', swallowTouch, { passive: false });
+    c.addEventListener('touchmove', swallowTouch, { passive: false });
     // 注意：不监听 pointerleave —— 写字时笔尖常会划到格子边缘外，
     // setPointerCapture 已保证继续收到事件，不能因离开就断笔。
     return () => {
@@ -202,10 +159,8 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       c.removeEventListener('pointermove', onMove);
       c.removeEventListener('pointerup', onUp);
       c.removeEventListener('pointercancel', onUp);
-      c.removeEventListener('touchstart', onTouchStart);
-      c.removeEventListener('touchmove', onTouchMove);
-      c.removeEventListener('touchend', onTouchEnd);
-      c.removeEventListener('touchcancel', onTouchEnd);
+      c.removeEventListener('touchstart', swallowTouch);
+      c.removeEventListener('touchmove', swallowTouch);
       // 写到一半被卸载（切页面）时，别把整页锁死了
       if (drawing) unlockPageForWriting();
     };
@@ -232,7 +187,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
         className="absolute inset-0 brush-cursor select-none"
         style={{
           zIndex: 10,
-          touchAction: 'pinch-zoom',  // 单指写字、双指可缩放田字格
+          touchAction: 'none',  // 田字格内只写字，不缩放/不滚动
           WebkitUserSelect: 'none',
           userSelect: 'none',
           WebkitTouchCallout: 'none',

@@ -8,46 +8,31 @@ import { useStore, selectStats, selectDueWords, selectMistakeWords, selectNewWor
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect, useState } from 'react';
 
-const MODES = [
+// 三步主循环：学 → 写 → 复习
+const FLOW = [
   {
+    n: 1,
     href: '/learn',
     title: '学新字',
-    sub: '认词 → 拆字 → 记法 → 运用',
-    desc: '不靠死记硬背。把陌生字拆成你已认识的部件，弄懂形声字规律、关联字族、用故事记成语 — 弄懂「为什么这样写」，记得又快又牢。',
+    tag: '第一步 · 弄懂',
+    desc: '第一次认识新词——把字拆成你已认识的部件，弄懂「为什么这样写」。',
     accent: 'var(--color-jade)',
-    method: '精细编码',
   },
   {
+    n: 2,
     href: '/dictate',
     title: '听写练习',
-    sub: '老师读 · 你写 · 自动批改',
-    desc: '像在课堂上一样：老师读一个词，你在田字格里写，写完一对照就知道对错。',
+    tag: '第二步 · 检验',
+    desc: '老师读、你写、自己对答案——检验是不是真的会写了。',
     accent: 'var(--color-vermilion)',
-    method: '主动回忆',
   },
   {
-    href: '/recite',
-    title: '古诗 · 句子',
-    sub: '读懂诗意 · 逐句默写',
-    desc: '古诗先读懂意思再一句一句默写；课文长句听一整句写下来，标点也不漏。',
-    accent: 'var(--color-mustard)',
-    method: '分块记忆',
-  },
-  {
+    n: 3,
     href: '/review',
     title: '今日复习',
-    sub: '按时间到点的字，必复习',
-    desc: '艾宾浩斯遗忘曲线告诉我们：复习时间点比次数更重要。每天来一会儿，比临时抱佛脚强 10 倍。',
+    tag: '第三步 · 巩固',
+    desc: '到点的字再默一遍——按遗忘曲线安排，防止忘掉。',
     accent: 'var(--color-mustard)',
-    method: '间隔重复',
-  },
-  {
-    href: '/mistakes',
-    title: '错题本',
-    sub: '只攻克那些总忘的字',
-    desc: '错过的字会被自动收进错题本，重点重复，直到熟练为止。',
-    accent: 'var(--color-cinnabar)',
-    method: '错误强化',
   },
 ];
 
@@ -163,41 +148,97 @@ export default function Home() {
           <RecommendBar dueCount={dueCount} mistakeCount={mistakeCount} newCount={newCount} />
         )}
 
-        {/* Modes */}
-        <section className="grid md:grid-cols-2 gap-4 mb-16">
-          {MODES.map((m, i) => (
-            <motion.div
-              key={m.href}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
-            >
-              <Link
-                href={m.href}
-                className="block border border-stone rounded-xl p-6 hover:shadow-lg transition-all group relative overflow-hidden"
-                style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper)' }}
-              >
-                <div
-                  className="absolute top-0 left-0 w-1 h-full"
-                  style={{ background: m.accent }}
-                />
-                <div className="flex items-baseline justify-between mb-2">
-                  <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{m.title}</h2>
-                  <span
-                    className="text-[10px] tracking-widest uppercase px-2 py-0.5 rounded"
-                    style={{ background: m.accent, color: 'var(--color-paper)' }}
+        {/* 学习路线图 */}
+        <section className="mb-16">
+          <h3 className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>
+            怎么学 · 学习路线
+          </h3>
+          <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+            这几个功能不是并排的、各管各的——它们是<b>一个循环</b>：
+            刚学的新单元先点①，学过了用②检验，之后<b>每天打开先做③</b>。错的字会自动进错题本。
+          </p>
+
+          <div>
+            {FLOW.map((s, i) => (
+              <div key={s.href}>
+                <Link
+                  href={s.href}
+                  className="flex items-center gap-4 border rounded-xl p-4 hover:shadow-md transition-all group"
+                  style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper)' }}
+                >
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center text-2xl font-bold"
+                    style={{
+                      width: 48, height: 48, borderRadius: 12,
+                      background: s.accent, color: 'var(--color-paper)',
+                      fontFamily: 'var(--font-serif-cn)',
+                    }}
                   >
-                    {m.method}
-                  </span>
-                </div>
-                <div className="text-sm text-ink-soft mb-3 tracking-wide" style={{ color: 'var(--color-ink-soft)' }}>{m.sub}</div>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>{m.desc}</p>
-                <div className="mt-4 text-sm font-medium flex items-center gap-1 transition-transform group-hover:translate-x-1">
-                  开始 →
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                    {s.n}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{s.title}</h2>
+                      <span className="text-[11px]" style={{ color: s.accent }}>{s.tag}</span>
+                    </div>
+                    <p className="text-sm mt-0.5 leading-snug" style={{ color: 'var(--color-ink-soft)' }}>{s.desc}</p>
+                  </div>
+                  <span className="flex-shrink-0 text-sm transition-transform group-hover:translate-x-1">开始 →</span>
+                </Link>
+
+                {/* 错题本 —— 听写之后的分支 */}
+                {i === 1 && (
+                  <div className="pl-8 mt-1">
+                    <Link
+                      href="/mistakes"
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:shadow transition-all"
+                      style={{ background: 'rgba(227,36,43,0.07)', border: '1px solid rgba(227,36,43,0.3)' }}
+                    >
+                      <span style={{ color: 'var(--color-cinnabar)' }}>↳ 错题本</span>
+                      <span className="flex-1" style={{ color: 'var(--color-ink-soft)' }}>
+                        听写、复习里写错的字自动收进来，重点重练
+                      </span>
+                      <span className="flex-shrink-0" style={{ color: 'var(--color-cinnabar)' }}>开始 →</span>
+                    </Link>
+                  </div>
+                )}
+
+                {i < FLOW.length - 1 && (
+                  <div className="flex justify-center py-1.5">
+                    <span style={{ color: 'var(--color-stone-dark)' }}>↓</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center text-xs mt-3" style={{ color: 'var(--color-ink-soft)' }}>
+            🔁 学过的字会一次次循环回来，直到牢牢记住——这就是科学记忆。
+          </div>
+
+          {/* 古诗 · 句子 —— 平行轨道 */}
+          <div className="mt-6 pt-5 border-t" style={{ borderColor: 'var(--color-stone)' }}>
+            <div className="text-xs mb-2" style={{ color: 'var(--color-ink-soft)' }}>另一类内容 · 同样三步</div>
+            <Link
+              href="/recite"
+              className="flex items-center gap-4 border rounded-xl p-4 hover:shadow-md transition-all group"
+              style={{ borderColor: 'var(--color-mustard)', background: 'rgba(224,163,42,0.07)' }}
+            >
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-2xl"
+                style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--color-mustard)' }}
+              >
+                📜
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>古诗 · 句子</h2>
+                <p className="text-sm mt-0.5 leading-snug" style={{ color: 'var(--color-ink-soft)' }}>
+                  古诗、课文长句——也是「学 → 默写 → 复习」，只是单独一页练。
+                </p>
+              </div>
+              <span className="flex-shrink-0 text-sm transition-transform group-hover:translate-x-1">开始 →</span>
+            </Link>
+          </div>
         </section>
 
         {/* Method explainer */}

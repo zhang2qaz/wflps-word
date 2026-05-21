@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Nav from '@/components/Nav';
 import WriteGrid, { type WriteGridHandle } from '@/components/WriteGrid';
+import HanziStrokes from '@/components/HanziStrokes';
 import { POEMS, SENTENCES, type Poem, type Sentence } from '@/data/vocabulary';
 import { useStore, selectDueRecite } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
@@ -158,6 +159,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [revealed, setRevealed] = useState(false);
   const [correcting, setCorrecting] = useState(false);
   const [recorded, setRecorded] = useState(false);
+  const [strokeLine, setStrokeLine] = useState<number | null>(null);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
   const allLinesDone = lineIdx >= poem.lines.length;
@@ -253,7 +255,21 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                     🔊
                   </button>
                 </div>
-                <div className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>{l.meaning}</div>
+                <div className="text-sm mb-2" style={{ color: 'var(--color-ink-soft)' }}>{l.meaning}</div>
+                <button
+                  onClick={() => setStrokeLine(strokeLine === i ? null : i)}
+                  className="text-xs px-2.5 py-1 rounded border"
+                  style={{ borderColor: 'var(--color-vermilion)', color: 'var(--color-vermilion)' }}
+                >
+                  {strokeLine === i ? '收起笔顺 ▲' : '✍️ 看这句每个字的笔顺'}
+                </button>
+                {strokeLine === i && (
+                  <div className="flex flex-wrap gap-2 mt-3 justify-center">
+                    {Array.from(l.text).map((c, ci) => (
+                      <HanziStrokes key={`${i}-${ci}-${c}`} char={c} size={92} />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

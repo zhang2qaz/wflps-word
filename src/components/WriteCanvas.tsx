@@ -14,7 +14,7 @@ type Props = {
 };
 
 const INK = '#1a2030';
-const BASE_WIDTH = 6;
+const BASE_WIDTH = 4;
 
 const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
   { size = 260, guideChar, className = '' },
@@ -68,7 +68,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     // 笔压决定笔画粗细（Apple Pencil 有压感，手指/鼠标用固定值）
     const lineW = (e: PointerEvent) => {
       if (e.pointerType === 'pen' && e.pressure > 0) {
-        return BASE_WIDTH * (0.55 + e.pressure * 0.9); // 约 0.55x ~ 1.45x
+        return BASE_WIDTH * (0.7 + e.pressure * 0.6); // 约 0.7x ~ 1.3x
       }
       return BASE_WIDTH;
     };

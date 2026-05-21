@@ -14,7 +14,8 @@ type Props = {
   maxWidth?: number;    // 整行最大宽度
 };
 
-// 按词语字数排出对应数量的米字格，像真实的默写本
+// 按词语字数排出对应数量的米字格，像真实的默写本。
+// 每格下方有独立「擦」按钮，可单独擦掉这一个字。
 const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
   { count, guide, maxWidth = 440 },
   ref,
@@ -34,12 +35,25 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
   return (
     <div className="flex flex-wrap justify-center" style={{ gap }}>
       {Array.from({ length: n }).map((_, i) => (
-        <WriteCanvas
-          key={i}
-          ref={el => { refs.current[i] = el; }}
-          size={size}
-          guideChar={guide ? Array.from(guide)[i] : undefined}
-        />
+        <div key={i} className="flex flex-col items-center" style={{ gap: 4 }}>
+          <WriteCanvas
+            ref={el => { refs.current[i] = el; }}
+            size={size}
+            guideChar={guide ? Array.from(guide)[i] : undefined}
+          />
+          <button
+            type="button"
+            onClick={() => refs.current[i]?.clear()}
+            className="text-[11px] px-2 py-0.5 rounded"
+            style={{
+              border: '1px solid var(--color-stone-dark)',
+              color: 'var(--color-ink-soft)',
+              touchAction: 'manipulation',
+            }}
+          >
+            ⌫ 擦这个
+          </button>
+        </div>
       ))}
     </div>
   );

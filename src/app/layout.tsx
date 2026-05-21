@@ -7,12 +7,13 @@ export const metadata: Metadata = {
   description: "上海市世界外国语小学（WFLPS）国际部 P2 校本定制 · 中文词语默写科学记忆 App：拆字 + 形声字规律 + 字族 + 故事记成语 + 艾宾浩斯间隔重复。",
 };
 
-// iPad 适配：禁止双指缩放 / 双击放大，避免手写笔写字时误触缩放
+// iPad 适配：允许双指缩放（方便放大田字格写字）；双击放大由 CSS 的
+// touch-action: manipulation 关掉，避免误触。
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
+  userScalable: true,
   viewportFit: "cover",
 };
 

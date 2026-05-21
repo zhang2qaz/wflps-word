@@ -44,7 +44,7 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
         WebkitUserSelect: 'none',
         userSelect: 'none',
         WebkitTouchCallout: 'none',
-        touchAction: 'none',
+        touchAction: 'manipulation',  // 双指可缩放田字格
       }}
     >
       {Array.from({ length: n }).map((_, i) => (

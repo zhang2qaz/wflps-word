@@ -45,7 +45,8 @@
     -webkit-touch-callout: default;
   }
 
-  /* 按钮在 iPad 上更跟手 */
+  /* iPad：双指可缩放页面，但禁用双击放大（避免误触）；按钮也更跟手 */
+  body { touch-action: manipulation; }
   button { touch-action: manipulation; }
 
   /* 手写一笔进行中：防止误触滚动 / 误触「擦这个」按钮 */

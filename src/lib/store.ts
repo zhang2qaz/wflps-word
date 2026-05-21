@@ -75,6 +75,10 @@ export const useStore = create<State>()(
         const g: Grade = grade ?? binaryToGrade(correct, hintUsed);
         const cur = getProgress(get(), id);
         const next = review(cur, g);
+        // 「对/错」计数按真实对错算 —— 古诗 / 句子即使 SRS 评分宽松通过，
+        // 只要有错字，也要计为「错」，确保进错题本。
+        next.correct = cur.correct + (correct ? 1 : 0);
+        next.wrong = cur.wrong + (correct ? 0 : 1);
         set(s => ({
           progress: {
             ...s.progress,

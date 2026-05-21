@@ -158,7 +158,6 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [lineIdx, setLineIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [correcting, setCorrecting] = useState(false);
-  const [recorded, setRecorded] = useState(false);
   const [strokeLine, setStrokeLine] = useState<number | null>(null);
   const [wrongIdx, setWrongIdx] = useState<Set<number>>(new Set());
   const [shots, setShots] = useState<(string | null)[]>([]);
@@ -185,7 +184,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const restart = () => {
     setLineIdx(0); setRevealed(false); setCorrecting(false);
     setWrongIdx(new Set()); setShots([]); setEmpties([]);
-    setWrongCharsAll([]); setRecorded(false);
+    setWrongCharsAll([]);
   };
 
   // 看答案：抓快照，空格自动标红
@@ -208,25 +207,26 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     });
   };
 
-  // 进入下一句：把本句错字累加进总错字
+  // 进入下一句：累加本句错字；最后一句默完 → 立刻记账进错题本
   const nextLine = () => {
     const lineWrong = Array.from(poem.lines[lineIdx].text).filter((_, i) => wrongIdx.has(i));
-    setWrongCharsAll(prev => [...prev, ...lineWrong]);
+    const allWrong = [...wrongCharsAll, ...lineWrong];
+    const isLast = lineIdx >= poem.lines.length - 1;
+    setWrongCharsAll(allWrong);
     setRevealed(false);
     setCorrecting(false);
     setWrongIdx(new Set());
     setShots([]);
     setEmpties([]);
     setLineIdx(i => i + 1);
-  };
-
-  // 整首默完：按错字比例评分（错一两个字不至于整首推倒重学）
-  const finish = () => {
-    const totalChars = poem.lines.reduce((s, l) => s + Array.from(l.text).length, 0);
-    const wc = wrongCharsAll.length;
-    const grade = wc === 0 ? 5 : wc <= Math.max(2, Math.ceil(totalChars * 0.1)) ? 3 : 1;
-    recordAnswer(poem.id, grade >= 3, { grade, wrongChars: wrongCharsAll });
-    setRecorded(true);
+    if (isLast) {
+      // 整首默完，立刻记账 —— 不依赖再点按钮，错字一定进错题本
+      const totalChars = poem.lines.reduce((s, l) => s + Array.from(l.text).length, 0);
+      const wc = allWrong.length;
+      // 评分宽松：错一两个字不至于整首推倒重学；但有错字一律计为「错」
+      const grade = wc === 0 ? 5 : wc <= Math.max(2, Math.ceil(totalChars * 0.1)) ? 3 : 1;
+      recordAnswer(poem.id, wc === 0, { grade, wrongChars: allWrong });
+    }
   };
 
   const lineText = allLinesDone ? '' : poem.lines[lineIdx].text;
@@ -332,19 +332,23 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
       {/* ---- 默 ---- */}
       {step === 'recite' && (
         allLinesDone ? (
-          recorded ? (
-            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10">
-              <div className="seal text-2xl mx-auto mb-5" style={{ width: 76, height: 76, fontSize: '1.8rem' }}>诵</div>
-              <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                《{poem.title}》默写完成！
-              </h3>
-              <p className="text-sm mb-4" style={{ color: 'var(--color-ink-soft)' }}>
-                已记入复习计划，到点会在「古诗」页提醒你再默一次。
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10">
+            <div className="seal text-2xl mx-auto mb-5" style={{ width: 76, height: 76, fontSize: '1.8rem' }}>诵</div>
+            <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+              《{poem.title}》默写完成！
+            </h3>
+            {wrongCharsAll.length === 0 ? (
+              <p className="text-sm mb-5" style={{ color: 'var(--color-jade)' }}>
+                🎉 全诗一个字都没错，太棒了！已记入复习计划。
               </p>
-              {wrongCharsAll.length > 0 && (
+            ) : (
+              <>
+                <p className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
+                  已记入复习计划，到点会在「古诗」页提醒你再默一次。
+                </p>
                 <div className="inline-block mb-5 px-4 py-2 rounded-lg" style={{ background: 'rgba(212,73,61,0.08)' }}>
                   <span className="text-xs" style={{ color: 'var(--color-cinnabar)' }}>
-                    这次写错的字（已进错题本）：
+                    这次写错的 {wrongCharsAll.length} 个字（已进错题本）：
                   </span>
                   <div className="flex flex-wrap gap-1.5 mt-1 justify-center">
                     {wrongCharsAll.map((c, i) => (
@@ -352,52 +356,17 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                     ))}
                   </div>
                 </div>
-              )}
-              <div className="flex justify-center gap-3">
-                <button onClick={restart} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
-                  再默一遍
-                </button>
-                <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
-                  完成
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                整首诗默完啦！
-              </h3>
-              {wrongCharsAll.length === 0 ? (
-                <p className="text-sm mb-6" style={{ color: 'var(--color-jade)' }}>
-                  🎉 全诗一个字都没错，太棒了！
-                </p>
-              ) : (
-                <div className="mb-6">
-                  <p className="text-sm mb-2" style={{ color: 'var(--color-ink-soft)' }}>
-                    这首诗你写错了 <b style={{ color: 'var(--color-cinnabar)' }}>{wrongCharsAll.length}</b> 个字：
-                  </p>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {wrongCharsAll.map((c, i) => (
-                      <span
-                        key={i}
-                        className="text-2xl font-bold px-2 py-1 rounded"
-                        style={{ fontFamily: 'var(--font-serif-cn)', background: 'rgba(212,73,61,0.12)', color: 'var(--color-cinnabar)' }}
-                      >
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <button
-                onClick={finish}
-                className="px-6 py-3 rounded-md font-medium"
-                style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
-              >
-                完成默写 →
+              </>
+            )}
+            <div className="flex justify-center gap-3">
+              <button onClick={restart} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
+                再默一遍
               </button>
-            </motion.div>
-          )
+              <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
+                完成
+              </button>
+            </div>
+          </motion.div>
         ) : (
           <motion.div key={lineIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <div className="text-center text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
@@ -564,8 +533,9 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
   };
 
   const finishRedo = () => {
+    // 有错字 → 计为「错」进错题本；评分宽松（错一两个不至于推倒重学）
     const grade = wrongChars.length <= Math.max(1, Math.ceil(chars.length * 0.1)) ? 3 : 1;
-    recordAnswer(sentence.id, grade >= 3, { grade, wrongChars });
+    recordAnswer(sentence.id, false, { grade, wrongChars });
     setPhase('done');
   };
 

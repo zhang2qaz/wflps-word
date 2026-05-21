@@ -19,15 +19,15 @@ type Props = {
 // 按词语字数排出对应数量的米字格，像真实的默写本。
 // 每格下方有独立「擦」按钮，可单独擦掉这一个字。
 const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
-  { count, guide, maxWidth = 440 },
+  { count, guide, maxWidth = 580 },
   ref,
 ) {
   const refs = useRef<(WriteCanvasHandle | null)[]>([]);
   const n = Math.max(1, count);
 
-  // 每格大小：字数越多格子越小，单字最大
+  // 每格大小：尽量放大方便孩子手写；字数多了再换行。
   const gap = 10;
-  const size = Math.min(240, Math.max(84, Math.floor((maxWidth - gap * (n - 1)) / n)));
+  const size = Math.min(300, Math.max(140, Math.floor((maxWidth - gap * (n - 1)) / n)));
 
   useImperativeHandle(ref, () => ({
     clear: () => refs.current.forEach(r => r?.clear()),
@@ -48,7 +48,7 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
           <button
             type="button"
             onClick={() => refs.current[i]?.clear()}
-            className="text-[11px] px-2 py-0.5 rounded"
+            className="erase-btn text-[11px] px-2 py-0.5 rounded"
             style={{
               border: '1px solid var(--color-stone-dark)',
               color: 'var(--color-ink-soft)',

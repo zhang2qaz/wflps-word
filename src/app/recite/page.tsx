@@ -416,10 +416,14 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
             {correcting ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="text-xs text-center mb-2" style={{ color: 'var(--color-ink-soft)' }}>
-                  照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongIdx.size} 个字</b>各订正一遍 ✍️
+                  照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongIdx.size} 个字</b>每个订正三遍 ✍️
                 </div>
                 <div className="mb-4">
-                  <WriteGrid ref={redoRef} count={Math.max(1, wrongIdx.size)} guide={wrongCharsThisLine.join('')} />
+                  <WriteGrid
+                    ref={redoRef}
+                    count={Math.max(1, wrongIdx.size) * 3}
+                    guide={wrongCharsThisLine.map((c) => c.repeat(3)).join('')}
+                  />
                 </div>
                 <div className="text-center">
                   <button
@@ -603,10 +607,14 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
       ) : phase === 'redo' ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
-            照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongChars.length} 个字</b>各订正一遍 ✍️
+            照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongChars.length} 个字</b>每个订正三遍 ✍️
           </div>
           <div className="mb-4">
-            <WriteGrid ref={redoRef} count={Math.max(1, wrongChars.length)} guide={wrongChars.join('')} />
+            <WriteGrid
+              ref={redoRef}
+              count={Math.max(1, wrongChars.length) * 3}
+              guide={wrongChars.map((c) => c.repeat(3)).join('')}
+            />
           </div>
           <div className="flex justify-center">
             <button

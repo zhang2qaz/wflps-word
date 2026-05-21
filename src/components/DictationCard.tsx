@@ -126,10 +126,10 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         {phase === 'redo' && (
           <div className="text-center mb-3">
             <div className="text-base font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-              照着浅色的字，把写错的 {wrongChars.length} 个字订正一遍 ✍️
+              照着浅色的字，把写错的 {wrongChars.length} 个字 · 每个订正三遍 ✍️
             </div>
             <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-              现在写一遍，比事后机械抄三遍管用得多。
+              一个字写三遍，边写边记，记得最牢。
             </div>
           </div>
         )}
@@ -149,7 +149,11 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
       )}
       {phase === 'redo' && (
         <div className="mb-5">
-          <WriteGrid ref={redoRef} count={Math.max(1, wrongChars.length)} guide={wrongChars.join('')} />
+          <WriteGrid
+            ref={redoRef}
+            count={Math.max(1, wrongChars.length) * 3}
+            guide={wrongChars.map((c) => c.repeat(3)).join('')}
+          />
         </div>
       )}
 

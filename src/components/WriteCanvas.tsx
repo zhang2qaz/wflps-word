@@ -17,6 +17,20 @@ type Props = {
 const INK = '#1a2030';
 const BASE_WIDTH = 4;
 
+// —— 手写一笔进行中时锁住整页 ——
+// 防止孩子的手 / 手掌误触：页面滚动、选中文字、弹出「复制·查询」菜单。
+let writeLockCount = 0;
+function lockPageForWriting() {
+  if (typeof document === 'undefined') return;
+  if (writeLockCount === 0) document.body.classList.add('writing-lock');
+  writeLockCount += 1;
+}
+function unlockPageForWriting() {
+  if (typeof document === 'undefined') return;
+  writeLockCount = Math.max(0, writeLockCount - 1);
+  if (writeLockCount === 0) document.body.classList.remove('writing-lock');
+}
+
 const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
   { size = 260, guideChar, className = '' },
   ref,
@@ -88,6 +102,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
 
       e.preventDefault();
       drawing = true;
+      lockPageForWriting();
       activeId = e.pointerId;
       const { x, y } = getPos(e);
       lastX = x; lastY = y;
@@ -121,6 +136,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     const onUp = (e: PointerEvent) => {
       if (e.pointerId !== activeId) return;
       drawing = false;
+      unlockPageForWriting();
       activeId = null;
       try { c.releasePointerCapture(e.pointerId); } catch {}
     };
@@ -136,6 +152,8 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       c.removeEventListener('pointermove', onMove);
       c.removeEventListener('pointerup', onUp);
       c.removeEventListener('pointercancel', onUp);
+      // 写到一半被卸载（切页面）时，别把整页锁死了
+      if (drawing) unlockPageForWriting();
     };
   }, [size]);
 

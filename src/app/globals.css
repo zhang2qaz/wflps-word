@@ -32,10 +32,28 @@
     overscroll-behavior-y: none;            /* 去掉橡皮筋回弹 */
     -webkit-tap-highlight-color: transparent; /* 去掉点击灰块闪烁 */
     -webkit-text-size-adjust: 100%;          /* 禁止 Safari 自动放大字体 */
+    /* 防止写字时误触选中文字 / 弹出「复制·查询」菜单 */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* 输入框仍可选中 / 可粘贴（导入页、改名字用） */
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
   }
 
   /* 按钮在 iPad 上更跟手 */
   button { touch-action: manipulation; }
+
+  /* 手写一笔进行中：防止误触滚动 / 误触「擦这个」按钮 */
+  body.writing-lock {
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+  body.writing-lock .erase-btn { pointer-events: none; }
 
   /* 田字格 */
   .tianzige {

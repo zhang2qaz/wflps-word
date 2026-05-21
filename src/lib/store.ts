@@ -5,9 +5,9 @@ import { persist } from 'zustand/middleware';
 import { defaultSrs, review, isDue, binaryToGrade, type SrsState, type Grade } from './srs';
 import { WORDS, POEMS, SENTENCES, isReciteId, type Word } from '@/data/vocabulary';
 
-type WordProgress = SrsState & { id: string; errorTags?: string[] };
+type WordProgress = SrsState & { id: string; errorTags?: string[]; wrongChars?: string[] };
 
-export type AnswerOpts = { hintUsed?: boolean; errorTags?: string[] };
+export type AnswerOpts = { hintUsed?: boolean; errorTags?: string[]; wrongChars?: string[] };
 
 type SessionStats = {
   date: string;
@@ -66,14 +66,19 @@ export const useStore = create<State>()(
       setChildName: (name) => set({ childName: name }),
 
       recordAnswer: (id, correct, opts = {}) => {
-        const { hintUsed = false, errorTags = [] } = opts;
+        const { hintUsed = false, errorTags = [], wrongChars = [] } = opts;
         const grade = binaryToGrade(correct, hintUsed);
         const cur = getProgress(get(), id);
         const next = review(cur, grade);
         set(s => ({
           progress: {
             ...s.progress,
-            [id]: { id, ...next, errorTags: correct ? [] : errorTags },
+            [id]: {
+              id,
+              ...next,
+              errorTags: correct ? [] : errorTags,
+              wrongChars: correct ? [] : wrongChars,
+            },
           },
           history: updateTodayStats(s.history, {
             reviewed: 1,

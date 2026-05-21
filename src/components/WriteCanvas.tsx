@@ -5,6 +5,7 @@ import { useEffect, useRef, useImperativeHandle, forwardRef, useState } from 're
 export type WriteCanvasHandle = {
   clear: () => void;
   isEmpty: () => boolean;
+  snapshot: () => string | null;  // 导出孩子手写的图（本地 PNG，不上传）
 };
 
 type Props = {
@@ -33,6 +34,11 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       setEmpty(true);
     },
     isEmpty: () => empty,
+    snapshot: () => {
+      const c = canvasRef.current;
+      if (!c || empty) return null;
+      try { return c.toDataURL('image/png'); } catch { return null; }
+    },
   }), [empty]);
 
   useEffect(() => {

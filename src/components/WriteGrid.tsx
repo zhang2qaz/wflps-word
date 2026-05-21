@@ -6,7 +6,8 @@ import WriteCanvas, { type WriteCanvasHandle } from './WriteCanvas';
 export type WriteGridHandle = {
   clear: () => void;
   isEmpty: () => boolean;
-  emptyFlags: () => boolean[];   // 每格是否空着（自动标出漏写的字）
+  emptyFlags: () => boolean[];        // 每格是否空着（自动标出漏写的字）
+  snapshots: () => (string | null)[]; // 每格孩子手写的图，用来对答案
 };
 
 type Props = {
@@ -32,6 +33,7 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
     clear: () => refs.current.forEach(r => r?.clear()),
     isEmpty: () => refs.current.every(r => r?.isEmpty() ?? true),
     emptyFlags: () => Array.from({ length: n }).map((_, i) => refs.current[i]?.isEmpty() ?? true),
+    snapshots: () => Array.from({ length: n }).map((_, i) => refs.current[i]?.snapshot() ?? null),
   }), [n]);
 
   return (

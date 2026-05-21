@@ -19,6 +19,7 @@ type Row = {
   correct: number;
   accuracy: number;
   errorTags?: string[];
+  wrongChars?: string[];
   level: 'new' | 'learning' | 'review' | 'mastered';
 };
 
@@ -37,7 +38,8 @@ export default function MistakesPage() {
       if (w) {
         rows.push({
           id: p.id, kind: 'word', title: w.char, pinyin: w.pinyin, meaning: w.meaning,
-          lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy, errorTags: p.errorTags, level,
+          lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, level,
         });
         continue;
       }
@@ -45,7 +47,8 @@ export default function MistakesPage() {
       if (r) {
         rows.push({
           id: p.id, kind: 'recite', title: r.title, lesson: r.lesson,
-          wrong: p.wrong, correct: p.correct, accuracy, errorTags: p.errorTags, level,
+          wrong: p.wrong, correct: p.correct, accuracy,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, level,
         });
       }
     }
@@ -131,23 +134,43 @@ export default function MistakesPage() {
                       {item.title}
                     </div>
                   )}
-                  {item.errorTags && item.errorTags.length > 0 ? (
+                  {item.wrongChars && item.wrongChars.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1 mt-1">
+                      <span className="text-[10px]" style={{ color: 'var(--color-cinnabar)' }}>✗ 写错的字：</span>
+                      {item.wrongChars.map((c, i) => (
+                        <span
+                          key={i}
+                          className="text-sm font-bold px-1.5 rounded"
+                          style={{
+                            fontFamily: 'var(--font-serif-cn)',
+                            background: 'rgba(227,36,43,0.12)',
+                            color: 'var(--color-cinnabar)',
+                          }}
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {item.errorTags && item.errorTags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {item.errorTags.map(t => (
                         <span
                           key={t}
                           className="text-[10px] px-2 py-0.5 rounded-full"
-                          style={{ background: 'rgba(227,36,43,0.12)', color: 'var(--color-cinnabar)' }}
+                          style={{ background: 'var(--color-stone)', color: 'var(--color-ink-soft)' }}
                         >
                           {t}
                         </span>
                       ))}
                     </div>
-                  ) : (
-                    <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                      《{item.lesson}》
-                    </div>
                   )}
+                  {(!item.wrongChars || item.wrongChars.length === 0) &&
+                    (!item.errorTags || item.errorTags.length === 0) && (
+                      <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+                        《{item.lesson}》
+                      </div>
+                    )}
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="text-xl font-bold" style={{ color: accColor }}>{acc}%</div>

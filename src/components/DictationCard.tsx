@@ -1,12 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import WriteGrid, { type WriteGridHandle } from './WriteGrid';
+import AnswerCheck from './AnswerCheck';
 import { type Word } from '@/data/vocabulary';
 import { speak } from '@/lib/tts';
 
-export type DictationResult = { correct: boolean; hintUsed: boolean; errorTags: string[] };
+export type DictationResult = {
+  correct: boolean;
+  hintUsed: boolean;
+  errorTags: string[];
+  wrongChars: string[];
+};
 
 type Props = {
   word: Word;
@@ -15,75 +21,69 @@ type Props = {
   onDone: (r: DictationResult) => void;
 };
 
-// ---------- 引导式自检：生成孩子答得了的具体问题 ----------
-type Check = { key: string; q: string; detail?: string; tag: string };
-
-function buildChecks(word: Word): Check[] {
-  const checks: Check[] = [];
-  for (const ch of word.chars) {
-    if (ch.warn) {
-      checks.push({
-        key: `warn-${ch.c}`,
-        q: `「${ch.c}」这个字，你写对了吗？`,
-        detail: ch.warn,
-        tag: '形近字 / 部件写错',
-      });
-    }
-  }
-  if (checks.length === 0) {
-    const meaningful = word.chars.filter(c => c.radical && c.split && c.split !== '独体字');
-    if (meaningful.length > 0) {
-      checks.push({
-        key: 'radical',
-        q: '每个字的偏旁，都和正确答案一样吗？',
-        detail: meaningful.map(c => `「${c.c}」是「${c.radical}」`).join('，'),
-        tag: '偏旁写错',
-      });
-    }
-  }
-  checks.push({
-    key: 'whole',
-    q: '你写的和正确答案，一个字一个字比，完全一样吗？',
-    detail: '多一笔、少一笔、写歪了，都算不一样哦。',
-    tag: '字形没记牢',
-  });
-  return checks;
-}
-
 type Phase = 'write' | 'check' | 'redo';
+
+// 从「点选的错字」推断错因标签，进错题本
+function deriveTags(word: Word, wrong: Set<number>, empties: boolean[]): string[] {
+  const tags = new Set<string>();
+  wrong.forEach((i) => {
+    if (empties[i]) { tags.add('没默出来'); return; }
+    const ci = word.chars[i];
+    if (ci?.warn) tags.add('形近易错字');
+    else tags.add('字形没记牢');
+  });
+  return Array.from(tags);
+}
 
 export default function DictationCard({ word, index, total, onDone }: Props) {
   const [phase, setPhase] = useState<Phase>('write');
   const [hintLevel, setHintLevel] = useState(0);
-  const [checkIdx, setCheckIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, boolean>>({});
+  const [shots, setShots] = useState<(string | null)[]>([]);
+  const [empties, setEmpties] = useState<boolean[]>([]);
+  const [wrong, setWrong] = useState<Set<number>>(new Set());
+  const [confirmed, setConfirmed] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
 
-  const checks = useMemo(() => buildChecks(word), [word]);
-  const n = word.char.length;
+  const chars = Array.from(word.char);
+  const n = chars.length;
 
   useEffect(() => {
     setPhase('write');
     setHintLevel(0);
-    setCheckIdx(0);
-    setAnswers({});
+    setShots([]);
+    setEmpties([]);
+    setWrong(new Set());
+    setConfirmed(false);
     gridRef.current?.clear();
     const t = setTimeout(() => speak(`第${index + 1}题。${word.char}。${word.char}`, { rate: 0.8 }), 350);
     return () => clearTimeout(t);
   }, [word, index]);
 
-  const correct = checks.every(c => answers[c.key] === true);
-  const errorTags = useMemo(
-    () => Array.from(new Set(checks.filter(c => answers[c.key] === false).map(c => c.tag))),
-    [checks, answers],
-  );
-  const allChecked = checkIdx >= checks.length;
-
-  const answerCheck = (key: string, ok: boolean) => {
-    setAnswers(a => ({ ...a, [key]: ok }));
-    setTimeout(() => setCheckIdx(i => i + 1), 240);
+  // 写好了 → 对答案：抓快照、空格自动标红
+  const toCheck = () => {
+    const e = gridRef.current?.emptyFlags() ?? chars.map(() => true);
+    const s = gridRef.current?.snapshots() ?? chars.map(() => null);
+    const auto = new Set<number>();
+    e.forEach((isEmpty, i) => { if (isEmpty) auto.add(i); });
+    setEmpties(e);
+    setShots(s);
+    setWrong(auto);
+    setPhase('check');
+    setTimeout(() => speak('对一对答案'), 200);
   };
+
+  const toggle = (i: number) => {
+    setWrong((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i); else next.add(i);
+      return next;
+    });
+  };
+
+  const correct = wrong.size === 0;
+  const wrongChars = chars.filter((_, i) => wrong.has(i));
+  const errorTags = deriveTags(word, wrong, empties);
 
   return (
     <div>
@@ -100,7 +100,7 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         />
       </div>
 
-      {/* ---------- 顶部区域 ---------- */}
+      {/* ---------- 顶部 ---------- */}
       <motion.div key={`top-${phase}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
         {phase === 'write' && (
           <div className="text-center mb-4">
@@ -117,32 +117,16 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
           </div>
         )}
         {phase === 'check' && (
-          <div
-            className="rounded-xl p-4 mb-3 text-center"
-            style={{ background: 'var(--color-paper-warm)', border: '1px solid var(--color-stone-dark)' }}
-          >
-            <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>正确答案</div>
-            <div className="text-sm mb-2" style={{ color: 'var(--color-ink-soft)', letterSpacing: '0.18em' }}>
+          <div className="text-center mb-3">
+            <div className="text-sm" style={{ color: 'var(--color-ink-soft)', letterSpacing: '0.18em' }}>
               {word.pinyin}
-            </div>
-            <div className="flex justify-center gap-3 flex-wrap">
-              {word.chars.map((ch, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <span className="text-5xl font-bold leading-none" style={{ fontFamily: 'var(--font-display, var(--font-serif-cn))' }}>
-                    {ch.c}
-                  </span>
-                  {ch.split && ch.split !== '独体字' && (
-                    <span className="text-xs mt-1.5" style={{ color: 'var(--color-ink-soft)' }}>{ch.split}</span>
-                  )}
-                </div>
-              ))}
             </div>
           </div>
         )}
         {phase === 'redo' && (
           <div className="text-center mb-3">
             <div className="text-base font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-              照着浅色的字，认真订正一遍 ✍️
+              照着浅色的字，把写错的 {wrongChars.length} 个字订正一遍 ✍️
             </div>
             <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
               现在写一遍，比事后机械抄三遍管用得多。
@@ -151,29 +135,28 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         )}
       </motion.div>
 
-      {/* ---------- 写字格 ----------
-          write / check 共用同一个持久实例 → 孩子的笔迹不会丢
-          redo 用带描红的新实例 */}
-      {phase !== 'redo' ? (
-        <div className={phase === 'check' ? 'mb-1 pointer-events-none' : 'mb-4'}>
-          {phase === 'check' && (
-            <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
-              ↓ 这是你刚才写的，和上面对照检查 ↓
-            </div>
-          )}
+      {/* ---------- 中间 ---------- */}
+      {phase === 'write' && (
+        <div className="mb-4">
           <WriteGrid ref={gridRef} count={n} />
         </div>
-      ) : (
+      )}
+      {phase === 'check' && (
+        <div className="mb-4">
+          <AnswerCheck target={word.char} empties={empties} shots={shots} wrong={wrong} onToggle={toggle} />
+        </div>
+      )}
+      {phase === 'redo' && (
         <div className="mb-5">
-          <WriteGrid ref={redoRef} count={n} guide={word.char} />
+          <WriteGrid ref={redoRef} count={Math.max(1, wrongChars.length)} guide={wrongChars.join('')} />
         </div>
       )}
 
-      {/* ---------- 底部区域 ---------- */}
+      {/* ---------- 底部 ---------- */}
       <motion.div key={`bot-${phase}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
         {phase === 'write' && (
           <>
-            <HintLadder word={word} level={hintLevel} onMore={() => setHintLevel(l => Math.min(3, l + 1))} />
+            <HintLadder word={word} level={hintLevel} onMore={() => setHintLevel((l) => Math.min(3, l + 1))} />
             <div className="flex justify-center gap-2 mt-5">
               <button
                 onClick={() => gridRef.current?.clear()}
@@ -183,7 +166,7 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
                 清空
               </button>
               <button
-                onClick={() => { setPhase('check'); setTimeout(() => speak('对一对答案'), 200); }}
+                onClick={toCheck}
                 className="px-6 py-2.5 rounded-md font-medium"
                 style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
               >
@@ -194,18 +177,25 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         )}
 
         {phase === 'check' && (
-          !allChecked ? (
-            <CheckStep
-              check={checks[checkIdx]}
-              idx={checkIdx}
-              total={checks.length}
-              onAnswer={ok => answerCheck(checks[checkIdx].key, ok)}
-            />
+          !confirmed ? (
+            <div className="text-center mt-5">
+              <button
+                onClick={() => setConfirmed(true)}
+                className="px-7 py-3 rounded-md font-medium"
+                style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+              >
+                对完了 →
+              </button>
+              <p className="text-xs mt-2" style={{ color: 'var(--color-ink-soft)' }}>
+                把写错的字都点出来再继续
+              </p>
+            </div>
           ) : (
             <ResultPanel
               correct={correct}
               errorTags={errorTags}
-              onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags })}
+              wrongChars={wrongChars}
+              onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags, wrongChars })}
               onRedo={() => { setPhase('redo'); setTimeout(() => speak('照着正确答案，再写一遍'), 200); }}
             />
           )
@@ -214,7 +204,7 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         {phase === 'redo' && (
           <div className="flex justify-center">
             <button
-              onClick={() => onDone({ correct: false, hintUsed: hintLevel > 0, errorTags })}
+              onClick={() => onDone({ correct: false, hintUsed: hintLevel > 0, errorTags, wrongChars })}
               className="px-6 py-2.5 rounded-md font-medium"
               style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
             >
@@ -318,53 +308,18 @@ function HintLadder({ word, level, onMore }: { word: Word; level: number; onMore
   );
 }
 
-// ---------- 单项检查 ----------
-function CheckStep({
-  check, idx, total, onAnswer,
-}: { check: Check; idx: number; total: number; onAnswer: (ok: boolean) => void }) {
-  return (
-    <motion.div
-      key={check.key}
-      initial={{ opacity: 0, x: 16 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="rounded-xl p-5 text-center"
-      style={{ border: '2px solid var(--color-vermilion)', background: 'var(--color-paper)' }}
-    >
-      <div className="text-xs mb-2" style={{ color: 'var(--color-vermilion)' }}>
-        检查 {idx + 1} / {total}
-      </div>
-      <p className="text-base font-bold mb-1.5" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-        {check.q}
-      </p>
-      {check.detail && (
-        <p className="text-sm mb-4" style={{ color: 'var(--color-ink-soft)' }}>{check.detail}</p>
-      )}
-      <div className="flex justify-center gap-3 mt-3">
-        <button
-          onClick={() => onAnswer(false)}
-          className="px-6 py-3 rounded-md font-medium"
-          style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
-        >
-          ✗ 这里不对
-        </button>
-        <button
-          onClick={() => onAnswer(true)}
-          className="px-6 py-3 rounded-md font-medium"
-          style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
-        >
-          ✓ 这里写对了
-        </button>
-      </div>
-    </motion.div>
-  );
-}
-
 // ---------- 结果 ----------
 function ResultPanel({
-  correct, errorTags, onNext, onRedo,
-}: { correct: boolean; errorTags: string[]; onNext: () => void; onRedo: () => void }) {
+  correct, errorTags, wrongChars, onNext, onRedo,
+}: {
+  correct: boolean;
+  errorTags: string[];
+  wrongChars: string[];
+  onNext: () => void;
+  onRedo: () => void;
+}) {
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+    <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center mt-5">
       {correct ? (
         <>
           <div className="text-4xl mb-2">🎉</div>
@@ -385,21 +340,38 @@ function ResultPanel({
       ) : (
         <>
           <div className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-cinnabar)' }}>
-            找到问题啦，没关系！
+            找到 {wrongChars.length} 个要订正的字
           </div>
           <div className="flex flex-wrap gap-2 justify-center mb-2">
-            {errorTags.map(t => (
+            {wrongChars.map((c, i) => (
               <span
-                key={t}
-                className="text-xs px-3 py-1 rounded-full"
-                style={{ background: 'rgba(212,73,61,0.12)', color: 'var(--color-cinnabar)' }}
+                key={i}
+                className="text-xl font-bold px-2.5 py-1 rounded"
+                style={{
+                  fontFamily: 'var(--font-serif-cn)',
+                  background: 'rgba(212,73,61,0.12)',
+                  color: 'var(--color-cinnabar)',
+                }}
               >
-                {t}
+                {c}
               </span>
             ))}
           </div>
+          {errorTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center mb-2">
+              {errorTags.map((t) => (
+                <span
+                  key={t}
+                  className="text-xs px-3 py-1 rounded-full"
+                  style={{ background: 'var(--color-stone)', color: 'var(--color-ink-soft)' }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
           <p className="text-sm mb-5" style={{ color: 'var(--color-ink-soft)' }}>
-            知道错在哪，就成功了一半。现在订正一遍 —— 这个字会进错题本。
+            知道错在哪，就成功了一半。现在订正一遍 —— 这些字会进错题本。
           </p>
           <button
             onClick={onRedo}

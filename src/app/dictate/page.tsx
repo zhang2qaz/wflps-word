@@ -48,6 +48,16 @@ export default function DictatePage() {
     setResult([]);
   };
 
+  // 从错题本「一键听写错题」进来 → 直接开始听写错过的词
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get('start') !== 'mistakes') return;
+    const mw = allWords.filter(w => (progress[w.id]?.wrong ?? 0) > 0);
+    if (mw.length > 0) start(mw, '错题重做');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleDone = (r: DictationResult) => {
     const current = queue[idx];
     recordAnswer(current.id, r.correct, { hintUsed: r.hintUsed, errorTags: r.errorTags, wrongChars: r.wrongChars });

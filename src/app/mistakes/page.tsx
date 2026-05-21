@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import Nav from '@/components/Nav';
-import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { WORDS, getReciteRef } from '@/data/vocabulary';
@@ -24,6 +24,7 @@ type Row = {
 };
 
 export default function MistakesPage() {
+  const router = useRouter();
   const progress = useStore(s => s.progress);
   const customWords = useStore(useShallow(s => s.customWords));
 
@@ -89,13 +90,14 @@ export default function MistakesPage() {
               错过的字词，按「正确率最低」排序 · 共 {sorted.length} 项
             </p>
           </div>
-          <Link
-            href="/dictate"
+          <button
+            type="button"
+            onClick={() => router.push('/dictate?start=mistakes')}
             className="px-5 py-2.5 rounded-md font-medium"
             style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
           >
             一键听写错题 →
-          </Link>
+          </button>
         </div>
 
         <div className="space-y-2">

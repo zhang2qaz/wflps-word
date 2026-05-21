@@ -37,7 +37,16 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
   }), [n]);
 
   return (
-    <div className="flex flex-wrap justify-center" style={{ gap }}>
+    <div
+      className="flex flex-wrap justify-center"
+      style={{
+        gap,
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+        WebkitTouchCallout: 'none',
+        touchAction: 'none',
+      }}
+    >
       {Array.from({ length: n }).map((_, i) => (
         <div key={i} className="flex flex-col items-center" style={{ gap: 4 }}>
           <WriteCanvas

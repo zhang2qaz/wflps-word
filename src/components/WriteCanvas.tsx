@@ -95,12 +95,13 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
 
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'pen') penSeen = true;
+      // 所有落点都拦掉浏览器默认行为（含被拒绝的手掌触点）→ 不弹复制菜单
+      e.preventDefault();
       // 已用手写笔 → 拒绝手指/手掌触点（手掌防误触）
       if (penSeen && e.pointerType !== 'pen') return;
       // 已经在写了 → 忽略第二个触点（手掌另一处落下）
       if (activeId !== null) return;
 
-      e.preventDefault();
       drawing = true;
       lockPageForWriting();
       activeId = e.pointerId;

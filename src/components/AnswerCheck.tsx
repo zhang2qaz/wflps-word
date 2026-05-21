@@ -57,12 +57,21 @@ export default function AnswerCheck({ target, empties = [], shots = [], wrong, o
                     没写
                   </span>
                 ) : (
-                  // 孩子自己的手写图，纯本地展示
+                  // 孩子自己的手写图，纯本地展示；禁止长按弹出图片菜单
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={shot}
                     alt="你写的"
-                    style={{ width: 46, height: 46, objectFit: 'contain' }}
+                    draggable={false}
+                    style={{
+                      width: 46,
+                      height: 46,
+                      objectFit: 'contain',
+                      pointerEvents: 'none',
+                      WebkitTouchCallout: 'none',
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                    }}
                   />
                 )}
               </div>

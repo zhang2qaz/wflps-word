@@ -6,7 +6,8 @@ import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
 import { useStore, selectStats, selectDueWords, selectMistakeWords, selectNewWords } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { currentPosition, unitWords } from '@/data/vocabulary';
 
 // 三步主循环：学 → 写 → 复习
 const FLOW = [
@@ -43,6 +44,12 @@ export default function Home() {
   const dueCount = useStore(s => selectDueWords(s).length);
   const mistakeCount = useStore(s => selectMistakeWords(s).length);
   const newCount = useStore(s => selectNewWords(s).length);
+  const progress = useStore(useShallow(s => s.progress));
+  // 复习 = 当前学习单元里已学过的字
+  const unitReviewCount = useMemo(() => {
+    const pos = currentPosition(id => !!progress[id]?.lastReview);
+    return unitWords(pos.grade, pos.semester, pos.unit).filter(w => progress[w.id]?.lastReview).length;
+  }, [progress]);
   const childName = useStore(s => s.childName);
   const setChildName = useStore(s => s.setChildName);
   const [editingName, setEditingName] = useState(false);
@@ -136,7 +143,7 @@ export default function Home() {
         {/* Stats strip */}
         {mounted && (
           <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-            <StatCard label="今日待复习" value={dueCount} accent="var(--color-vermilion)" hint={dueCount > 0 ? '到点的字' : '今天没有到期的'} />
+            <StatCard label="本单元复习" value={unitReviewCount} accent="var(--color-vermilion)" hint={unitReviewCount > 0 ? '当前学习单元' : '本单元还没学字'} />
             <StatCard label="已学" value={stats.learned} accent="var(--color-jade)" hint={`共 ${stats.total} 字`} />
             <StatCard label="已掌握" value={stats.mastered} accent="var(--color-mustard)" hint="连续答对 4+ 次" />
             <StatCard label="坚持天数" value={stats.streak} accent="var(--color-cinnabar)" hint="🔥 加油" />
@@ -145,7 +152,12 @@ export default function Home() {
 
         {/* Recommend pill */}
         {mounted && (
-          <RecommendBar dueCount={dueCount} mistakeCount={mistakeCount} newCount={newCount} />
+          <RecommendBar
+            dueCount={dueCount}
+            unitReviewCount={unitReviewCount}
+            mistakeCount={mistakeCount}
+            newCount={newCount}
+          />
         )}
 
         {/* 学习路线图 */}
@@ -294,10 +306,10 @@ function StatCard({ label, value, accent, hint }: { label: string; value: number
   );
 }
 
-function RecommendBar({ dueCount, mistakeCount, newCount }: { dueCount: number; mistakeCount: number; newCount: number }) {
+function RecommendBar({ dueCount, unitReviewCount, mistakeCount, newCount }: { dueCount: number; unitReviewCount: number; mistakeCount: number; newCount: number }) {
   let action: { href: string; label: string; reason: string };
-  if (dueCount > 0) {
-    action = { href: '/review', label: `去复习 ${dueCount} 个到期的字 →`, reason: '到点的字最容易忘，先复习这些最高效' };
+  if (dueCount > 0 && unitReviewCount > 0) {
+    action = { href: '/review', label: `去复习本单元 ${unitReviewCount} 个字 →`, reason: '本单元有字到点了，先默一遍最高效' };
   } else if (mistakeCount > 0) {
     action = { href: '/mistakes', label: `攻克 ${mistakeCount} 个错题 →`, reason: '错题本里的字需要重点强化' };
   } else if (newCount > 0) {

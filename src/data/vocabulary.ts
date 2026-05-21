@@ -1728,3 +1728,29 @@ export function unitGroups(grade: number, semester: '上' | '下'): UnitGroup[] 
     };
   });
 }
+
+// 当前学习进度所在的「书 + 单元」：含已学词的最后一个单元（按 书→单元 顺序）。
+// 没有任何已学词时，返回第一本书的第一个单元。
+export function currentPosition(
+  isLearned: (id: string) => boolean,
+): { grade: number; semester: '上' | '下'; unit: number } {
+  const bs = books();
+  let found: { grade: number; semester: '上' | '下'; unit: number } | null = null;
+  for (const b of bs) {
+    for (const g of unitGroups(b.grade, b.semester)) {
+      if (g.lessons.some(l => l.words.some(w => isLearned(w.id)))) {
+        found = { grade: b.grade, semester: b.semester, unit: g.unit };
+      }
+    }
+  }
+  if (found) return found;
+  const first = bs[0];
+  const fg = unitGroups(first.grade, first.semester)[0];
+  return { grade: first.grade, semester: first.semester, unit: fg?.unit ?? 1 };
+}
+
+// 某个单元的全部词语（按课文顺序，不含古诗 / 句子）
+export function unitWords(grade: number, semester: '上' | '下', unit: number): Word[] {
+  const g = unitGroups(grade, semester).find(u => u.unit === unit);
+  return g ? g.lessons.flatMap(l => l.words) : [];
+}

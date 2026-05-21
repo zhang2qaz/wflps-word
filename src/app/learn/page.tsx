@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Nav from '@/components/Nav';
 import CharBreakdown from '@/components/CharBreakdown';
 import HanziStrokes from '@/components/HanziStrokes';
 import WriteCanvas from '@/components/WriteCanvas';
 import Link from 'next/link';
-import { unitGroups, books, type Word } from '@/data/vocabulary';
+import { unitGroups, books, currentPosition, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { speak } from '@/lib/tts';
@@ -24,6 +24,24 @@ export default function LearnPage() {
   const bookList = useMemo(() => books(), []);
   const book = bookList[bookIdx] ?? bookList[0];
   const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
+
+  // 进入页面时，自动定位到「当前学到的单元」
+  const [pos, setPos] = useState<{ grade: number; semester: '上' | '下'; unit: number } | null>(null);
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+    const p = currentPosition(id => !!progress[id]?.lastReview);
+    setPos(p);
+    const bi = bookList.findIndex(b => b.grade === p.grade && b.semester === p.semester);
+    if (bi > 0) setBookIdx(bi);
+    const t = setTimeout(() => {
+      document
+        .getElementById(`learn-unit-${p.unit}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 320);
+    return () => clearTimeout(t);
+  }, [progress, bookList]);
 
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
@@ -78,11 +96,35 @@ export default function LearnPage() {
             ))}
           </div>
 
+          {pos && (
+            <p className="text-xs mb-5 -mt-2 flex items-center gap-1" style={{ color: 'var(--color-jade)' }}>
+              📍 已为你定位到上次学习的单元（{pos.grade === 2 ? '二' : '三'}年级{pos.semester}册 · 第 {pos.unit} 单元）
+            </p>
+          )}
+
           <div className="space-y-8">
             {groups.map(g => {
               const allWords = g.lessons.flatMap(l => l.words);
+              const isCurrent =
+                !!pos &&
+                pos.grade === book.grade &&
+                pos.semester === book.semester &&
+                pos.unit === g.unit;
               return (
-                <div key={g.unit}>
+                <div
+                  key={g.unit}
+                  id={`learn-unit-${g.unit}`}
+                  className="scroll-mt-6 rounded-2xl"
+                  style={
+                    isCurrent
+                      ? {
+                          background: 'rgba(42,138,107,0.07)',
+                          border: '1px solid var(--color-jade)',
+                          padding: 14,
+                        }
+                      : undefined
+                  }
+                >
                   <div className="flex items-baseline gap-2 mb-3 flex-wrap">
                     <span
                       className="text-sm font-bold px-2 py-0.5 rounded"
@@ -99,6 +141,14 @@ export default function LearnPage() {
                         style={{ background: 'rgba(224,163,42,0.18)', color: 'var(--color-mustard)' }}
                       >
                         草稿 · 待核对
+                      </span>
+                    )}
+                    {isCurrent && (
+                      <span
+                        className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
+                      >
+                        📍 现在学到这里
                       </span>
                     )}
                   </div>

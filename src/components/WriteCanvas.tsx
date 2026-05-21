@@ -142,10 +142,16 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       try { c.releasePointerCapture(e.pointerId); } catch {}
     };
 
+    // iOS Safari：手指在 canvas 上慢写会被当成「选字」手势 → 弹复制菜单 / 放大镜。
+    // 指针事件的 preventDefault 拦不住它，必须直接在 touch 事件层吞掉。
+    const swallowTouch = (e: TouchEvent) => { e.preventDefault(); };
+
     c.addEventListener('pointerdown', onDown);
     c.addEventListener('pointermove', onMove);
     c.addEventListener('pointerup', onUp);
     c.addEventListener('pointercancel', onUp);
+    c.addEventListener('touchstart', swallowTouch, { passive: false });
+    c.addEventListener('touchmove', swallowTouch, { passive: false });
     // 注意：不监听 pointerleave —— 写字时笔尖常会划到格子边缘外，
     // setPointerCapture 已保证继续收到事件，不能因离开就断笔。
     return () => {
@@ -153,6 +159,8 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       c.removeEventListener('pointermove', onMove);
       c.removeEventListener('pointerup', onUp);
       c.removeEventListener('pointercancel', onUp);
+      c.removeEventListener('touchstart', swallowTouch);
+      c.removeEventListener('touchmove', swallowTouch);
       // 写到一半被卸载（切页面）时，别把整页锁死了
       if (drawing) unlockPageForWriting();
     };

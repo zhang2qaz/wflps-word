@@ -5,6 +5,7 @@ import Nav from '@/components/Nav';
 import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { unitGroups, reciteRefs, books } from '@/data/vocabulary';
+import { isMastered } from '@/lib/srs';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -43,7 +44,7 @@ export default function ProgressPage() {
         const learned = words.filter(w => progress[w.id]?.lastReview).length;
         const mastered = words.filter(w => {
           const p = progress[w.id];
-          return p ? p.reps >= 4 && p.interval >= 7 : false;
+          return p ? isMastered(p) : false;
         }).length;
         rows.push({
           label: `${b.label} 第${g.unit}单元 · ${g.unitTitle}`,
@@ -55,7 +56,7 @@ export default function ProgressPage() {
       const learned = customWords.filter(w => progress[w.id]?.lastReview).length;
       const mastered = customWords.filter(w => {
         const p = progress[w.id];
-        return p ? p.reps >= 4 && p.interval >= 7 : false;
+        return p ? isMastered(p) : false;
       }).length;
       rows.push({ label: '我导入的词单', total: customWords.length, learned, mastered });
     }
@@ -67,7 +68,7 @@ export default function ProgressPage() {
       const p = progress[r.id];
       let statusLabel = '未学', statusColor = '#5b6478';
       if (p && p.lastReview !== 0) {
-        if (p.reps >= 4 && p.interval >= 7) { statusLabel = '已掌握'; statusColor = '#2d8a6f'; }
+        if (isMastered(p)) { statusLabel = '已掌握'; statusColor = '#2d8a6f'; }
         else if (p.nextDue <= Date.now()) { statusLabel = '待复习'; statusColor = '#21348c'; }
         else { statusLabel = '学习中'; statusColor = '#e0a32a'; }
       }
@@ -84,6 +85,39 @@ export default function ProgressPage() {
     const w = last7.reduce((s, d) => s + d.wrong, 0);
     return c + w === 0 ? null : Math.round((c / (c + w)) * 100);
   })();
+
+  // 导出 / 导入学习存档（本地数据备份）
+  const exportData = () => {
+    if (typeof window === 'undefined') return;
+    const raw = window.localStorage.getItem('moxie-dashi') ?? '{}';
+    const blob = new Blob([raw], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `世外默写本-存档-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = String(reader.result);
+        const parsed = JSON.parse(text);
+        if (!parsed || typeof parsed !== 'object' || !('state' in parsed)) throw new Error('bad');
+        window.localStorage.setItem('moxie-dashi', text);
+        alert('存档已导入，页面将刷新。');
+        window.location.reload();
+      } catch {
+        alert('这个文件无法识别，请选择本应用导出的 .json 存档。');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   return (
     <div className="min-h-screen">
@@ -106,7 +140,7 @@ export default function ProgressPage() {
           <Kpi label="坚持天数" value={stats.streak} unit="天" accent="var(--color-cinnabar)" />
           <Kpi label="已学" value={stats.learned} unit={`/ ${stats.total}`} accent="var(--color-jade)" />
           <Kpi label="已掌握" value={stats.mastered} unit="字" accent="var(--color-mustard)" />
-          <Kpi label="待复习" value={stats.due} unit="字" accent="var(--color-vermilion)" />
+          <Kpi label="本单元待复习" value={stats.due} unit="字" accent="var(--color-vermilion)" />
           <Kpi label="近 7 日正确率" value={accuracy7d ?? '—'} unit={accuracy7d != null ? '%' : ''} accent="var(--color-ink)" />
         </section>
 
@@ -225,6 +259,34 @@ export default function ProgressPage() {
           </ul>
         </section>
 
+        {/* 学习存档 */}
+        <section className="mb-10 p-5 rounded-xl border" style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}>
+          <h2 className="text-lg font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>学习存档</h2>
+          <p className="text-sm mb-3 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+            学习数据只保存在<b>这台设备的浏览器</b>里。换设备、或清理浏览器数据前，请先
+            <b>导出备份</b>；到新设备打开本应用后再<b>导入</b>即可恢复。
+          </p>
+          <div className="flex gap-3 flex-wrap">
+            <button
+              onClick={exportData}
+              className="px-4 py-2 rounded-md text-sm font-medium"
+              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+            >
+              ⬇ 导出存档
+            </button>
+            <label
+              className="px-4 py-2 rounded-md text-sm font-medium cursor-pointer border"
+              style={{ borderColor: 'var(--color-stone-dark)' }}
+            >
+              ⬆ 导入存档
+              <input type="file" accept="application/json,.json" onChange={importData} className="hidden" />
+            </label>
+          </div>
+          <p className="text-[11px] mt-2" style={{ color: 'var(--color-ink-soft)' }}>
+            导入会用存档<b>覆盖</b>当前设备上的全部学习数据。
+          </p>
+        </section>
+
         {/* Danger zone */}
         <section className="text-center py-6">
           <button
@@ -266,8 +328,8 @@ function generateInsights(args: {
   if (stats.learned === 0) {
     tips.push('还没开始学习。从「学新字」选一个单元，每次 5-8 个字就好，不要贪多。');
   }
-  if (stats.due > 20) {
-    tips.push(`今天积压了 ${stats.due} 个待复习字 — 让孩子先把这些复习完，再学新字。否则记忆会"塌"。`);
+  if (stats.due > 12) {
+    tips.push(`本单元有 ${stats.due} 个字到期复习 — 可以分两次默，先复习再学新字。`);
   }
   if (accuracy7d !== null && accuracy7d < 60) {
     tips.push(`近 7 日正确率 ${accuracy7d}% 偏低。建议放慢学新字的速度，先把错题本里的字攻克。`);

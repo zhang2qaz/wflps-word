@@ -9,11 +9,9 @@ import WriteCanvas from '@/components/WriteCanvas';
 import Link from 'next/link';
 import { unitGroups, books, currentPosition, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
-import { useShallow } from 'zustand/react/shallow';
 import { speak } from '@/lib/tts';
 
 export default function LearnPage() {
-  const customWords = useStore(useShallow(s => s.customWords));
   const progress = useStore(s => s.progress);
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
@@ -59,7 +57,7 @@ export default function LearnPage() {
         <Nav />
         <main className="max-w-3xl mx-auto px-5 py-10">
           <div className="mb-2 text-xs tracking-wide" style={{ color: 'var(--color-vermilion)' }}>
-            上海世界外国语小学 · 国际部 P2 · 二年级下册
+            上海世界外国语小学 · 国际部 P2
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
             学新字 · 科学记忆四步法
@@ -100,6 +98,20 @@ export default function LearnPage() {
             <p className="text-xs mb-5 -mt-2 flex items-center gap-1" style={{ color: 'var(--color-jade)' }}>
               📍 已为你定位到上次学习的单元（{pos.grade === 2 ? '二' : '三'}年级{pos.semester}册 · 第 {pos.unit} 单元）
             </p>
+          )}
+
+          {groups.some(g => g.draft) && (
+            <div
+              className="mb-5 p-3 rounded-lg text-sm flex gap-2"
+              style={{ background: 'rgba(224,163,42,0.1)', border: '1px dashed var(--color-mustard)' }}
+            >
+              <span>⚠️</span>
+              <span>
+                标<b style={{ color: 'var(--color-mustard)' }}>「草稿 · 待核对」</b>的单元用的是
+                <b>统编版标准词表</b>，<b>尚未逐字对照世外默写卷</b> —— 请家长核对后再作正式默写。
+                目前已核对的是<b>二年级下册第五、六单元</b>。
+              </span>
+            </div>
           )}
 
           <div className="space-y-8">
@@ -215,19 +227,6 @@ export default function LearnPage() {
               );
             })}
 
-            {/* 自定义导入 */}
-            {customWords.length > 0 && (
-              <button
-                onClick={() => start(customWords, '我导入的词单')}
-                className="w-full text-left p-5 rounded-xl border-2 border-dashed hover:shadow transition-all"
-                style={{ borderColor: 'var(--color-mustard)', background: 'var(--color-paper-warm)' }}
-              >
-                <div className="text-xs mb-1" style={{ color: 'var(--color-mustard)' }}>我的导入</div>
-                <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                  自定义词单 · {customWords.length} 个词
-                </div>
-              </button>
-            )}
           </div>
 
           <a
@@ -235,7 +234,7 @@ export default function LearnPage() {
             className="mt-4 block text-center text-sm underline"
             style={{ color: 'var(--color-ink-soft)' }}
           >
-            + 导入其他单元的词语（拍测试卷 / 贴词单）
+            + 导入其他单元的词语（导入后在「听写」里练）
           </a>
         </main>
       </div>

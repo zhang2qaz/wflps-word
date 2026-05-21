@@ -9,11 +9,11 @@ type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
 const LINKS: NavLink[] = [
   { href: '/learn', label: '学新字', group: 'kid' },
   { href: '/dictate', label: '听写', group: 'kid' },
-  { href: '/recite', label: '古诗句子', group: 'kid' },
+  { href: '/recite', label: '古诗', group: 'kid' },
   { href: '/review', label: '复习', group: 'kid' },
   { href: '/mistakes', label: '错题本', group: 'kid' },
   { href: '/import', label: '导入', group: 'parent' },
-  { href: '/progress', label: '家长报告', group: 'parent' },
+  { href: '/progress', label: '家长', group: 'parent' },
 ];
 
 export default function Nav() {

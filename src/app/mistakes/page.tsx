@@ -31,7 +31,8 @@ export default function MistakesPage() {
     const wordMap = new Map([...WORDS, ...customWords].map(w => [w.id, w]));
     const rows: Row[] = [];
     for (const p of Object.values(progress)) {
-      if (p.wrong <= 0) continue;
+      // 错题 = 累计默错过，或本次记录里仍有写错的字
+      if ((p.wrong ?? 0) <= 0 && (p.wrongChars?.length ?? 0) === 0) continue;
       const accuracy = p.correct + p.wrong === 0 ? 0 : p.correct / (p.correct + p.wrong);
       const level = masteryLevel(p);
       const w = wordMap.get(p.id);

@@ -113,9 +113,14 @@ export function binaryToGrade(correct: boolean, hintUsed = false): Grade {
   return hintUsed ? 3 : 5;
 }
 
+// 「已掌握」的统一判定 —— 全 App 只此一处定义
+export function isMastered(state: SrsState): boolean {
+  return state.reps >= 4 && state.interval >= 7;
+}
+
 export function masteryLevel(state: SrsState): 'new' | 'learning' | 'review' | 'mastered' {
   if (state.reps === 0 && state.lastReview === 0) return 'new';
+  if (isMastered(state)) return 'mastered';
   if (state.reps < 3) return 'learning';
-  if (state.interval < 21) return 'review';
-  return 'mastered';
+  return 'review';
 }

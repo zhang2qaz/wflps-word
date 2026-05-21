@@ -8,6 +8,7 @@ import AnswerCheck from '@/components/AnswerCheck';
 import HanziStrokes from '@/components/HanziStrokes';
 import { POEMS, SENTENCES, type Poem, type Sentence } from '@/data/vocabulary';
 import { useStore, selectDueRecite } from '@/lib/store';
+import { isMastered, type SrsState } from '@/lib/srs';
 import { useShallow } from 'zustand/react/shallow';
 import { speak, stopSpeak } from '@/lib/tts';
 
@@ -18,9 +19,9 @@ type View =
 
 type Status = 'new' | 'due' | 'learned' | 'mastered';
 
-function statusOf(p: { lastReview: number; reps: number; interval: number; nextDue: number } | undefined): Status {
+function statusOf(p: SrsState | undefined): Status {
   if (!p || p.lastReview === 0) return 'new';
-  if (p.reps >= 4 && p.interval >= 7) return 'mastered';
+  if (isMastered(p)) return 'mastered';
   if (p.nextDue <= Date.now()) return 'due';
   return 'learned';
 }
@@ -61,7 +62,6 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
   const progress = useStore(s => s.progress);
   const dueRecite = useStore(useShallow(s => selectDueRecite(s)));
 
-  // 按学期 + 单元归集
   const groups = Array.from(
     new Map(
       [...POEMS, ...SENTENCES].map(x => [`${x.semester}-${x.unit}`, { semester: x.semester, unit: x.unit }]),
@@ -83,7 +83,6 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
         练过的会进入<b>间隔复习</b>，到点会提醒。
       </p>
 
-      {/* 今日复习提示 */}
       {dueRecite.length > 0 && (
         <div
           className="mb-5 p-3 rounded-xl text-sm"
@@ -151,7 +150,7 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
 }
 
 // ============================================================
-// 古诗：学 → 逐句默写（逐字点选错字）→ 自评记录
+// 古诗：学 → 逐句默写（逐字点选错字）→ 按错字比例评分
 // ============================================================
 function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const recordAnswer = useStore(s => s.recordAnswer);
@@ -170,11 +169,11 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const allLinesDone = lineIdx >= poem.lines.length;
 
   useEffect(() => {
-    if (step === 'recite' && !allLinesDone && !revealed) {
+    if (step === 'recite' && !allLinesDone && !revealed && !correcting) {
       const t = setTimeout(() => speak(poem.lines[lineIdx].text, { rate: 0.62 }), 350);
       return () => clearTimeout(t);
     }
-  }, [step, lineIdx, allLinesDone, revealed, poem]);
+  }, [step, lineIdx, allLinesDone, revealed, correcting, poem]);
 
   const readWhole = async () => {
     for (const l of poem.lines) {
@@ -211,8 +210,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 
   // 进入下一句：把本句错字累加进总错字
   const nextLine = () => {
-    const lineText = poem.lines[lineIdx].text;
-    const lineWrong = Array.from(lineText).filter((_, i) => wrongIdx.has(i));
+    const lineWrong = Array.from(poem.lines[lineIdx].text).filter((_, i) => wrongIdx.has(i));
     setWrongCharsAll(prev => [...prev, ...lineWrong]);
     setRevealed(false);
     setCorrecting(false);
@@ -222,8 +220,12 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     setLineIdx(i => i + 1);
   };
 
-  const finish = (allWrong: string[]) => {
-    recordAnswer(poem.id, allWrong.length === 0, { wrongChars: allWrong });
+  // 整首默完：按错字比例评分（错一两个字不至于整首推倒重学）
+  const finish = () => {
+    const totalChars = poem.lines.reduce((s, l) => s + Array.from(l.text).length, 0);
+    const wc = wrongCharsAll.length;
+    const grade = wc === 0 ? 5 : wc <= Math.max(2, Math.ceil(totalChars * 0.1)) ? 3 : 1;
+    recordAnswer(poem.id, grade >= 3, { grade, wrongChars: wrongCharsAll });
     setRecorded(true);
   };
 
@@ -249,7 +251,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
         {([['learn', '1 · 读懂诗意'], ['recite', '2 · 逐句默写']] as const).map(([k, label]) => (
           <button
             key={k}
-            onClick={() => { setStep(k); restart(); }}
+            onClick={() => setStep(k)}
             className="text-sm px-4 py-1.5 rounded-full"
             style={
               step === k
@@ -317,7 +319,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
               🔊 朗读整首
             </button>
             <button
-              onClick={() => { setStep('recite'); restart(); }}
+              onClick={() => setStep('recite')}
               className="px-6 py-2.5 rounded-md font-medium"
               style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
             >
@@ -337,14 +339,14 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 《{poem.title}》默写完成！
               </h3>
               <p className="text-sm mb-4" style={{ color: 'var(--color-ink-soft)' }}>
-                已记入复习计划，到点会在「古诗句子」页提醒你再默一次。
+                已记入复习计划，到点会在「古诗」页提醒你再默一次。
               </p>
               {wrongCharsAll.length > 0 && (
-                <div className="inline-block text-left mb-5 px-4 py-2 rounded-lg" style={{ background: 'rgba(212,73,61,0.08)' }}>
+                <div className="inline-block mb-5 px-4 py-2 rounded-lg" style={{ background: 'rgba(212,73,61,0.08)' }}>
                   <span className="text-xs" style={{ color: 'var(--color-cinnabar)' }}>
                     这次写错的字（已进错题本）：
                   </span>
-                  <div className="flex flex-wrap gap-1.5 mt-1">
+                  <div className="flex flex-wrap gap-1.5 mt-1 justify-center">
                     {wrongCharsAll.map((c, i) => (
                       <span key={i} className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-cinnabar)' }}>{c}</span>
                     ))}
@@ -388,7 +390,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 </div>
               )}
               <button
-                onClick={() => finish(wrongCharsAll)}
+                onClick={finish}
                 className="px-6 py-3 rounded-md font-medium"
                 style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
               >
@@ -411,63 +413,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
               </button>
             </div>
 
-            {/* 写 / 对答案 / 订正 */}
-            {!revealed ? (
-              <>
-                <div className="mb-4">
-                  <WriteGrid ref={gridRef} count={lineText.length} />
-                </div>
-                <div className="flex justify-center gap-2">
-                  <button
-                    onClick={() => gridRef.current?.clear()}
-                    className="text-sm px-4 py-2 rounded-md border"
-                    style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
-                  >
-                    清空
-                  </button>
-                  <button
-                    onClick={onReveal}
-                    className="px-6 py-2.5 rounded-md font-medium"
-                    style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-                  >
-                    写好了，看答案
-                  </button>
-                </div>
-              </>
-            ) : !correcting ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div className="mb-3">
-                  <AnswerCheck target={lineText} empties={empties} shots={shots} wrong={wrongIdx} onToggle={toggleWrong} />
-                </div>
-                <div className="text-sm text-center mb-4" style={{ color: 'var(--color-ink-soft)' }}>
-                  {poem.lines[lineIdx].meaning}
-                </div>
-                <div className="flex justify-center gap-2">
-                  {wrongIdx.size > 0 && (
-                    <button
-                      onClick={() => setCorrecting(true)}
-                      className="px-5 py-2.5 rounded-md font-medium"
-                      style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
-                    >
-                      ✍️ 订正这 {wrongIdx.size} 个字
-                    </button>
-                  )}
-                  <button
-                    onClick={nextLine}
-                    className="px-5 py-2.5 rounded-md font-medium"
-                    style={
-                      wrongIdx.size > 0
-                        ? { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
-                        : { background: 'var(--color-jade)', color: 'var(--color-paper)' }
-                    }
-                  >
-                    {wrongIdx.size > 0
-                      ? '不订正，下一句'
-                      : lineIdx >= poem.lines.length - 1 ? '全写对了，完成 →' : '全写对了，下一句 →'}
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
+            {correcting ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="text-xs text-center mb-2" style={{ color: 'var(--color-ink-soft)' }}>
                   照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongIdx.size} 个字</b>各订正一遍 ✍️
@@ -485,6 +431,72 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                   </button>
                 </div>
               </motion.div>
+            ) : (
+              <>
+                {/* 写字格：write/对答案 共用同一实例，回去改不丢笔迹 */}
+                <div style={{ display: revealed ? 'none' : 'block' }} className="mb-4">
+                  <WriteGrid ref={gridRef} count={lineText.length} />
+                </div>
+
+                {!revealed ? (
+                  <div className="flex justify-center gap-2">
+                    <button
+                      onClick={() => gridRef.current?.clear()}
+                      className="text-sm px-4 py-2 rounded-md border"
+                      style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                    >
+                      清空
+                    </button>
+                    <button
+                      onClick={onReveal}
+                      className="px-6 py-2.5 rounded-md font-medium"
+                      style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+                    >
+                      写好了，看答案
+                    </button>
+                  </div>
+                ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="mb-3">
+                      <AnswerCheck target={lineText} empties={empties} shots={shots} wrong={wrongIdx} onToggle={toggleWrong} />
+                    </div>
+                    <div className="text-sm text-center mb-4" style={{ color: 'var(--color-ink-soft)' }}>
+                      {poem.lines[lineIdx].meaning}
+                    </div>
+                    <div className="flex justify-center gap-2 flex-wrap">
+                      <button
+                        onClick={() => setRevealed(false)}
+                        className="text-sm px-4 py-2 rounded-md border"
+                        style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                      >
+                        ← 回去改
+                      </button>
+                      {wrongIdx.size > 0 && (
+                        <button
+                          onClick={() => setCorrecting(true)}
+                          className="px-5 py-2.5 rounded-md font-medium"
+                          style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
+                        >
+                          ✍️ 订正这 {wrongIdx.size} 个字
+                        </button>
+                      )}
+                      <button
+                        onClick={nextLine}
+                        className="px-5 py-2.5 rounded-md font-medium"
+                        style={
+                          wrongIdx.size > 0
+                            ? { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
+                            : { background: 'var(--color-jade)', color: 'var(--color-paper)' }
+                        }
+                      >
+                        {wrongIdx.size > 0
+                          ? '不订正，下一句'
+                          : lineIdx >= poem.lines.length - 1 ? '全写对了，完成 →' : '全写对了，下一句 →'}
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </>
             )}
           </motion.div>
         )
@@ -494,7 +506,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 }
 
 // ============================================================
-// 句子：整句听写 →（逐字点选错字）→ 只订正错字 → 记录
+// 句子：整句听写 →（逐字点选错字）→ 只订正错字 → 按错字比例评分
 // ============================================================
 function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () => void }) {
   const recordAnswer = useStore(s => s.recordAnswer);
@@ -540,11 +552,17 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
 
   const confirmCheck = () => {
     if (wrong.size === 0) {
-      recordAnswer(sentence.id, true, { wrongChars: [] });
+      recordAnswer(sentence.id, true, { grade: 5, wrongChars: [] });
       setPhase('done');
     } else {
       setPhase('redo');
     }
+  };
+
+  const finishRedo = () => {
+    const grade = wrongChars.length <= Math.max(1, Math.ceil(chars.length * 0.1)) ? 3 : 1;
+    recordAnswer(sentence.id, grade >= 3, { grade, wrongChars });
+    setPhase('done');
   };
 
   return (
@@ -574,11 +592,7 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
             </div>
           )}
           <div className="flex justify-center gap-3">
-            <button
-              onClick={reset}
-              className="px-5 py-2.5 rounded-md border"
-              style={{ borderColor: 'var(--color-stone-dark)' }}
-            >
+            <button onClick={reset} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
               再写一遍
             </button>
             <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
@@ -596,7 +610,7 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
           </div>
           <div className="flex justify-center">
             <button
-              onClick={() => { recordAnswer(sentence.id, false, { wrongChars }); setPhase('done'); }}
+              onClick={finishRedo}
               className="px-6 py-2.5 rounded-md font-medium"
               style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
             >
@@ -604,67 +618,83 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
             </button>
           </div>
         </motion.div>
-      ) : phase === 'check' ? (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className="mb-3">
-            <AnswerCheck target={sentence.text} empties={empties} shots={shots} wrong={wrong} onToggle={toggle} />
-          </div>
-          <div className="text-center">
-            <button
-              onClick={confirmCheck}
-              className="px-7 py-3 rounded-md font-medium"
-              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-            >
-              对完了 →
-            </button>
-            <p className="text-xs mt-2" style={{ color: 'var(--color-ink-soft)' }}>
-              把写错的字都点出来再继续
-            </p>
-          </div>
-        </motion.div>
       ) : (
         <>
-          <div
-            className="rounded-xl p-3 mb-4 text-sm flex gap-2"
-            style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
-          >
-            <span>💡</span>
-            <span>{sentence.tip}</span>
-          </div>
+          {phase === 'write' && (
+            <>
+              <div
+                className="rounded-xl p-3 mb-4 text-sm flex gap-2"
+                style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
+              >
+                <span>💡</span>
+                <span>{sentence.tip}</span>
+              </div>
+              <div className="text-center mb-4">
+                <button
+                  onClick={() => speak(sentence.text, { rate: 0.72 })}
+                  className="px-5 py-3 rounded-full font-medium"
+                  style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+                >
+                  🔊 再听一遍
+                </button>
+              </div>
+              <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
+                一格写一个字，标点也要占一格
+              </div>
+            </>
+          )}
 
-          <div className="text-center mb-4">
-            <button
-              onClick={() => speak(sentence.text, { rate: 0.72 })}
-              className="px-5 py-3 rounded-full font-medium"
-              style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
-            >
-              🔊 再听一遍
-            </button>
-          </div>
-
-          <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
-            一格写一个字，标点也要占一格
-          </div>
-          <div className="mb-4">
+          {/* 写字格：write/对答案 共用同一实例，回去改不丢笔迹 */}
+          <div style={{ display: phase === 'check' ? 'none' : 'block' }} className="mb-4">
             <WriteGrid ref={gridRef} count={chars.length} />
           </div>
 
-          <div className="flex justify-center gap-2">
-            <button
-              onClick={() => gridRef.current?.clear()}
-              className="text-sm px-4 py-2 rounded-md border"
-              style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
-            >
-              清空
-            </button>
-            <button
-              onClick={toCheck}
-              className="px-6 py-2.5 rounded-md font-medium"
-              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-            >
-              写好了，看答案
-            </button>
-          </div>
+          {phase === 'check' && (
+            <div className="mb-4">
+              <AnswerCheck target={sentence.text} empties={empties} shots={shots} wrong={wrong} onToggle={toggle} />
+            </div>
+          )}
+
+          {phase === 'write' ? (
+            <div className="flex justify-center gap-2">
+              <button
+                onClick={() => gridRef.current?.clear()}
+                className="text-sm px-4 py-2 rounded-md border"
+                style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+              >
+                清空
+              </button>
+              <button
+                onClick={toCheck}
+                className="px-6 py-2.5 rounded-md font-medium"
+                style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+              >
+                写好了，看答案
+              </button>
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className="flex justify-center gap-2">
+                <button
+                  onClick={() => setPhase('write')}
+                  className="text-sm px-4 py-2 rounded-md border"
+                  style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                >
+                  ← 回去改
+                </button>
+                <button
+                  onClick={confirmCheck}
+                  className="px-7 py-3 rounded-md font-medium"
+                  style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+                >
+                  对完了 →
+                </button>
+              </div>
+              <p className="text-xs mt-2" style={{ color: 'var(--color-ink-soft)' }}>
+                把写错的字都点出来再继续
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -98,8 +98,20 @@ export default function DictatePage() {
 
 
           <div className="text-xs tracking-wide mb-3" style={{ color: 'var(--color-vermilion)' }}>
-            世外小学 · 国际部 P2 · 二年级下册
+            世外小学 · 国际部 P2
           </div>
+          {groups.some(g => g.draft) && (
+            <div
+              className="mb-4 p-3 rounded-lg text-sm flex gap-2"
+              style={{ background: 'rgba(224,163,42,0.1)', border: '1px dashed var(--color-mustard)' }}
+            >
+              <span>⚠️</span>
+              <span>
+                标<b style={{ color: 'var(--color-mustard)' }}>「草稿」</b>的单元为统编版标准词表，
+                <b>未对照世外默写卷</b>，请家长核对后再用。已核对：二下第五、六单元。
+              </span>
+            </div>
+          )}
           <div className="space-y-7 mb-6">
             {groups.map(g => {
               const unitWords = g.lessons.flatMap(l => l.words);

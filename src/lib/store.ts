@@ -2,12 +2,17 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { defaultSrs, review, isDue, binaryToGrade, type SrsState, type Grade } from './srs';
-import { WORDS, POEMS, SENTENCES, isReciteId, type Word } from '@/data/vocabulary';
+import { defaultSrs, review, isDue, isMastered, binaryToGrade, type SrsState, type Grade } from './srs';
+import { WORDS, POEMS, SENTENCES, isReciteId, currentPosition, unitWords, type Word } from '@/data/vocabulary';
 
 type WordProgress = SrsState & { id: string; errorTags?: string[]; wrongChars?: string[] };
 
-export type AnswerOpts = { hintUsed?: boolean; errorTags?: string[]; wrongChars?: string[] };
+export type AnswerOpts = {
+  hintUsed?: boolean;
+  errorTags?: string[];
+  wrongChars?: string[];
+  grade?: Grade;       // 直接指定 SRS 评分（古诗/句子按错字比例评分时用）
+};
 
 type SessionStats = {
   date: string;
@@ -66,19 +71,15 @@ export const useStore = create<State>()(
       setChildName: (name) => set({ childName: name }),
 
       recordAnswer: (id, correct, opts = {}) => {
-        const { hintUsed = false, errorTags = [], wrongChars = [] } = opts;
-        const grade = binaryToGrade(correct, hintUsed);
+        const { hintUsed = false, errorTags = [], wrongChars = [], grade } = opts;
+        const g: Grade = grade ?? binaryToGrade(correct, hintUsed);
         const cur = getProgress(get(), id);
-        const next = review(cur, grade);
+        const next = review(cur, g);
         set(s => ({
           progress: {
             ...s.progress,
-            [id]: {
-              id,
-              ...next,
-              errorTags: correct ? [] : errorTags,
-              wrongChars: correct ? [] : wrongChars,
-            },
+            // errorTags / wrongChars 直接按传入值存（调用方负责传 [] 清空）
+            [id]: { id, ...next, errorTags, wrongChars },
           },
           history: updateTodayStats(s.history, {
             reviewed: 1,
@@ -150,6 +151,18 @@ export function selectDueRecite(state: State, now: number = Date.now()): string[
   return selectAllDue(state, now).filter(id => isReciteId(id));
 }
 
+// 当前学习单元里「到期该复习」的字 —— 复习页 / 首页 / 家长报告统一口径
+export function selectUnitReviewDue(state: State, now: number = Date.now()): string[] {
+  const pos = currentPosition(id => (state.progress[id]?.lastReview ?? 0) !== 0);
+  return unitWords(pos.grade, pos.semester, pos.unit)
+    .filter(w => {
+      const p = state.progress[w.id];
+      return !!p && p.lastReview !== 0 && isDue(p, now);
+    })
+    .sort((a, b) => (state.progress[a.id]!.nextDue - state.progress[b.id]!.nextDue))
+    .map(w => w.id);
+}
+
 export function selectMistakeWords(state: State): string[] {
   return Object.values(state.progress)
     .filter(p => p.wrong > 0 && p.wrong >= p.correct - 1)
@@ -170,8 +183,8 @@ export function selectStats(state: State) {
   // 总数 = 词语（含导入）+ 古诗 + 句子
   const total = allWords(state).length + POEMS.length + SENTENCES.length;
   const learned = Object.values(state.progress).filter(p => p.lastReview !== 0).length;
-  const mastered = Object.values(state.progress).filter(p => p.reps >= 4 && p.interval >= 7).length;
-  const due = selectDueWords(state).length + selectDueRecite(state).length;
+  const mastered = Object.values(state.progress).filter(p => isMastered(p)).length;
+  const due = selectUnitReviewDue(state).length;
   const todays = state.history.find(h => h.date === todayKey());
   const streak = computeStreak(state.history);
   return { total, learned, mastered, due, todays, streak };

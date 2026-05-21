@@ -4,10 +4,9 @@ import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
-import { useStore, selectStats, selectDueWords, selectMistakeWords, selectNewWords } from '@/lib/store';
+import { useStore, selectStats, selectMistakeWords, selectNewWords } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { useEffect, useMemo, useState } from 'react';
-import { currentPosition, unitWords } from '@/data/vocabulary';
+import { useEffect, useState } from 'react';
 
 // 三步主循环：学 → 写 → 复习
 const FLOW = [
@@ -41,15 +40,10 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const stats = useStore(useShallow(selectStats));
-  const dueCount = useStore(s => selectDueWords(s).length);
+  // 待复习 = 当前学习单元里到期的字（与复习页同口径）
+  const dueCount = stats.due;
   const mistakeCount = useStore(s => selectMistakeWords(s).length);
   const newCount = useStore(s => selectNewWords(s).length);
-  const progress = useStore(useShallow(s => s.progress));
-  // 复习 = 当前学习单元里已学过的字
-  const unitReviewCount = useMemo(() => {
-    const pos = currentPosition(id => !!progress[id]?.lastReview);
-    return unitWords(pos.grade, pos.semester, pos.unit).filter(w => progress[w.id]?.lastReview).length;
-  }, [progress]);
   const childName = useStore(s => s.childName);
   const setChildName = useStore(s => s.setChildName);
   const [editingName, setEditingName] = useState(false);
@@ -77,7 +71,7 @@ export default function Home() {
                     上海市世界外国语小学 · 校本版
                   </span>
                   <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                    WFLPS 国际部 P2 · 二年级下册（第五、六单元）
+                    WFLPS 国际部 P2 · 二下（已核对）· 三上 / 三下（统编版）
                   </span>
                 </div>
               </div>
@@ -143,7 +137,7 @@ export default function Home() {
         {/* Stats strip */}
         {mounted && (
           <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-            <StatCard label="本单元复习" value={unitReviewCount} accent="var(--color-vermilion)" hint={unitReviewCount > 0 ? '当前学习单元' : '本单元还没学字'} />
+            <StatCard label="本单元待复习" value={dueCount} accent="var(--color-vermilion)" hint={dueCount > 0 ? '到点该默的字' : '暂时没有到期的'} />
             <StatCard label="已学" value={stats.learned} accent="var(--color-jade)" hint={`共 ${stats.total} 字`} />
             <StatCard label="已掌握" value={stats.mastered} accent="var(--color-mustard)" hint="连续答对 4+ 次" />
             <StatCard label="坚持天数" value={stats.streak} accent="var(--color-cinnabar)" hint="🔥 加油" />
@@ -152,12 +146,7 @@ export default function Home() {
 
         {/* Recommend pill */}
         {mounted && (
-          <RecommendBar
-            dueCount={dueCount}
-            unitReviewCount={unitReviewCount}
-            mistakeCount={mistakeCount}
-            newCount={newCount}
-          />
+          <RecommendBar dueCount={dueCount} mistakeCount={mistakeCount} newCount={newCount} />
         )}
 
         {/* 学习路线图 */}
@@ -306,10 +295,10 @@ function StatCard({ label, value, accent, hint }: { label: string; value: number
   );
 }
 
-function RecommendBar({ dueCount, unitReviewCount, mistakeCount, newCount }: { dueCount: number; unitReviewCount: number; mistakeCount: number; newCount: number }) {
+function RecommendBar({ dueCount, mistakeCount, newCount }: { dueCount: number; mistakeCount: number; newCount: number }) {
   let action: { href: string; label: string; reason: string };
-  if (dueCount > 0 && unitReviewCount > 0) {
-    action = { href: '/review', label: `去复习本单元 ${unitReviewCount} 个字 →`, reason: '本单元有字到点了，先默一遍最高效' };
+  if (dueCount > 0) {
+    action = { href: '/review', label: `去复习本单元 ${dueCount} 个到期的字 →`, reason: '本单元有字到点了，先默一遍最高效' };
   } else if (mistakeCount > 0) {
     action = { href: '/mistakes', label: `攻克 ${mistakeCount} 个错题 →`, reason: '错题本里的字需要重点强化' };
   } else if (newCount > 0) {

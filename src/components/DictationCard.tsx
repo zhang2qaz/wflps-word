@@ -135,15 +135,16 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         )}
       </motion.div>
 
-      {/* ---------- 中间 ---------- */}
-      {phase === 'write' && (
+      {/* ---------- 中间 ----------
+          write / check 共用同一个写字格实例 → 点「回去改」不丢笔迹 */}
+      {phase !== 'redo' && (
         <div className="mb-4">
-          <WriteGrid ref={gridRef} count={n} />
-        </div>
-      )}
-      {phase === 'check' && (
-        <div className="mb-4">
-          <AnswerCheck target={word.char} empties={empties} shots={shots} wrong={wrong} onToggle={toggle} />
+          <div style={{ display: phase === 'check' ? 'none' : 'block' }}>
+            <WriteGrid ref={gridRef} count={n} />
+          </div>
+          {phase === 'check' && (
+            <AnswerCheck target={word.char} empties={empties} shots={shots} wrong={wrong} onToggle={toggle} />
+          )}
         </div>
       )}
       {phase === 'redo' && (
@@ -179,13 +180,22 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
         {phase === 'check' && (
           !confirmed ? (
             <div className="text-center mt-5">
-              <button
-                onClick={() => setConfirmed(true)}
-                className="px-7 py-3 rounded-md font-medium"
-                style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-              >
-                对完了 →
-              </button>
+              <div className="flex justify-center gap-2">
+                <button
+                  onClick={() => setPhase('write')}
+                  className="text-sm px-4 py-2 rounded-md border"
+                  style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                >
+                  ← 回去改改
+                </button>
+                <button
+                  onClick={() => setConfirmed(true)}
+                  className="px-7 py-3 rounded-md font-medium"
+                  style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+                >
+                  对完了 →
+                </button>
+              </div>
               <p className="text-xs mt-2" style={{ color: 'var(--color-ink-soft)' }}>
                 把写错的字都点出来再继续
               </p>

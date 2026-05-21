@@ -85,7 +85,7 @@ export default function ImportPage() {
             className="mb-5 p-3 rounded-lg text-sm"
             style={{ background: 'rgba(45,138,111,0.12)', color: 'var(--color-jade)' }}
           >
-            ✓ 已保存！可以去「听写」或「复习」里练这份词单了。
+            ✓ 已保存！可以去「听写」里练这份词单了（导入词单只支持听写）。
           </div>
         )}
 

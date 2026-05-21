@@ -6,6 +6,7 @@ import WriteCanvas, { type WriteCanvasHandle } from './WriteCanvas';
 export type WriteGridHandle = {
   clear: () => void;
   isEmpty: () => boolean;
+  cells: () => { empty: boolean; image: string }[];  // 每格的状态（错字自动识别用）
 };
 
 type Props = {
@@ -30,7 +31,11 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
   useImperativeHandle(ref, () => ({
     clear: () => refs.current.forEach(r => r?.clear()),
     isEmpty: () => refs.current.every(r => r?.isEmpty() ?? true),
-  }), []);
+    cells: () => Array.from({ length: n }).map((_, i) => ({
+      empty: refs.current[i]?.isEmpty() ?? true,
+      image: refs.current[i]?.toDataURL() ?? '',
+    })),
+  }), [n]);
 
   return (
     <div className="flex flex-wrap justify-center" style={{ gap }}>

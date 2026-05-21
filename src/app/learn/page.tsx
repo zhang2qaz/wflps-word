@@ -27,9 +27,11 @@ export default function LearnPage() {
 
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
+    // 跳到上次学到的位置：第一个还没学过的词
+    const firstNew = words.findIndex(w => !progress[w.id]?.lastReview);
     setQueue(words);
     setQueueName(name);
-    setIdx(0);
+    setIdx(firstNew >= 0 ? firstNew : 0);
   };
 
   // ---------- 选择界面 ----------

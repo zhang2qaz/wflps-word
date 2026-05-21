@@ -160,6 +160,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [correcting, setCorrecting] = useState(false);
   const [recorded, setRecorded] = useState(false);
   const [strokeLine, setStrokeLine] = useState<number | null>(null);
+  const [wrongIdx, setWrongIdx] = useState<Set<number>>(new Set());
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
   const allLinesDone = lineIdx >= poem.lines.length;
@@ -182,6 +183,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     gridRef.current?.clear();
     setRevealed(false);
     setCorrecting(false);
+    setWrongIdx(new Set());
     setLineIdx(i => i + 1);
   };
 
@@ -190,7 +192,18 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     setRecorded(true);
   };
 
-  const restart = () => { setLineIdx(0); setRevealed(false); setCorrecting(false); setRecorded(false); };
+  const restart = () => {
+    setLineIdx(0); setRevealed(false); setCorrecting(false);
+    setWrongIdx(new Set()); setRecorded(false);
+  };
+
+  const toggleWrong = (ci: number) => {
+    setWrongIdx(prev => {
+      const next = new Set(prev);
+      if (next.has(ci)) next.delete(ci); else next.add(ci);
+      return next;
+    });
+  };
 
   return (
     <div>
@@ -358,9 +371,13 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
             ) : (
               <div className="mb-4">
                 <div className="text-xs text-center mb-1" style={{ color: 'var(--color-ink-soft)' }}>
-                  照着浅色的字，把这一句订正一遍 ✍️
+                  照着浅色的字，把<b style={{ color: 'var(--color-cinnabar)' }}>写错的 {wrongIdx.size} 个字</b>各订正一遍 ✍️
                 </div>
-                <WriteGrid ref={redoRef} count={poem.lines[lineIdx].text.length} guide={poem.lines[lineIdx].text} />
+                <WriteGrid
+                  ref={redoRef}
+                  count={wrongIdx.size}
+                  guide={Array.from(poem.lines[lineIdx].text).filter((_, ci) => wrongIdx.has(ci)).join('')}
+                />
               </div>
             )}
 
@@ -383,35 +400,60 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
               </div>
             ) : !correcting ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
-                <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>正确答案</div>
-                <div className="text-2xl font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                  {poem.lines[lineIdx].text}
+                <div className="text-xs mb-2" style={{ color: 'var(--color-vermilion)' }}>
+                  正确答案 · 点一下你<b>写错的字</b>
                 </div>
-                <div className="text-sm mb-5" style={{ color: 'var(--color-ink-soft)' }}>
+                <div className="flex justify-center gap-1.5 flex-wrap mb-2">
+                  {Array.from(poem.lines[lineIdx].text).map((c, ci) => {
+                    const isWrong = wrongIdx.has(ci);
+                    return (
+                      <button
+                        key={ci}
+                        onClick={() => toggleWrong(ci)}
+                        className="text-2xl font-bold rounded-lg flex items-center justify-center"
+                        style={{
+                          width: 44, height: 44,
+                          fontFamily: 'var(--font-serif-cn)',
+                          background: isWrong ? 'var(--color-cinnabar)' : 'var(--color-paper-warm)',
+                          color: isWrong ? 'var(--color-paper)' : 'var(--color-ink)',
+                          border: `1px solid ${isWrong ? 'var(--color-cinnabar)' : 'var(--color-stone-dark)'}`,
+                        }}
+                      >
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="text-sm mb-4" style={{ color: 'var(--color-ink-soft)' }}>
                   {poem.lines[lineIdx].meaning}
                 </div>
                 <div className="flex justify-center gap-2">
-                  <button
-                    onClick={() => setCorrecting(true)}
-                    className="px-5 py-2.5 rounded-md font-medium border-2"
-                    style={{ borderColor: 'var(--color-vermilion)', color: 'var(--color-vermilion)' }}
-                  >
-                    ✍️ 订正这一句
-                  </button>
+                  {wrongIdx.size > 0 && (
+                    <button
+                      onClick={() => setCorrecting(true)}
+                      className="px-5 py-2.5 rounded-md font-medium"
+                      style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
+                    >
+                      ✍️ 订正这 {wrongIdx.size} 个字
+                    </button>
+                  )}
                   <button
                     onClick={nextLine}
                     className="px-5 py-2.5 rounded-md font-medium"
-                    style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
+                    style={
+                      wrongIdx.size > 0
+                        ? { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
+                        : { background: 'var(--color-jade)', color: 'var(--color-paper)' }
+                    }
                   >
-                    {lineIdx >= poem.lines.length - 1 ? '完成默写 →' : '写对了，下一句 →'}
+                    {wrongIdx.size > 0
+                      ? '不订正，下一句'
+                      : lineIdx >= poem.lines.length - 1 ? '全写对了，完成 →' : '全写对了，下一句 →'}
                   </button>
                 </div>
               </motion.div>
             ) : (
               <div className="text-center">
-                <div className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
-                  正确答案：<b style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-serif-cn)' }}>{poem.lines[lineIdx].text}</b>
-                </div>
                 <button
                   onClick={nextLine}
                   className="px-6 py-2.5 rounded-md font-medium"

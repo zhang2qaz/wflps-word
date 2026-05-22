@@ -1488,6 +1488,7 @@ export type PoemLine = {
   text: string;       // 诗句
   pinyin: string;     // 整句拼音
   meaning: string;    // 这句的意思
+  tts?: string;       // 朗读专用文本（多音字用同音字替换，纠正浏览器读音）
 };
 
 export type Poem = {
@@ -1555,7 +1556,7 @@ export const POEMS: Poem[] = [
     theme: '诗人凭窗远望，用黄、翠、白、青四种颜色，画出一幅明媚生动的早春图。',
     lines: [
       { text: '两个黄鹂鸣翠柳', pinyin: 'liǎng gè huáng lí míng cuì liǔ', meaning: '两只黄鹂在翠绿的柳树上欢快鸣叫，' },
-      { text: '一行白鹭上青天', pinyin: 'yì háng bái lù shàng qīng tiān', meaning: '一行白鹭飞向蔚蓝的天空。' },
+      { text: '一行白鹭上青天', pinyin: 'yì háng bái lù shàng qīng tiān', meaning: '一行白鹭飞向蔚蓝的天空。', tts: '一航白鹭上青天' },
       { text: '窗含西岭千秋雪', pinyin: 'chuāng hán xī lǐng qiān qiū xuě', meaning: '窗口正好框住西岭上终年不化的积雪，' },
       { text: '门泊东吴万里船', pinyin: 'mén bó dōng wú wàn lǐ chuán', meaning: '门外停泊着将要驶往万里之外东吴的船。' },
     ],

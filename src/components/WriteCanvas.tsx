@@ -51,7 +51,16 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
     snapshot: () => {
       const c = canvasRef.current;
       if (!c || empty) return null;
-      try { return c.toDataURL('image/png'); } catch { return null; }
+      try {
+        // 缩小到 80×80 再导出 —— 既够看清，又方便存进错题本 / 同步
+        const out = document.createElement('canvas');
+        out.width = 80;
+        out.height = 80;
+        const octx = out.getContext('2d');
+        if (!octx) return c.toDataURL('image/png');
+        octx.drawImage(c, 0, 0, 80, 80);
+        return out.toDataURL('image/png');
+      } catch { return null; }
     },
   }), [empty]);
 

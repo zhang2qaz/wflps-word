@@ -60,7 +60,7 @@ export default function ReviewPage() {
 
   const handleDone = (r: DictationResult) => {
     const current = queue[idx];
-    recordAnswer(current.id, r.correct, { hintUsed: r.hintUsed, errorTags: r.errorTags, wrongChars: r.wrongChars });
+    recordAnswer(current.id, r.correct, { hintUsed: r.hintUsed, errorTags: r.errorTags, wrongChars: r.wrongChars, wrongShots: r.wrongShots });
     if (idx >= queue.length - 1) setDone(true);
     else setIdx((i) => i + 1);
   };

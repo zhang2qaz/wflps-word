@@ -13,6 +13,7 @@ export type DictationResult = {
   hintUsed: boolean;
   errorTags: string[];
   wrongChars: string[];
+  wrongShots: (string | null)[];   // 写错的字 · 手写图（供错题本回看）
 };
 
 type Props = {
@@ -86,6 +87,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
 
   const correct = wrong.size === 0;
   const wrongChars = chars.filter((_, i) => wrong.has(i));
+  const wrongShots = chars.map((_, i) => shots[i] ?? null).filter((_, i) => wrong.has(i));
   const errorTags = deriveTags(word, wrong, empties);
   // 记忆强度：答对后这个字会变强几格
   const strengthBefore = memoryStrength(srs);
@@ -226,7 +228,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
               wrongChars={wrongChars}
               strength={strengthAfter}
               strengthGained={strengthAfter > strengthBefore}
-              onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags, wrongChars })}
+              onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags, wrongChars, wrongShots })}
               onRedo={() => { setPhase('redo'); setTimeout(() => speak('照着正确答案，再写一遍'), 200); }}
             />
           )
@@ -235,7 +237,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
         {phase === 'redo' && (
           <div className="flex justify-center">
             <button
-              onClick={() => onDone({ correct: false, hintUsed: hintLevel > 0, errorTags, wrongChars })}
+              onClick={() => onDone({ correct: false, hintUsed: hintLevel > 0, errorTags, wrongChars, wrongShots })}
               className="px-6 py-2.5 rounded-md font-medium"
               style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
             >

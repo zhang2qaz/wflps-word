@@ -5,12 +5,18 @@ import { persist } from 'zustand/middleware';
 import { defaultSrs, review, isDue, isMastered, binaryToGrade, type SrsState, type Grade } from './srs';
 import { WORDS, POEMS, SENTENCES, isReciteId, currentPosition, unitWords, type Word } from '@/data/vocabulary';
 
-type WordProgress = SrsState & { id: string; errorTags?: string[]; wrongChars?: string[] };
+type WordProgress = SrsState & {
+  id: string;
+  errorTags?: string[];
+  wrongChars?: string[];
+  wrongShots?: (string | null)[];   // 写错的字 · 孩子的手写图（供错题本回看）
+};
 
 export type AnswerOpts = {
   hintUsed?: boolean;
   errorTags?: string[];
   wrongChars?: string[];
+  wrongShots?: (string | null)[];
   grade?: Grade;       // 直接指定 SRS 评分（古诗/句子按错字比例评分时用）
 };
 
@@ -75,7 +81,7 @@ export const useStore = create<State>()(
       setMilestoneSeen: (n) => set({ milestoneSeen: n }),
 
       recordAnswer: (id, correct, opts = {}) => {
-        const { hintUsed = false, errorTags = [], wrongChars = [], grade } = opts;
+        const { hintUsed = false, errorTags = [], wrongChars = [], wrongShots = [], grade } = opts;
         const g: Grade = grade ?? binaryToGrade(correct, hintUsed);
         const cur = getProgress(get(), id);
         const next = review(cur, g);
@@ -86,8 +92,8 @@ export const useStore = create<State>()(
         set(s => ({
           progress: {
             ...s.progress,
-            // errorTags / wrongChars 直接按传入值存（调用方负责传 [] 清空）
-            [id]: { id, ...next, errorTags, wrongChars },
+            // errorTags / wrongChars / wrongShots 直接按传入值存（调用方负责传 [] 清空）
+            [id]: { id, ...next, errorTags, wrongChars, wrongShots },
           },
           history: updateTodayStats(s.history, {
             reviewed: 1,

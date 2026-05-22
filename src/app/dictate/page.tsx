@@ -63,7 +63,7 @@ export default function DictatePage() {
 
   const handleDone = (r: DictationResult) => {
     const current = queue[idx];
-    recordAnswer(current.id, r.correct, { hintUsed: r.hintUsed, errorTags: r.errorTags, wrongChars: r.wrongChars });
+    recordAnswer(current.id, r.correct, { hintUsed: r.hintUsed, errorTags: r.errorTags, wrongChars: r.wrongChars, wrongShots: r.wrongShots });
     setResult(rs => [...rs, { id: current.id, word: current.char, correct: r.correct }]);
     if (idx >= queue.length - 1) setDone(true);
     else setIdx(i => i + 1);

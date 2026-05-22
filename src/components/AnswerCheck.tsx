@@ -12,19 +12,24 @@ type Props = {
   shots?: (string | null)[];       // 孩子手写快照（本地 PNG dataURL）
   wrong: Set<number>;              // 当前被标错的格子下标
   onToggle: (i: number) => void;   // 点选/取消某一格
+  readOnly?: boolean;              // 只读：用于回看（不可点选、无操作提示）
 };
 
-export default function AnswerCheck({ target, empties = [], shots = [], wrong, onToggle }: Props) {
+export default function AnswerCheck({ target, empties = [], shots = [], wrong, onToggle, readOnly = false }: Props) {
   const chars = Array.from(target);
 
   return (
     <div>
-      <div className="text-xs text-center mb-1" style={{ color: 'var(--color-vermilion)' }}>
-        把<b>你写的</b>和<b>正确答案</b>逐格对照
-      </div>
-      <div className="text-xs text-center mb-3" style={{ color: 'var(--color-ink-soft)' }}>
-        点一下写错的字（写歪了、多笔少笔都算错）· 空着没写的已自动标红
-      </div>
+      {!readOnly && (
+        <>
+          <div className="text-xs text-center mb-1" style={{ color: 'var(--color-vermilion)' }}>
+            把<b>你写的</b>和<b>正确答案</b>逐格对照
+          </div>
+          <div className="text-xs text-center mb-3" style={{ color: 'var(--color-ink-soft)' }}>
+            点一下写错的字（写歪了、多笔少笔都算错）· 空着没写的已自动标红
+          </div>
+        </>
+      )}
 
       <div className="flex flex-wrap justify-center gap-1.5">
         {chars.map((c, i) => {
@@ -35,7 +40,7 @@ export default function AnswerCheck({ target, empties = [], shots = [], wrong, o
             <button
               key={i}
               type="button"
-              onClick={() => onToggle(i)}
+              onClick={readOnly ? undefined : () => onToggle(i)}
               className="relative flex flex-col items-center rounded-lg overflow-hidden"
               style={{
                 width: 58,

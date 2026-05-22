@@ -163,20 +163,24 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [shots, setShots] = useState<(string | null)[]>([]);
   const [empties, setEmpties] = useState<boolean[]>([]);
   const [wrongCharsAll, setWrongCharsAll] = useState<string[]>([]);
+  const [wrongShotsAll, setWrongShotsAll] = useState<(string | null)[]>([]);
+  const [lineRecords, setLineRecords] = useState<{ text: string; shots: (string | null)[]; wrong: number[] }[]>([]);
+  const [showReview, setShowReview] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
   const allLinesDone = lineIdx >= poem.lines.length;
 
   useEffect(() => {
     if (step === 'recite' && !allLinesDone && !revealed && !correcting) {
-      const t = setTimeout(() => speak(poem.lines[lineIdx].text, { rate: 0.62 }), 350);
+      const ln = poem.lines[lineIdx];
+      const t = setTimeout(() => speak(ln.tts ?? ln.text, { rate: 0.62 }), 350);
       return () => clearTimeout(t);
     }
   }, [step, lineIdx, allLinesDone, revealed, correcting, poem]);
 
   const readWhole = async () => {
     for (const l of poem.lines) {
-      await speak(l.text, { rate: 0.62 });
+      await speak(l.tts ?? l.text, { rate: 0.62 });
       await new Promise(r => setTimeout(r, 250));
     }
   };
@@ -184,7 +188,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const restart = () => {
     setLineIdx(0); setRevealed(false); setCorrecting(false);
     setWrongIdx(new Set()); setShots([]); setEmpties([]);
-    setWrongCharsAll([]);
+    setWrongCharsAll([]); setWrongShotsAll([]); setLineRecords([]); setShowReview(false);
   };
 
   // 看答案：抓快照，空格自动标红
@@ -207,12 +211,17 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     });
   };
 
-  // 进入下一句：累加本句错字；最后一句默完 → 立刻记账进错题本
+  // 进入下一句：累加本句错字 + 手写；最后一句默完 → 立刻记账进错题本
   const nextLine = () => {
-    const lineWrong = Array.from(poem.lines[lineIdx].text).filter((_, i) => wrongIdx.has(i));
+    const lineChars = Array.from(poem.lines[lineIdx].text);
+    const lineWrong = lineChars.filter((_, i) => wrongIdx.has(i));
+    const lineWrongShots = lineChars.map((_, i) => shots[i] ?? null).filter((_, i) => wrongIdx.has(i));
     const allWrong = [...wrongCharsAll, ...lineWrong];
+    const allWrongShots = [...wrongShotsAll, ...lineWrongShots];
     const isLast = lineIdx >= poem.lines.length - 1;
     setWrongCharsAll(allWrong);
+    setWrongShotsAll(allWrongShots);
+    setLineRecords(prev => [...prev, { text: poem.lines[lineIdx].text, shots: [...shots], wrong: [...wrongIdx] }]);
     setRevealed(false);
     setCorrecting(false);
     setWrongIdx(new Set());
@@ -225,11 +234,12 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
       const wc = allWrong.length;
       // 评分宽松：错一两个字不至于整首推倒重学；但有错字一律计为「错」
       const grade = wc === 0 ? 5 : wc <= Math.max(2, Math.ceil(totalChars * 0.1)) ? 3 : 1;
-      recordAnswer(poem.id, wc === 0, { grade, wrongChars: allWrong });
+      recordAnswer(poem.id, wc === 0, { grade, wrongChars: allWrong, wrongShots: allWrongShots });
     }
   };
 
   const lineText = allLinesDone ? '' : poem.lines[lineIdx].text;
+  const lineTts = allLinesDone ? '' : (poem.lines[lineIdx].tts ?? poem.lines[lineIdx].text);
   const wrongCharsThisLine = Array.from(lineText).filter((_, i) => wrongIdx.has(i));
 
   return (
@@ -288,7 +298,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 <div className="text-xl font-bold mb-1 flex items-center gap-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
                   <span>{l.text}</span>
                   <button
-                    onClick={() => speak(l.text, { rate: 0.62 })}
+                    onClick={() => speak(l.tts ?? l.text, { rate: 0.62 })}
                     className="text-xs px-2 py-0.5 rounded border"
                     style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
                   >
@@ -358,6 +368,38 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 </div>
               </>
             )}
+
+            {/* 逐句回看：这次每句到底写成什么样 */}
+            {lineRecords.length > 0 && (
+              <div className="mb-5">
+                <button
+                  onClick={() => setShowReview(v => !v)}
+                  className="text-xs underline"
+                  style={{ color: 'var(--color-ink-soft)' }}
+                >
+                  {showReview ? '收起回看 ▲' : '✍️ 回看我每句写的字 ▾'}
+                </button>
+                {showReview && (
+                  <div className="mt-3 space-y-4">
+                    {lineRecords.map((rec, i) => (
+                      <div key={i}>
+                        <div className="text-xs mb-1 text-left" style={{ color: 'var(--color-vermilion)' }}>
+                          第 {i + 1} 句
+                        </div>
+                        <AnswerCheck
+                          target={rec.text}
+                          shots={rec.shots}
+                          wrong={new Set(rec.wrong)}
+                          onToggle={() => {}}
+                          readOnly
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="flex justify-center gap-3">
               <button onClick={restart} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
                 再默一遍
@@ -374,7 +416,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
             </div>
             <div className="text-center mb-4">
               <button
-                onClick={() => speak(lineText, { rate: 0.62 })}
+                onClick={() => speak(lineTts, { rate: 0.62 })}
                 className="px-5 py-3 rounded-full font-medium"
                 style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
               >
@@ -492,6 +534,7 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
 
   const chars = Array.from(sentence.text);
   const wrongChars = chars.filter((_, i) => wrong.has(i));
+  const wrongShots = chars.map((_, i) => shots[i] ?? null).filter((_, i) => wrong.has(i));
 
   useEffect(() => {
     if (phase !== 'write') return;
@@ -525,7 +568,7 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
 
   const confirmCheck = () => {
     if (wrong.size === 0) {
-      recordAnswer(sentence.id, true, { grade: 5, wrongChars: [] });
+      recordAnswer(sentence.id, true, { grade: 5, wrongChars: [], wrongShots: [] });
       setPhase('done');
     } else {
       setPhase('redo');
@@ -535,7 +578,7 @@ function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () =>
   const finishRedo = () => {
     // 有错字 → 计为「错」进错题本；评分宽松（错一两个不至于推倒重学）
     const grade = wrongChars.length <= Math.max(1, Math.ceil(chars.length * 0.1)) ? 3 : 1;
-    recordAnswer(sentence.id, false, { grade, wrongChars });
+    recordAnswer(sentence.id, false, { grade, wrongChars, wrongShots });
     setPhase('done');
   };
 

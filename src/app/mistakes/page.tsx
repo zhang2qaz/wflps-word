@@ -20,6 +20,7 @@ type Row = {
   accuracy: number;
   errorTags?: string[];
   wrongChars?: string[];
+  wrongShots?: (string | null)[];
   level: 'new' | 'learning' | 'review' | 'mastered';
 };
 
@@ -41,7 +42,7 @@ export default function MistakesPage() {
         rows.push({
           id: p.id, kind: 'word', title: w.char, pinyin: w.pinyin, meaning: w.meaning,
           lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy,
-          errorTags: p.errorTags, wrongChars: p.wrongChars, level,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: p.wrongShots, level,
         });
         continue;
       }
@@ -50,7 +51,7 @@ export default function MistakesPage() {
         rows.push({
           id: p.id, kind: 'recite', title: r.title, lesson: r.lesson,
           wrong: p.wrong, correct: p.correct, accuracy,
-          errorTags: p.errorTags, wrongChars: p.wrongChars, level,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: p.wrongShots, level,
         });
       }
     }
@@ -138,21 +139,35 @@ export default function MistakesPage() {
                     </div>
                   )}
                   {item.wrongChars && item.wrongChars.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1 mt-1">
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
                       <span className="text-[10px]" style={{ color: 'var(--color-cinnabar)' }}>✗ 写错的字：</span>
-                      {item.wrongChars.map((c, i) => (
-                        <span
-                          key={i}
-                          className="text-sm font-bold px-1.5 rounded"
-                          style={{
-                            fontFamily: 'var(--font-serif-cn)',
-                            background: 'rgba(227,36,43,0.12)',
-                            color: 'var(--color-cinnabar)',
-                          }}
-                        >
-                          {c}
-                        </span>
-                      ))}
+                      {item.wrongChars.map((c, i) => {
+                        const shot = item.wrongShots?.[i] ?? null;
+                        return (
+                          <span
+                            key={i}
+                            className="inline-flex items-center gap-1 rounded px-1 py-0.5"
+                            style={{ background: 'rgba(227,36,43,0.1)' }}
+                          >
+                            {shot && (
+                              // 孩子当时的手写，回看用
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={shot}
+                                alt="你写的"
+                                draggable={false}
+                                style={{ width: 30, height: 30, objectFit: 'contain', background: '#fff', borderRadius: 3 }}
+                              />
+                            )}
+                            <span
+                              className="text-base font-bold"
+                              style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-cinnabar)' }}
+                            >
+                              {c}
+                            </span>
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
                   {item.errorTags && item.errorTags.length > 0 && (

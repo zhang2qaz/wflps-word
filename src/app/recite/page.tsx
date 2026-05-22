@@ -166,15 +166,19 @@ export function PoemStudy({
   const [empties, setEmpties] = useState<boolean[]>([]);
   const [wrongCharsAll, setWrongCharsAll] = useState<string[]>([]);
   const [wrongShotsAll, setWrongShotsAll] = useState<(string | null)[]>([]);
-  const [lineRecords, setLineRecords] = useState<{ text: string; shots: (string | null)[]; wrong: number[] }[]>([]);
+  const [lineRecords, setLineRecords] = useState<{ text: string; label: string; shots: (string | null)[]; wrong: number[] }[]>([]);
   const [showReview, setShowReview] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
-  // 默写范围 = 诗题 + 每一句正文
-  const parts = useMemo(() => [
-    { text: poem.title, tts: poem.title, meaning: `〔${poem.dynasty}〕${poem.author}`, isTitle: true },
-    ...poem.lines.map(l => ({ text: l.text, tts: l.tts ?? l.text, meaning: l.meaning, isTitle: false })),
-  ], [poem]);
+  // 默写范围 = 诗题 + 作者 + 每一句正文
+  const parts = useMemo(() => {
+    const n = poem.lines.length;
+    return [
+      { text: poem.title, tts: poem.title, meaning: `〔${poem.dynasty}〕${poem.author}`, label: '诗题' },
+      { text: `${poem.dynasty}·${poem.author}`, tts: `${poem.dynasty}，${poem.author}`, meaning: '这首诗的作者', label: '作者' },
+      ...poem.lines.map((l, i) => ({ text: l.text, tts: l.tts ?? l.text, meaning: l.meaning, label: `第 ${i + 1} / ${n} 句` })),
+    ];
+  }, [poem]);
   const allLinesDone = lineIdx >= parts.length;
 
   useEffect(() => {
@@ -227,7 +231,7 @@ export function PoemStudy({
     const isLast = lineIdx >= parts.length - 1;
     setWrongCharsAll(allWrong);
     setWrongShotsAll(allWrongShots);
-    setLineRecords(prev => [...prev, { text: parts[lineIdx].text, shots: [...shots], wrong: [...wrongIdx] }]);
+    setLineRecords(prev => [...prev, { text: parts[lineIdx].text, label: parts[lineIdx].label, shots: [...shots], wrong: [...wrongIdx] }]);
     setRevealed(false);
     setCorrecting(false);
     setWrongIdx(new Set());
@@ -246,7 +250,7 @@ export function PoemStudy({
 
   const lineText = allLinesDone ? '' : parts[lineIdx].text;
   const lineTts = allLinesDone ? '' : parts[lineIdx].tts;
-  const isTitlePart = !allLinesDone && parts[lineIdx].isTitle;
+  const partLabel = allLinesDone ? '' : parts[lineIdx].label;
   const wrongCharsThisLine = Array.from(lineText).filter((_, i) => wrongIdx.has(i));
 
   return (
@@ -391,7 +395,7 @@ export function PoemStudy({
                     {lineRecords.map((rec, i) => (
                       <div key={i}>
                         <div className="text-xs mb-1 text-left" style={{ color: 'var(--color-vermilion)' }}>
-                          {i === 0 ? '诗题' : `第 ${i} 句`}
+                          {rec.label}
                         </div>
                         <AnswerCheck
                           target={rec.text}
@@ -419,7 +423,9 @@ export function PoemStudy({
         ) : (
           <motion.div key={lineIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <div className="text-center text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
-              {isTitlePart ? '✍️ 先默写诗题' : `第 ${lineIdx} / ${poem.lines.length} 句`}
+              {partLabel === '诗题' ? '✍️ 先默写诗题'
+                : partLabel === '作者' ? '✍️ 默写作者'
+                : partLabel}
             </div>
             <div className="text-center mb-4">
               <button
@@ -427,7 +433,7 @@ export function PoemStudy({
                 className="px-5 py-3 rounded-full font-medium"
                 style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
               >
-                🔊 {isTitlePart ? '再听诗题' : '再听这一句'}
+                🔊 再听一遍
               </button>
             </div>
 

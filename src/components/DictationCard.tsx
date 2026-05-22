@@ -6,6 +6,7 @@ import WriteGrid, { type WriteGridHandle } from './WriteGrid';
 import AnswerCheck from './AnswerCheck';
 import { type Word } from '@/data/vocabulary';
 import { speak } from '@/lib/tts';
+import { memoryStrength, review, defaultSrs, binaryToGrade, type SrsState } from '@/lib/srs';
 
 export type DictationResult = {
   correct: boolean;
@@ -19,6 +20,8 @@ type Props = {
   index: number;
   total: number;
   onDone: (r: DictationResult) => void;
+  noHint?: boolean;     // 挑战模式：关闭提示
+  srs?: SrsState;       // 这个字当前的记忆状态 → 显示记忆强度
 };
 
 type Phase = 'write' | 'check' | 'redo';
@@ -35,7 +38,7 @@ function deriveTags(word: Word, wrong: Set<number>, empties: boolean[]): string[
   return Array.from(tags);
 }
 
-export default function DictationCard({ word, index, total, onDone }: Props) {
+export default function DictationCard({ word, index, total, onDone, noHint = false, srs }: Props) {
   const [phase, setPhase] = useState<Phase>('write');
   const [hintLevel, setHintLevel] = useState(0);
   const [shots, setShots] = useState<(string | null)[]>([]);
@@ -84,6 +87,9 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
   const correct = wrong.size === 0;
   const wrongChars = chars.filter((_, i) => wrong.has(i));
   const errorTags = deriveTags(word, wrong, empties);
+  // 记忆强度：答对后这个字会变强几格
+  const strengthBefore = memoryStrength(srs);
+  const strengthAfter = memoryStrength(review(srs ?? defaultSrs(), binaryToGrade(true, hintLevel > 0)));
 
   return (
     <div>
@@ -161,7 +167,16 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
       <motion.div key={`bot-${phase}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
         {phase === 'write' && (
           <>
-            <HintLadder word={word} level={hintLevel} onMore={() => setHintLevel((l) => Math.min(3, l + 1))} />
+            {noHint ? (
+              <div
+                className="text-center text-sm rounded-xl p-3"
+                style={{ background: 'rgba(227,36,43,0.06)', border: '1px solid var(--color-cinnabar)' }}
+              >
+                🏆 <b style={{ color: 'var(--color-cinnabar)' }}>挑战模式</b> —— 没有提示，全靠自己，冲满分！
+              </div>
+            ) : (
+              <HintLadder word={word} level={hintLevel} onMore={() => setHintLevel((l) => Math.min(3, l + 1))} />
+            )}
             <div className="flex justify-center gap-2 mt-5">
               <button
                 onClick={() => gridRef.current?.clear()}
@@ -209,6 +224,8 @@ export default function DictationCard({ word, index, total, onDone }: Props) {
               correct={correct}
               errorTags={errorTags}
               wrongChars={wrongChars}
+              strength={strengthAfter}
+              strengthGained={strengthAfter > strengthBefore}
               onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags, wrongChars })}
               onRedo={() => { setPhase('redo'); setTimeout(() => speak('照着正确答案，再写一遍'), 200); }}
             />
@@ -322,13 +339,35 @@ function HintLadder({ word, level, onMore }: { word: Word; level: number; onMore
   );
 }
 
+// ---------- 记忆强度条 ----------
+function StrengthBar({ level }: { level: number }) {
+  return (
+    <span className="inline-flex gap-1 align-middle">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span
+          key={i}
+          style={{
+            width: 18,
+            height: 9,
+            borderRadius: 3,
+            display: 'inline-block',
+            background: i <= level ? 'var(--color-jade)' : 'var(--color-stone)',
+          }}
+        />
+      ))}
+    </span>
+  );
+}
+
 // ---------- 结果 ----------
 function ResultPanel({
-  correct, errorTags, wrongChars, onNext, onRedo,
+  correct, errorTags, wrongChars, strength, strengthGained, onNext, onRedo,
 }: {
   correct: boolean;
   errorTags: string[];
   wrongChars: string[];
+  strength: number;
+  strengthGained: boolean;
   onNext: () => void;
   onRedo: () => void;
 }) {
@@ -340,9 +379,19 @@ function ResultPanel({
           <div className="text-2xl font-bold mb-1" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-jade)' }}>
             全对，写得真好！
           </div>
-          <p className="text-sm mb-5" style={{ color: 'var(--color-ink-soft)' }}>
-            这个词记牢了，继续下一个。
-          </p>
+          <div className="flex flex-col items-center gap-1.5 mb-5 mt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>记忆强度</span>
+              <StrengthBar level={strength} />
+            </div>
+            <p className="text-sm" style={{ color: strengthGained ? 'var(--color-jade)' : 'var(--color-ink-soft)' }}>
+              {strength >= 5
+                ? '⚡ 满格！这个字彻底记牢了！'
+                : strengthGained
+                  ? '⚡ 记忆又强了一格 —— 越来越牢！'
+                  : '这个词记牢了，继续下一个。'}
+            </p>
+          </div>
           <button
             onClick={onNext}
             className="px-8 py-3 rounded-md font-medium"

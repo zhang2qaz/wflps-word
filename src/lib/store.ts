@@ -27,7 +27,9 @@ type State = {
   history: SessionStats[];
   childName: string;
   customWords: Word[];           // 家长导入的词语
+  milestoneSeen: number;         // 已庆祝过的「掌握字数」里程碑
   setChildName: (name: string) => void;
+  setMilestoneSeen: (n: number) => void;
   recordAnswer: (id: string, correct: boolean, opts?: AnswerOpts) => void;
   recordGrade: (id: string, grade: Grade) => void;
   markLearned: (id: string) => void;
@@ -68,7 +70,9 @@ export const useStore = create<State>()(
       history: [],
       childName: '',
       customWords: [],
+      milestoneSeen: 0,
       setChildName: (name) => set({ childName: name }),
+      setMilestoneSeen: (n) => set({ milestoneSeen: n }),
 
       recordAnswer: (id, correct, opts = {}) => {
         const { hintUsed = false, errorTags = [], wrongChars = [], grade } = opts;
@@ -126,7 +130,7 @@ export const useStore = create<State>()(
 
       clearCustomWords: () => set({ customWords: [] }),
 
-      reset: () => set({ progress: {}, history: [] }),
+      reset: () => set({ progress: {}, history: [], milestoneSeen: 0 }),
     }),
     { name: 'moxie-dashi' },
   ),

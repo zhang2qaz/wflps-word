@@ -22,6 +22,8 @@ export default function DictatePage() {
   const [done, setDone] = useState(false);
   const [result, setResult] = useState<RoundResult[]>([]);
   const [bookIdx, setBookIdx] = useState(0);
+  const [challengeMode, setChallengeMode] = useState(false);  // 满分挑战开关
+  const [roundChallenge, setRoundChallenge] = useState(false); // 本轮是否挑战
 
   const bookList = useMemo(() => books(), []);
   const book = bookList[bookIdx] ?? bookList[0];
@@ -46,6 +48,7 @@ export default function DictatePage() {
     setIdx(0);
     setDone(false);
     setResult([]);
+    setRoundChallenge(challengeMode);
   };
 
   // 从错题本「一键听写错题」进来 → 直接开始听写错过的词
@@ -88,6 +91,35 @@ export default function DictatePage() {
             <span>💡</span>
             <span>一次练 <b>一篇课文</b>（十几个词）刚好。整单元一起听写较长，建议分两三次完成。</span>
           </div>
+
+          {/* 满分挑战开关 */}
+          <button
+            onClick={() => setChallengeMode(c => !c)}
+            className="w-full mb-5 p-3 rounded-lg flex items-center gap-3"
+            style={
+              challengeMode
+                ? { background: 'rgba(227,36,43,0.07)', border: '2px solid var(--color-cinnabar)' }
+                : { background: 'var(--color-paper-warm)', border: '1px solid var(--color-stone-dark)' }
+            }
+          >
+            <span className="text-2xl">🏆</span>
+            <span className="flex-1 text-left">
+              <span className="font-bold text-sm">满分挑战模式</span>
+              <span className="block text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+                关掉提示，全靠自己 —— 看看能不能拿满分
+              </span>
+            </span>
+            <span
+              className="text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0"
+              style={
+                challengeMode
+                  ? { background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }
+                  : { background: 'var(--color-stone)', color: 'var(--color-ink-soft)' }
+              }
+            >
+              {challengeMode ? '已开启' : '开启'}
+            </span>
+          </button>
 
           <div className="flex gap-2 mb-6 flex-wrap">
             {bookList.map((b, i) => (
@@ -247,6 +279,7 @@ export default function DictatePage() {
         <main className="max-w-2xl mx-auto px-5 py-8">
           <DoneScreen
             result={result}
+            challenge={roundChallenge}
             onRetry={() => start(queue, queueName)}
             onExit={() => setQueue([])}
           />
@@ -268,7 +301,9 @@ export default function DictatePage() {
           >
             ← 退出听写
           </button>
-          <div className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>{queueName}</div>
+          <div className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>
+            {roundChallenge && '🏆 '}{queueName}
+          </div>
         </div>
         <DictationCard
           key={queue[idx].id}
@@ -276,6 +311,8 @@ export default function DictatePage() {
           index={idx}
           total={queue.length}
           onDone={handleDone}
+          noHint={roundChallenge}
+          srs={progress[queue[idx].id]}
         />
       </main>
     </div>
@@ -283,13 +320,16 @@ export default function DictatePage() {
 }
 
 function DoneScreen({
-  result, onRetry, onExit,
-}: { result: RoundResult[]; onRetry: () => void; onExit: () => void }) {
+  result, challenge = false, onRetry, onExit,
+}: { result: RoundResult[]; challenge?: boolean; onRetry: () => void; onExit: () => void }) {
   const total = result.length;
   const correct = result.filter(r => r.correct).length;
   const pct = total === 0 ? 0 : Math.round((correct / total) * 100);
+  const perfect = total > 0 && correct === total;
   let comment = '继续加油！', mark = '良';
-  if (pct >= 95) { comment = '近乎完美，记忆牢得像石碑！'; mark = '优'; }
+  if (challenge && perfect) { comment = '🏆 满分挑战成功！没看一条提示，全部答对 —— 太厉害了！'; mark = '满'; }
+  else if (challenge) { comment = `挑战差 ${total - correct} 个就满分，再来一次冲满分！`; mark = pct >= 60 ? '良' : '中'; }
+  else if (pct >= 95) { comment = '近乎完美，记忆牢得像石碑！'; mark = '优'; }
   else if (pct >= 80) { comment = '非常棒！错的几个进了错题本，明天再攻克。'; mark = '优'; }
   else if (pct >= 60) { comment = '不错，错的字都当场订正过了，会越来越熟。'; mark = '良'; }
   else { comment = '别灰心 — 错的字都找到了原因、订正过了，这就是进步。'; mark = '中'; }

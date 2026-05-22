@@ -397,6 +397,17 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
         ))}
       </div>
 
+      {/* 已经会了 → 直接跳过（尊重学有余力的孩子，自己掌握节奏） */}
+      <div className="text-center -mt-4 mb-5">
+        <button
+          onClick={onNext}
+          className="text-xs px-3 py-1 rounded-full"
+          style={{ border: '1px dashed var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+        >
+          ✓ 这个字我已经会了，跳过 →
+        </button>
+      </div>
+
       <motion.div
         key={step}
         initial={{ opacity: 0, y: 8 }}

@@ -36,6 +36,9 @@ const FLOW = [
   },
 ];
 
+// 掌握字数里程碑 —— 到达就给孩子一个高光时刻
+const MILESTONES = [10, 25, 50, 100, 150, 200, 300];
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -48,9 +51,53 @@ export default function Home() {
   const setChildName = useStore(s => s.setChildName);
   const [editingName, setEditingName] = useState(false);
 
+  // 里程碑高光：掌握字数跨过新台阶 → 弹出庆祝
+  const milestoneSeen = useStore(s => s.milestoneSeen);
+  const setMilestoneSeen = useStore(s => s.setMilestoneSeen);
+  const [milestone, setMilestone] = useState<number | null>(null);
+  useEffect(() => {
+    if (!mounted) return;
+    const reached = MILESTONES.filter(m => stats.mastered >= m);
+    const top = reached.length ? reached[reached.length - 1] : 0;
+    if (top > milestoneSeen) setMilestone(top);
+  }, [mounted, stats.mastered, milestoneSeen]);
+
   return (
     <div className="min-h-screen">
       <Nav />
+      {milestone !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ background: 'rgba(26,32,48,0.55)' }}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="rounded-2xl p-8 text-center max-w-sm w-full"
+            style={{ background: 'var(--color-paper)' }}
+          >
+            <div className="text-5xl mb-3">🎉</div>
+            <div className="seal text-2xl mx-auto mb-4" style={{ width: 76, height: 76, fontSize: '1.7rem' }}>
+              {milestone}
+            </div>
+            <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
+              里程碑达成！
+            </h2>
+            <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+              {childName ? `${childName}，你` : '你'}已经牢牢掌握了{' '}
+              <b style={{ color: 'var(--color-vermilion)' }}>{milestone}</b> 个字 ——
+              这都是你自己一个一个记下来的，了不起！
+            </p>
+            <button
+              onClick={() => { setMilestoneSeen(milestone); setMilestone(null); }}
+              className="px-6 py-2.5 rounded-md font-medium"
+              style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+            >
+              继续加油 →
+            </button>
+          </motion.div>
+        </div>
+      )}
       <main className="max-w-5xl mx-auto px-5 py-10">
         {/* Hero */}
         <section className="mb-12">

@@ -118,6 +118,16 @@ export function isMastered(state: SrsState): boolean {
   return state.reps >= 4 && state.interval >= 7;
 }
 
+// 记忆强度 0–5 —— 给孩子看的「养成」指标，复习时看着它一格格变强
+export function memoryStrength(state: SrsState | undefined): number {
+  if (!state || state.lastReview === 0) return 0;
+  if (isMastered(state)) return 5;
+  if (state.interval >= 7) return 4;
+  if (state.interval >= 1) return 3;
+  if (state.reps >= 2) return 2;
+  return 1;
+}
+
 export function masteryLevel(state: SrsState): 'new' | 'learning' | 'review' | 'mastered' {
   if (state.reps === 0 && state.lastReview === 0) return 'new';
   if (isMastered(state)) return 'mastered';

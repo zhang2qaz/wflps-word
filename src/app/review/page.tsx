@@ -149,6 +149,7 @@ export default function ReviewPage() {
           index={idx}
           total={queue.length}
           onDone={handleDone}
+          srs={progress[queue[idx].id]}
         />
       </main>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Nav from '@/components/Nav';
 import WriteGrid, { type WriteGridHandle } from '@/components/WriteGrid';
@@ -168,19 +168,23 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
   const [showReview, setShowReview] = useState(false);
   const gridRef = useRef<WriteGridHandle>(null);
   const redoRef = useRef<WriteGridHandle>(null);
-  const allLinesDone = lineIdx >= poem.lines.length;
+  // 默写范围 = 诗题 + 每一句正文
+  const parts = useMemo(() => [
+    { text: poem.title, tts: poem.title, meaning: `〔${poem.dynasty}〕${poem.author}`, isTitle: true },
+    ...poem.lines.map(l => ({ text: l.text, tts: l.tts ?? l.text, meaning: l.meaning, isTitle: false })),
+  ], [poem]);
+  const allLinesDone = lineIdx >= parts.length;
 
   useEffect(() => {
     if (step === 'recite' && !allLinesDone && !revealed && !correcting) {
-      const ln = poem.lines[lineIdx];
-      const t = setTimeout(() => speak(ln.tts ?? ln.text, { rate: 0.62 }), 350);
+      const t = setTimeout(() => speak(parts[lineIdx].tts, { rate: 0.62 }), 350);
       return () => clearTimeout(t);
     }
-  }, [step, lineIdx, allLinesDone, revealed, correcting, poem]);
+  }, [step, lineIdx, allLinesDone, revealed, correcting, parts]);
 
   const readWhole = async () => {
-    for (const l of poem.lines) {
-      await speak(l.tts ?? l.text, { rate: 0.62 });
+    for (const p of parts) {
+      await speak(p.tts, { rate: 0.62 });
       await new Promise(r => setTimeout(r, 250));
     }
   };
@@ -213,15 +217,15 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 
   // 进入下一句：累加本句错字 + 手写；最后一句默完 → 立刻记账进错题本
   const nextLine = () => {
-    const lineChars = Array.from(poem.lines[lineIdx].text);
+    const lineChars = Array.from(parts[lineIdx].text);
     const lineWrong = lineChars.filter((_, i) => wrongIdx.has(i));
     const lineWrongShots = lineChars.map((_, i) => shots[i] ?? null).filter((_, i) => wrongIdx.has(i));
     const allWrong = [...wrongCharsAll, ...lineWrong];
     const allWrongShots = [...wrongShotsAll, ...lineWrongShots];
-    const isLast = lineIdx >= poem.lines.length - 1;
+    const isLast = lineIdx >= parts.length - 1;
     setWrongCharsAll(allWrong);
     setWrongShotsAll(allWrongShots);
-    setLineRecords(prev => [...prev, { text: poem.lines[lineIdx].text, shots: [...shots], wrong: [...wrongIdx] }]);
+    setLineRecords(prev => [...prev, { text: parts[lineIdx].text, shots: [...shots], wrong: [...wrongIdx] }]);
     setRevealed(false);
     setCorrecting(false);
     setWrongIdx(new Set());
@@ -230,7 +234,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     setLineIdx(i => i + 1);
     if (isLast) {
       // 整首默完，立刻记账 —— 不依赖再点按钮，错字一定进错题本
-      const totalChars = poem.lines.reduce((s, l) => s + Array.from(l.text).length, 0);
+      const totalChars = parts.reduce((s, p) => s + Array.from(p.text).length, 0);
       const wc = allWrong.length;
       // 评分宽松：错一两个字不至于整首推倒重学；但有错字一律计为「错」
       const grade = wc === 0 ? 5 : wc <= Math.max(2, Math.ceil(totalChars * 0.1)) ? 3 : 1;
@@ -238,8 +242,9 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
     }
   };
 
-  const lineText = allLinesDone ? '' : poem.lines[lineIdx].text;
-  const lineTts = allLinesDone ? '' : (poem.lines[lineIdx].tts ?? poem.lines[lineIdx].text);
+  const lineText = allLinesDone ? '' : parts[lineIdx].text;
+  const lineTts = allLinesDone ? '' : parts[lineIdx].tts;
+  const isTitlePart = !allLinesDone && parts[lineIdx].isTitle;
   const wrongCharsThisLine = Array.from(lineText).filter((_, i) => wrongIdx.has(i));
 
   return (
@@ -384,7 +389,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                     {lineRecords.map((rec, i) => (
                       <div key={i}>
                         <div className="text-xs mb-1 text-left" style={{ color: 'var(--color-vermilion)' }}>
-                          第 {i + 1} 句
+                          {i === 0 ? '诗题' : `第 ${i} 句`}
                         </div>
                         <AnswerCheck
                           target={rec.text}
@@ -412,7 +417,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
         ) : (
           <motion.div key={lineIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <div className="text-center text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
-              第 {lineIdx + 1} / {poem.lines.length} 句
+              {isTitlePart ? '✍️ 先默写诗题' : `第 ${lineIdx} / ${poem.lines.length} 句`}
             </div>
             <div className="text-center mb-4">
               <button
@@ -420,7 +425,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                 className="px-5 py-3 rounded-full font-medium"
                 style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
               >
-                🔊 再听这一句
+                🔊 {isTitlePart ? '再听诗题' : '再听这一句'}
               </button>
             </div>
 
@@ -442,7 +447,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                     className="px-6 py-2.5 rounded-md font-medium"
                     style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
                   >
-                    {lineIdx >= poem.lines.length - 1 ? '订正好了，完成默写 →' : '订正好了，下一句 →'}
+                    {lineIdx >= parts.length - 1 ? '订正好了，完成默写 →' : '订正好了，下一步 →'}
                   </button>
                 </div>
               </motion.div>
@@ -476,7 +481,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                       <AnswerCheck target={lineText} empties={empties} shots={shots} wrong={wrongIdx} onToggle={toggleWrong} />
                     </div>
                     <div className="text-sm text-center mb-4" style={{ color: 'var(--color-ink-soft)' }}>
-                      {poem.lines[lineIdx].meaning}
+                      {parts[lineIdx].meaning}
                     </div>
                     <div className="flex justify-center gap-2 flex-wrap">
                       <button
@@ -505,8 +510,8 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
                         }
                       >
                         {wrongIdx.size > 0
-                          ? '不订正，下一句'
-                          : lineIdx >= poem.lines.length - 1 ? '全写对了，完成 →' : '全写对了，下一句 →'}
+                          ? '不订正，下一步'
+                          : lineIdx >= parts.length - 1 ? '全写对了，完成 →' : '全写对了，下一步 →'}
                       </button>
                     </div>
                   </motion.div>

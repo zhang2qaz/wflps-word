@@ -9,13 +9,15 @@ import { useStore } from '@/lib/store';
 
 // ============================================================
 // 账号系统 —— 多家庭注册登录 + 学习数据云同步
-// 没配 Supabase 时自动退回「纯本地」模式，产品照常可用。
+// 关键：永不因为云端慢 / 不可达而卡住 App。
+//   · 没配 Supabase → 纯本地模式
+//   · 配了但连不上 → 用本机缓存离线可用，联网后再同步
 // ============================================================
 
 type Child = { id: string; name: string };
 
 type AccountValue = {
-  cloud: boolean;                 // 是否启用了账号系统
+  cloud: boolean;
   email: string | null;
   children: Child[];
   activeChildId: string | null;
@@ -26,6 +28,21 @@ type AccountValue = {
 
 const AccountCtx = createContext<AccountValue | null>(null);
 export function useAccount() { return useContext(AccountCtx); }
+
+// 给 promise 加超时，避免云端无响应时一直挂着
+function withTimeout<T>(p: PromiseLike<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('timeout')), ms);
+    Promise.resolve(p).then(
+      (v) => { clearTimeout(t); resolve(v); },
+      (e) => { clearTimeout(t); reject(e); },
+    );
+  });
+}
+
+function hasLocalData(): boolean {
+  try { return Object.keys(useStore.getState().progress).length > 0; } catch { return false; }
+}
 
 // ---- 学习数据 ↔ Zustand store ----
 function extractStudyBlob() {
@@ -60,10 +77,20 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   const loadingChild = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 1. 取运行时配置 → 决定走云端还是纯本地
+  // 安全兜底：无论网络如何，8 秒后绝不允许还卡在「加载中」
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setPhase((p) => (p === 'loading' ? (hasLocalData() ? 'ready' : 'local') : p));
+    }, 8000);
+    return () => clearTimeout(t);
+  }, []);
+
+  // 1. 取运行时配置（带超时）→ 决定走云端还是纯本地
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/config')
+    const ac = new AbortController();
+    const to = setTimeout(() => ac.abort(), 5000);
+    fetch('/api/config', { signal: ac.signal })
       .then((r) => r.json())
       .then((cfg) => {
         if (cancelled) return;
@@ -73,24 +100,55 @@ export default function AccountProvider({ children }: { children: React.ReactNod
           setPhase('local');
         }
       })
-      .catch(() => { if (!cancelled) setPhase('local'); });
-    return () => { cancelled = true; };
+      .catch(() => { if (!cancelled) setPhase('local'); })
+      .finally(() => clearTimeout(to));
+    return () => { cancelled = true; clearTimeout(to); ac.abort(); };
   }, []);
 
-  // 把某个孩子的数据载入 store
+  // 把某个孩子的数据载入 store —— 云端拉不到就保留本机缓存
   const activateChild = useCallback(async (client: SupabaseClient, id: string) => {
-    loadingChild.current = true;
-    const { data } = await client.from('children').select('data').eq('id', id).single();
-    loadStudyBlob((data?.data ?? {}) as Record<string, unknown>);
     setActiveChildId(id);
     try { localStorage.setItem('moxie-active-child', id); } catch {}
-    setTimeout(() => { loadingChild.current = false; }, 80);
+    loadingChild.current = true;
+    try {
+      const { data } = await withTimeout(
+        client.from('children').select('data').eq('id', id).single(), 8000,
+      );
+      loadStudyBlob((data?.data ?? {}) as Record<string, unknown>);
+    } catch {
+      // 云端不可达：保留本机已缓存的数据，离线照用
+    } finally {
+      setTimeout(() => { loadingChild.current = false; }, 80);
+    }
   }, []);
 
   // 2. Supabase 就绪 → 跟踪登录会话
   useEffect(() => {
     if (!sb) return;
     let cancelled = false;
+
+    const syncFromCloud = async () => {
+      try {
+        const { data } = await withTimeout(
+          sb.from('children').select('id,name').order('created_at'), 8000,
+        );
+        if (cancelled) return;
+        const list = (data ?? []) as Child[];
+        setChildList(list);
+        if (list.length === 0) {
+          setPhase(hasLocalData() ? 'ready' : 'no-child');
+          return;
+        }
+        let cc: string | null = null;
+        try { cc = localStorage.getItem('moxie-active-child'); } catch {}
+        const pick = list.find((c) => c.id === cc)?.id ?? list[0].id;
+        await activateChild(sb, pick);
+        if (!cancelled) setPhase('ready');
+      } catch {
+        // 云端不可达：靠本机缓存 + 8 秒安全兜底，不卡住
+      }
+    };
+
     const apply = async (s: Session | null) => {
       if (cancelled) return;
       setSession(s);
@@ -100,23 +158,29 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         setPhase('auth');
         return;
       }
-      const { data } = await sb.from('children').select('id,name').order('created_at');
-      if (cancelled) return;
-      const list = (data ?? []) as Child[];
-      setChildList(list);
-      if (list.length === 0) { setPhase('no-child'); return; }
-      let saved: string | null = null;
-      try { saved = localStorage.getItem('moxie-active-child'); } catch {}
-      const pick = list.find((c) => c.id === saved)?.id ?? list[0].id;
-      await activateChild(sb, pick);
-      if (!cancelled) setPhase('ready');
+      // 有会话：返回用户先用本机缓存立刻进 App（不被网络拖死）
+      let cc: string | null = null;
+      try { cc = localStorage.getItem('moxie-active-child'); } catch {}
+      if (cc || hasLocalData()) {
+        if (cc) setActiveChildId(cc);
+        setPhase('ready');
+      }
+      // 后台拉云端，失败 / 超时都不影响 App 使用
+      void syncFromCloud();
     };
-    sb.auth.getSession().then(({ data }) => apply(data.session));
+
+    withTimeout(sb.auth.getSession(), 5000)
+      .then(({ data }) => apply(data.session))
+      .catch(() => {
+        // getSession 超时（Supabase 可能不可达）：有缓存就离线进 App
+        if (!cancelled) setPhase(hasLocalData() ? 'ready' : 'auth');
+      });
+
     const { data: sub } = sb.auth.onAuthStateChange((_e, s) => apply(s));
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, [sb, activateChild]);
 
-  // 3. store 变化 → 防抖同步到云端
+  // 3. store 变化 → 防抖同步到云端（失败静默，离线不影响）
   useEffect(() => {
     if (!sb || !activeChildId) return;
     const unsub = useStore.subscribe(() => {
@@ -126,7 +190,8 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         void sb
           .from('children')
           .update({ data: extractStudyBlob(), updated_at: new Date().toISOString() })
-          .eq('id', activeChildId);
+          .eq('id', activeChildId)
+          .then(() => {}, () => {});
       }, 1500);
     });
     return () => { unsub(); if (saveTimer.current) clearTimeout(saveTimer.current); };
@@ -224,7 +289,6 @@ function AuthForm({ sb }: { sb: SupabaseClient }) {
           setInfo('注册成功！请到邮箱点开验证链接，然后回来登录。');
           setMode('login');
         }
-        // 有 session 时 onAuthStateChange 会自动进入下一步
       } else {
         const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password: pw });
         if (error) throw error;
@@ -298,9 +362,7 @@ function CreateChildForm({
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  const [hasLocal] = useState(() => {
-    try { return Object.keys(useStore.getState().progress).length > 0; } catch { return false; }
-  });
+  const [hasLocal] = useState(() => hasLocalData());
   const [importLocal, setImportLocal] = useState(hasLocal);
 
   const create = async () => {

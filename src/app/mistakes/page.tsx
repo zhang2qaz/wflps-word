@@ -93,11 +93,11 @@ export default function MistakesPage() {
           </div>
           <button
             type="button"
-            onClick={() => router.push('/dictate?start=mistakes')}
+            onClick={() => router.push('/redo')}
             className="px-5 py-2.5 rounded-md font-medium"
             style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
           >
-            一键听写错题 →
+            一键重做错题 →
           </button>
         </div>
 

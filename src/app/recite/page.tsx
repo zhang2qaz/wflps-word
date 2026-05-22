@@ -152,9 +152,11 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
 // ============================================================
 // 古诗：学 → 逐句默写（逐字点选错字）→ 按错字比例评分
 // ============================================================
-function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
+export function PoemStudy({
+  poem, onExit, startStep = 'learn',
+}: { poem: Poem; onExit: () => void; startStep?: 'learn' | 'recite' }) {
   const recordAnswer = useStore(s => s.recordAnswer);
-  const [step, setStep] = useState<'learn' | 'recite'>('learn');
+  const [step, setStep] = useState<'learn' | 'recite'>(startStep);
   const [lineIdx, setLineIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [correcting, setCorrecting] = useState(false);
@@ -528,7 +530,7 @@ function PoemStudy({ poem, onExit }: { poem: Poem; onExit: () => void }) {
 // ============================================================
 // 句子：整句听写 →（逐字点选错字）→ 只订正错字 → 按错字比例评分
 // ============================================================
-function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () => void }) {
+export function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit: () => void }) {
   const recordAnswer = useStore(s => s.recordAnswer);
   const [phase, setPhase] = useState<'write' | 'check' | 'redo' | 'done'>('write');
   const [wrong, setWrong] = useState<Set<number>>(new Set());

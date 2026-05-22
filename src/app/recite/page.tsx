@@ -175,7 +175,7 @@ export function PoemStudy({
     const n = poem.lines.length;
     return [
       { text: poem.title, tts: poem.title, meaning: '', label: '诗题' },
-      { text: `${poem.dynasty}·${poem.author}`, tts: `${poem.dynasty}，${poem.author}`, meaning: '这首诗的作者', label: '作者' },
+      { text: `${poem.dynasty}${poem.author}`, tts: `${poem.dynasty}，${poem.author}`, meaning: '这首诗的作者', label: '作者' },
       ...poem.lines.map((l, i) => ({ text: l.text, tts: l.tts ?? l.text, meaning: l.meaning, label: `第 ${i + 1} / ${n} 句` })),
     ];
   }, [poem]);

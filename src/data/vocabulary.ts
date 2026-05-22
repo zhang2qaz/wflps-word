@@ -7,6 +7,8 @@
 // 字族、易混字、寓言故事、语境例句
 // ============================================================
 
+import { VAULT_WORDS } from './vault-words.generated';
+
 export type CharKind = '象形' | '指事' | '会意' | '形声' | '独体';
 
 export type CharInfo = {
@@ -1053,6 +1055,9 @@ export const WORDS: Word[] = [
 // 仅收录字词表（不含课文原文）。学校实际默写卷可能略有出入，
 // 拿到学校卷子后可用「导入」替换或重建。
 // ============================================================
+// 来自 Obsidian 笔记仓库（vault/字词/*.md）—— 由 `npm run vault` 自动编译
+WORDS.push(...VAULT_WORDS);
+
 type DraftWord = [char: string, pinyin: string, meaning: string];
 
 function pushDraftUnit(

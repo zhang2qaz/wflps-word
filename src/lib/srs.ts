@@ -31,10 +31,26 @@ export function defaultSrs(): SrsState {
 // 首次学习的短间隔（分钟）— 模拟艾宾浩斯曲线
 const LEARNING_STEPS_MIN = [5, 30, 720]; // 5 分钟、30 分钟、12 小时
 
+// 安全上限 —— 防止极端情况下数值失控（连续答对几百次会让 interval 溢出成 Infinity）
+const MAX_INTERVAL = 365; // 复习间隔上限：一年（小学生场景，再久没有意义）
+const MAX_EASE = 2.8;     // 简易度上限（与 SrsState.ease 注释一致）
+const SAFE_EASE = 2.5;    // 数据损坏时的回退简易度
+
+// 把可能损坏的数值（NaN / Infinity / 负数）拉回安全范围，避免脏值扩散到进度里
+function num(v: number, fallback: number): number {
+  return Number.isFinite(v) ? v : fallback;
+}
+
 export function review(state: SrsState, grade: Grade): SrsState {
   const now = Date.now();
   const passed = grade >= 3;
-  let { reps, ease, interval, lapses, correct, wrong } = state;
+  // 输入净化：persisted 进度万一损坏，回退到安全值，保证输出永远有限、合法
+  let reps = Math.max(0, Math.floor(num(state.reps, 0)));
+  let ease = Math.min(MAX_EASE, Math.max(1.3, num(state.ease, SAFE_EASE)));
+  let interval = Math.max(0, num(state.interval, 0));
+  let lapses = Math.max(0, num(state.lapses, 0));
+  let correct = Math.max(0, num(state.correct, 0));
+  let wrong = Math.max(0, num(state.wrong, 0));
 
   if (!passed) {
     // 答错：重置 reps，进入"再学习"队列
@@ -83,11 +99,13 @@ export function review(state: SrsState, grade: Grade): SrsState {
   } else {
     newInterval = Math.round(interval * ease);
   }
+  // 钳进 [1, MAX_INTERVAL] —— 否则连续满分会让间隔指数膨胀直至溢出
+  newInterval = Math.min(MAX_INTERVAL, Math.max(1, newInterval));
 
-  // SM-2 简易度更新
-  const newEase = Math.max(
-    1.3,
-    ease + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02)),
+  // SM-2 简易度更新（上下都有界）
+  const newEase = Math.min(
+    MAX_EASE,
+    Math.max(1.3, ease + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02))),
   );
 
   reps += 1;

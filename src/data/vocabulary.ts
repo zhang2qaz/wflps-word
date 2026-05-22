@@ -1484,6 +1484,16 @@ pushDraftUnit(3, '下', 8, '有趣的故事', [
   ] },
 ]);
 
+// 护栏：所有词语（手写 + vault 笔记 + 草稿）合并后查一遍 id 撞车。
+// vault 笔记若误用了已存在的 id，构建日志里会立刻报出来。
+{
+  const seen = new Set<string>();
+  for (const w of WORDS) {
+    if (seen.has(w.id)) console.warn(`[vocabulary] 词语 id 重复：「${w.id}」(${w.char}) —— 检查 vault 笔记`);
+    seen.add(w.id);
+  }
+}
+
 
 // ============================================================
 // 古诗（整首背默）

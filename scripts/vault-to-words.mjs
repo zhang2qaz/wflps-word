@@ -15,8 +15,9 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const WORDS_DIR = join(ROOT, 'vault', '字词');
-const OUT = join(ROOT, 'src', 'data', 'vault-words.generated.ts');
+// 默认读 vault/字词、写 src/data —— 可用环境变量覆盖（压力测试用）
+const WORDS_DIR = process.env.VAULT_DIR || join(ROOT, 'vault', '字词');
+const OUT = process.env.VAULT_OUT || join(ROOT, 'src', 'data', 'vault-words.generated.ts');
 
 const VALID_KIND = new Set(['象形', '指事', '会意', '形声', '独体']);
 const warnings = [];

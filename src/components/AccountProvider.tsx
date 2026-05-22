@@ -285,16 +285,30 @@ function AuthForm({ sb }: { sb: SupabaseClient }) {
       if (mode === 'register') {
         const { data, error } = await sb.auth.signUp({ email: email.trim(), password: pw });
         if (error) throw error;
+        // 邮箱已注册过：Supabase 为防枚举会返回一个 identities 为空的占位 user
+        if (data.user && (data.user.identities?.length ?? 0) === 0) {
+          setErr('这个邮箱已经注册过了，直接登录就行。');
+          setMode('login');
+          return;
+        }
+        // 有 session = 注册即登录（已关闭邮箱验证），onAuthStateChange 会自动进入 App
         if (!data.session) {
-          setInfo('注册成功！请到邮箱点开验证链接，然后回来登录。');
+          setInfo('注册成功！现在用同样的邮箱和密码直接登录即可。');
           setMode('login');
         }
       } else {
         const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password: pw });
-        if (error) throw error;
+        if (error) {
+          // 邮箱验证还没关时，未验证用户登录会被拒——给一句看得懂的话
+          if (/confirm|verified|not.*confirmed/i.test(error.message)) {
+            throw new Error('账号还没激活。请联系管理员，或在邮箱里点确认链接后再登录。');
+          }
+          throw error;
+        }
       }
     } catch (e) {
-      setErr((e as Error).message || '出错了，请重试');
+      const msg = (e as Error).message || '出错了，请重试';
+      setErr(/invalid login credentials/i.test(msg) ? '邮箱或密码不对，请重新输入。' : msg);
     } finally {
       setBusy(false);
     }

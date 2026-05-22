@@ -174,7 +174,7 @@ export function PoemStudy({
   const parts = useMemo(() => {
     const n = poem.lines.length;
     return [
-      { text: poem.title, tts: poem.title, meaning: `〔${poem.dynasty}〕${poem.author}`, label: '诗题' },
+      { text: poem.title, tts: poem.title, meaning: '', label: '诗题' },
       { text: `${poem.dynasty}·${poem.author}`, tts: `${poem.dynasty}，${poem.author}`, meaning: '这首诗的作者', label: '作者' },
       ...poem.lines.map((l, i) => ({ text: l.text, tts: l.tts ?? l.text, meaning: l.meaning, label: `第 ${i + 1} / ${n} 句` })),
     ];
@@ -260,12 +260,21 @@ export function PoemStudy({
       </button>
 
       <div className="text-center mb-5">
-        <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display, var(--font-serif-cn))' }}>
-          {poem.title}
-        </h2>
-        <div className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>
-          〔{poem.dynasty}〕{poem.author}
-        </div>
+        {step === 'recite' ? (
+          // 默写时不显示诗题 / 作者 —— 否则就是抄了
+          <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display, var(--font-serif-cn))' }}>
+            古诗默写
+          </h2>
+        ) : (
+          <>
+            <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display, var(--font-serif-cn))' }}>
+              {poem.title}
+            </h2>
+            <div className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>
+              〔{poem.dynasty}〕{poem.author}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex justify-center gap-2 mb-6">
@@ -488,9 +497,11 @@ export function PoemStudy({
                     <div className="mb-3">
                       <AnswerCheck target={lineText} empties={empties} shots={shots} wrong={wrongIdx} onToggle={toggleWrong} />
                     </div>
-                    <div className="text-sm text-center mb-4" style={{ color: 'var(--color-ink-soft)' }}>
-                      {parts[lineIdx].meaning}
-                    </div>
+                    {parts[lineIdx].meaning && (
+                      <div className="text-sm text-center mb-4" style={{ color: 'var(--color-ink-soft)' }}>
+                        {parts[lineIdx].meaning}
+                      </div>
+                    )}
                     <div className="flex justify-center gap-2 flex-wrap">
                       <button
                         onClick={() => setRevealed(false)}

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useStore, selectStats, selectMistakeWords, selectNewWords } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect, useState } from 'react';
+import { useAccount } from '@/components/AccountProvider';
 
 // 三步主循环：学 → 写 → 复习
 const FLOW = [
@@ -47,9 +48,11 @@ export default function Home() {
   const dueCount = stats.due;
   const mistakeCount = useStore(s => selectMistakeWords(s).length);
   const newCount = useStore(s => selectNewWords(s).length);
+  // 孩子名字来自账号档案（账号系统已采集）；本地模式回退到 store 里的名字
   const childName = useStore(s => s.childName);
-  const setChildName = useStore(s => s.setChildName);
-  const [editingName, setEditingName] = useState(false);
+  const acc = useAccount();
+  const displayName =
+    acc?.children.find((c) => c.id === acc.activeChildId)?.name || childName;
 
   // 里程碑高光：掌握字数跨过新台阶 → 弹出庆祝
   const milestoneSeen = useStore(s => s.milestoneSeen);
@@ -84,7 +87,7 @@ export default function Home() {
               里程碑达成！
             </h2>
             <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-              {childName ? `${childName}，你` : '你'}已经牢牢掌握了{' '}
+              {displayName ? `${displayName}，你` : '你'}已经牢牢掌握了{' '}
               <b style={{ color: 'var(--color-vermilion)' }}>{milestone}</b> 个字 ——
               这都是你自己一个一个记下来的，了不起！
             </p>
@@ -135,48 +138,6 @@ export default function Home() {
                 它把每个字<b>拆成你已认识的部件</b>，讲清形声字规律、关联字族、用故事记成语，
                 再用 <b>艾宾浩斯间隔重复</b> 安排复习 — 让孩子用最少的时间真正记牢。
               </p>
-            </div>
-            {/* Right: Greeting / name */}
-            <div
-              className="border border-stone rounded-xl p-5 min-w-[240px]"
-              style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-            >
-              {!editingName && childName ? (
-                <>
-                  <div className="text-xs text-ink-soft mb-1" style={{ color: 'var(--color-ink-soft)' }}>欢迎回来</div>
-                  <div className="text-2xl font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-                    {childName} 小朋友
-                  </div>
-                  <button
-                    onClick={() => setEditingName(true)}
-                    className="text-xs underline text-ink-soft"
-                    style={{ color: 'var(--color-ink-soft)' }}
-                  >
-                    换一个名字
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className="text-xs text-ink-soft mb-2" style={{ color: 'var(--color-ink-soft)' }}>
-                    叫什么名字呢？
-                  </div>
-                  <input
-                    autoFocus={editingName}
-                    type="text"
-                    placeholder="比如：小明"
-                    defaultValue={childName}
-                    onBlur={(e) => {
-                      setChildName(e.target.value.trim() || '同学');
-                      setEditingName(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
-                    }}
-                    className="w-full border-b-2 border-ink bg-transparent text-2xl py-1 outline-none"
-                    style={{ borderColor: 'var(--color-ink)', fontFamily: 'var(--font-serif-cn)' }}
-                  />
-                </>
-              )}
             </div>
           </motion.div>
         </section>

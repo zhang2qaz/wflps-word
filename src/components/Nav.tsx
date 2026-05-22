@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import Logo from './Logo';
+import { useAccount } from './AccountProvider';
 
 type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
 
@@ -15,6 +17,72 @@ const LINKS: NavLink[] = [
   { href: '/import', label: '导入', group: 'parent' },
   { href: '/progress', label: '家长', group: 'parent' },
 ];
+
+// 账号 / 孩子切换 —— 只在启用了账号系统时显示
+function AccountChip() {
+  const acc = useAccount();
+  const [open, setOpen] = useState(false);
+  if (!acc || !acc.cloud) return null;
+
+  const active = acc.children.find(c => c.id === acc.activeChildId);
+
+  const onAdd = async () => {
+    setOpen(false);
+    const name = window.prompt('再添加一个孩子，他/她叫什么名字？');
+    if (name && name.trim()) {
+      try { await acc.addChild(name.trim(), false); } catch { /* 忽略 */ }
+    }
+  };
+
+  return (
+    <div className="relative flex-shrink-0">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="text-sm px-2.5 py-1 rounded-md"
+        style={{ border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink)' }}
+      >
+        👤 {active?.name ?? '账号'} ▾
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div
+            className="absolute right-0 top-full mt-1 z-50 rounded-lg overflow-hidden min-w-[160px]"
+            style={{ background: 'var(--color-paper)', border: '1px solid var(--color-stone-dark)', boxShadow: '0 4px 16px rgba(26,32,48,0.15)' }}
+          >
+            {acc.children.map(c => (
+              <button
+                key={c.id}
+                onClick={() => { acc.switchChild(c.id); setOpen(false); }}
+                className="w-full text-left px-3 py-2 text-sm"
+                style={{
+                  background: c.id === acc.activeChildId ? 'var(--color-paper-warm)' : 'transparent',
+                  fontWeight: c.id === acc.activeChildId ? 700 : 400,
+                }}
+              >
+                {c.id === acc.activeChildId ? '● ' : '○ '}{c.name}
+              </button>
+            ))}
+            <button
+              onClick={onAdd}
+              className="w-full text-left px-3 py-2 text-sm border-t"
+              style={{ borderColor: 'var(--color-stone)', color: 'var(--color-vermilion)' }}
+            >
+              + 添加孩子
+            </button>
+            <button
+              onClick={() => { setOpen(false); acc.signOut(); }}
+              className="w-full text-left px-3 py-2 text-sm border-t"
+              style={{ borderColor: 'var(--color-stone)', color: 'var(--color-ink-soft)' }}
+            >
+              退出登录
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function Nav() {
   const pathname = usePathname();
@@ -58,6 +126,7 @@ export default function Nav() {
             );
           })}
         </nav>
+        <AccountChip />
       </div>
     </header>
   );

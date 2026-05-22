@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import TouchGuard from "@/components/TouchGuard";
+import AccountProvider from "@/components/AccountProvider";
 
 export const metadata: Metadata = {
   title: "世外默写 · 上海世界外国语小学校本版",
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <TouchGuard />
-        {children}
+        <AccountProvider>{children}</AccountProvider>
       </body>
     </html>
   );

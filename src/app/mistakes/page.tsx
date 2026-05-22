@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Nav from '@/components/Nav';
 import { useStore } from '@/lib/store';
+import { useShots } from '@/lib/shots';
 import { useShallow } from 'zustand/react/shallow';
 import { WORDS, getReciteRef } from '@/data/vocabulary';
 import { masteryLevel } from '@/lib/srs';
@@ -28,6 +29,7 @@ export default function MistakesPage() {
   const router = useRouter();
   const progress = useStore(s => s.progress);
   const customWords = useStore(useShallow(s => s.customWords));
+  const shotsMap = useShots(useShallow(s => s.shots));
 
   const sorted = useMemo<Row[]>(() => {
     const wordMap = new Map([...WORDS, ...customWords].map(w => [w.id, w]));
@@ -42,7 +44,7 @@ export default function MistakesPage() {
         rows.push({
           id: p.id, kind: 'word', title: w.char, pinyin: w.pinyin, meaning: w.meaning,
           lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy,
-          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: p.wrongShots, level,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: shotsMap[p.id], level,
         });
         continue;
       }
@@ -51,12 +53,12 @@ export default function MistakesPage() {
         rows.push({
           id: p.id, kind: 'recite', title: r.title, lesson: r.lesson,
           wrong: p.wrong, correct: p.correct, accuracy,
-          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: p.wrongShots, level,
+          errorTags: p.errorTags, wrongChars: p.wrongChars, wrongShots: shotsMap[p.id], level,
         });
       }
     }
     return rows.sort((a, b) => (a.accuracy !== b.accuracy ? a.accuracy - b.accuracy : b.wrong - a.wrong));
-  }, [progress, customWords]);
+  }, [progress, customWords, shotsMap]);
 
   if (sorted.length === 0) {
     return (

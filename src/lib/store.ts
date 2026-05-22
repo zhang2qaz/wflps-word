@@ -4,12 +4,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { defaultSrs, review, isDue, isMastered, binaryToGrade, type SrsState, type Grade } from './srs';
 import { WORDS, POEMS, SENTENCES, isReciteId, currentPosition, unitWords, type Word } from '@/data/vocabulary';
+import { useShots } from './shots';
 
 type WordProgress = SrsState & {
   id: string;
   errorTags?: string[];
   wrongChars?: string[];
-  wrongShots?: (string | null)[];   // 写错的字 · 孩子的手写图（供错题本回看）
 };
 
 export type AnswerOpts = {
@@ -89,11 +89,13 @@ export const useStore = create<State>()(
         // 只要有错字，也要计为「错」，确保进错题本。
         next.correct = cur.correct + (correct ? 1 : 0);
         next.wrong = cur.wrong + (correct ? 0 : 1);
+        // 手写图单独存（不进主进度、不上云同步）—— 避免保存卡顿
+        useShots.getState().setShots(id, wrongShots);
         set(s => ({
           progress: {
             ...s.progress,
-            // errorTags / wrongChars / wrongShots 直接按传入值存（调用方负责传 [] 清空）
-            [id]: { id, ...next, errorTags, wrongChars, wrongShots },
+            // errorTags / wrongChars 直接按传入值存（调用方负责传 [] 清空）
+            [id]: { id, ...next, errorTags, wrongChars },
           },
           history: updateTodayStats(s.history, {
             reviewed: 1,
@@ -136,7 +138,10 @@ export const useStore = create<State>()(
 
       clearCustomWords: () => set({ customWords: [] }),
 
-      reset: () => set({ progress: {}, history: [], milestoneSeen: 0 }),
+      reset: () => {
+        useShots.getState().resetShots();
+        set({ progress: {}, history: [], milestoneSeen: 0 });
+      },
     }),
     { name: 'moxie-dashi' },
   ),

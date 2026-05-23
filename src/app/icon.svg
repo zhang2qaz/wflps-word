@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="22" fill="#21348c"/>
+  <path d="M0,0 H100 V30 Q100,30 78,30 Q50,30 22,30 Q0,30 0,30 Z" fill="#e3242b"/>
+  <text
+    x="50"
+    y="79"
+    text-anchor="middle"
+    font-family="Noto Serif SC, Songti SC, STSong, serif"
+    font-weight="700"
+    font-size="58"
+    fill="#ffffff"
+  >默</text>
+</svg>

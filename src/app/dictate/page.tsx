@@ -173,8 +173,7 @@ export default function DictatePage() {
                       <button
                         key={lesson}
                         onClick={() => start(words, `《${lesson}》`)}
-                        className="w-full text-left p-4 rounded-xl border hover:shadow flex items-center justify-between"
-                        style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+                        className="card card-hover card-warm w-full text-left p-4 flex items-center justify-between"
                       >
                         <div>
                           <div className="text-base font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>《{lesson}》</div>
@@ -212,8 +211,7 @@ export default function DictatePage() {
             <button
               onClick={() => start(learnedWords.slice(0, 15), '已学随机抽查')}
               disabled={learnedWords.length === 0}
-              className="p-4 rounded-xl border text-left disabled:opacity-40"
-              style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+              className="card card-hover card-warm p-4 text-left disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="font-bold">已学随机抽查</div>
               <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
@@ -223,8 +221,7 @@ export default function DictatePage() {
             <button
               onClick={() => start(mistakeWords, '错题重做')}
               disabled={mistakeWords.length === 0}
-              className="p-4 rounded-xl border text-left disabled:opacity-40"
-              style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
+              className="card card-hover card-warm p-4 text-left disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <div className="font-bold">错题重做</div>
               <div className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
@@ -243,8 +240,11 @@ export default function DictatePage() {
                   <button
                     key={name}
                     onClick={() => start(words, name)}
-                    className="w-full text-left p-4 rounded-xl border-2 border-dashed flex items-center justify-between"
-                    style={{ borderColor: 'var(--color-mustard)', background: 'var(--color-paper-warm)' }}
+                    className="card card-hover w-full text-left p-4 flex items-center justify-between"
+                    style={{
+                      background: 'color-mix(in srgb, var(--color-mustard) 10%, var(--color-paper))',
+                      border: '0.5px solid color-mix(in srgb, var(--color-mustard) 36%, transparent)',
+                    }}
                   >
                     <div>
                       <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{name}</div>

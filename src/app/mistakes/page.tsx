@@ -38,10 +38,7 @@ function MistakeRow({ item }: { item: Row }) {
   const hasShots = !!item.wrongShots && item.wrongShots.some((s) => !!s);
 
   return (
-    <div
-      className="flex items-center gap-4 p-3 rounded-lg border"
-      style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-    >
+    <div className="card card-warm flex items-center gap-4 p-3">
       {item.kind === 'word' ? (
         <div className="text-3xl font-bold flex-shrink-0 w-16 text-center" style={{ fontFamily: 'var(--font-serif-cn)' }}>
           {item.title}
@@ -185,7 +182,7 @@ export default function MistakesPage() {
           <p className="text-sm mb-8" style={{ color: 'var(--color-ink-soft)' }}>
             还没有写错过的字词，或者你都已经把它们攻克了！👏
           </p>
-          <a href="/dictate" className="px-5 py-2.5 rounded-md font-medium inline-block" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
+          <a href="/dictate" className="btn btn-lg inline-flex" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.12)' }}>
             去练听写
           </a>
         </main>
@@ -211,8 +208,7 @@ export default function MistakesPage() {
                 router.push('/redo');
               }
             }}
-            className="px-5 py-2.5 rounded-md font-medium"
-            style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
+            className="btn btn-danger btn-lg"
           >
             一键重做错题 →
           </button>

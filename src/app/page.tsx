@@ -74,10 +74,11 @@ export default function Home() {
           style={{ background: 'rgba(26,32,48,0.55)' }}
         >
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="rounded-2xl p-8 text-center max-w-sm w-full"
-            style={{ background: 'var(--color-paper)' }}
+            transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+            className="glass-strong p-8 text-center max-w-sm w-full"
+            style={{ borderRadius: 'var(--r-2xl)', boxShadow: 'var(--shadow-xl)' }}
           >
             <div className="text-5xl mb-3">🎉</div>
             <div className="seal text-2xl mx-auto mb-4" style={{ width: 76, height: 76, fontSize: '1.7rem' }}>
@@ -93,8 +94,7 @@ export default function Home() {
             </p>
             <button
               onClick={() => { setMilestoneSeen(milestone); setMilestone(null); }}
-              className="px-6 py-2.5 rounded-md font-medium"
-              style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+              className="btn btn-primary btn-lg"
             >
               继续加油 →
             </button>
@@ -172,15 +172,15 @@ export default function Home() {
               <div key={s.href}>
                 <Link
                   href={s.href}
-                  className="flex items-center gap-4 border rounded-xl p-4 hover:shadow-md transition-all group"
-                  style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper)' }}
+                  className="card card-hover flex items-center gap-4 p-4 group"
                 >
                   <div
                     className="flex-shrink-0 flex items-center justify-center text-2xl font-bold"
                     style={{
-                      width: 48, height: 48, borderRadius: 12,
+                      width: 52, height: 52, borderRadius: 'var(--r-md)',
                       background: s.accent, color: 'var(--color-paper)',
                       fontFamily: 'var(--font-serif-cn)',
+                      boxShadow: 'var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.18)',
                     }}
                   >
                     {s.n}
@@ -197,11 +197,15 @@ export default function Home() {
 
                 {/* 错题本 —— 听写之后的分支 */}
                 {i === 1 && (
-                  <div className="pl-8 mt-1">
+                  <div className="pl-8 mt-1.5">
                     <Link
                       href="/mistakes"
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:shadow transition-all"
-                      style={{ background: 'rgba(227,36,43,0.07)', border: '1px solid rgba(227,36,43,0.3)' }}
+                      className="card-hover flex items-center gap-2 px-4 py-2.5 text-sm"
+                      style={{
+                        background: 'color-mix(in srgb, var(--color-cinnabar) 8%, transparent)',
+                        border: '0.5px solid color-mix(in srgb, var(--color-cinnabar) 28%, transparent)',
+                        borderRadius: 'var(--r-md)',
+                      }}
                     >
                       <span style={{ color: 'var(--color-cinnabar)' }}>↳ 错题本</span>
                       <span className="flex-1" style={{ color: 'var(--color-ink-soft)' }}>
@@ -213,7 +217,7 @@ export default function Home() {
                 )}
 
                 {i < FLOW.length - 1 && (
-                  <div className="flex justify-center py-1.5">
+                  <div className="flex justify-center py-2">
                     <span style={{ color: 'var(--color-stone-dark)' }}>↓</span>
                   </div>
                 )}
@@ -230,12 +234,19 @@ export default function Home() {
             <div className="text-xs mb-2" style={{ color: 'var(--color-ink-soft)' }}>另一类内容 · 同样三步</div>
             <Link
               href="/recite"
-              className="flex items-center gap-4 border rounded-xl p-4 hover:shadow-md transition-all group"
-              style={{ borderColor: 'var(--color-mustard)', background: 'rgba(224,163,42,0.07)' }}
+              className="card card-hover flex items-center gap-4 p-4 group"
+              style={{
+                background: 'color-mix(in srgb, var(--color-mustard) 10%, var(--color-paper))',
+                border: '0.5px solid color-mix(in srgb, var(--color-mustard) 36%, transparent)',
+              }}
             >
               <div
                 className="flex-shrink-0 flex items-center justify-center text-2xl"
-                style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--color-mustard)' }}
+                style={{
+                  width: 52, height: 52, borderRadius: 'var(--r-md)',
+                  background: 'var(--color-mustard)',
+                  boxShadow: 'var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.2)',
+                }}
               >
                 📜
               </div>
@@ -292,12 +303,18 @@ export default function Home() {
 
 function StatCard({ label, value, accent, hint }: { label: string; value: number; accent: string; hint?: string }) {
   return (
-    <div
-      className="border border-stone rounded-xl p-4"
-      style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
-    >
-      <div className="text-xs text-ink-soft mb-1" style={{ color: 'var(--color-ink-soft)' }}>{label}</div>
-      <div className="text-3xl font-bold" style={{ color: accent, fontFamily: 'var(--font-serif-cn)' }}>{value}</div>
+    <div className="card card-warm p-4">
+      <div className="text-xs mb-1" style={{ color: 'var(--color-ink-soft)' }}>{label}</div>
+      <div
+        className="text-4xl font-bold tracking-tight"
+        style={{
+          color: accent,
+          fontFamily: 'var(--font-serif-cn)',
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {value}
+      </div>
       {hint && <div className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>{hint}</div>}
     </div>
   );
@@ -318,8 +335,11 @@ function RecommendBar({ dueCount, mistakeCount, newCount }: { dueCount: number; 
   return (
     <Link
       href={action.href}
-      className="mb-10 flex items-center justify-between gap-4 p-5 rounded-xl border-2 hover:shadow-md transition-all"
-      style={{ borderColor: 'var(--color-vermilion)', background: 'var(--color-paper-warm)' }}
+      className="card card-hover mb-10 flex items-center justify-between gap-4 p-5"
+      style={{
+        background: 'color-mix(in srgb, var(--color-vermilion) 8%, var(--color-paper))',
+        border: '0.5px solid color-mix(in srgb, var(--color-vermilion) 32%, transparent)',
+      }}
     >
       <div>
         <div className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--color-vermilion)' }}>

@@ -117,8 +117,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
           <div className="text-center mb-4">
             <button
               onClick={() => speak(word.char, { rate: 0.7 })}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-lg font-medium hover:shadow-md transition-shadow"
-              style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+              className="btn btn-primary btn-lg"
             >
               🔊 再听一遍
             </button>
@@ -185,15 +184,14 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
             <div className="flex justify-center gap-2 mt-5">
               <button
                 onClick={() => gridRef.current?.clear()}
-                className="text-sm px-4 py-2 rounded-md border"
-                style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                className="btn btn-ghost"
               >
                 清空
               </button>
               <button
                 onClick={toCheck}
-                className="px-6 py-2.5 rounded-md font-medium"
-                style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+                className="btn btn-lg"
+                style={{ background: 'var(--color-ink)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
                 写好了，对答案 →
               </button>
@@ -207,8 +205,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
               <div className="flex justify-center gap-2">
                 <button
                   onClick={() => setPhase('write')}
-                  className="text-sm px-4 py-2 rounded-md border"
-                  style={{ borderColor: 'var(--color-stone-dark)', color: 'var(--color-ink-soft)' }}
+                  className="btn btn-ghost"
                 >
                   ← 回去改改
                 </button>
@@ -217,8 +214,8 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
                     correct ? haptic.success() : haptic.error();
                     setConfirmed(true);
                   }}
-                  className="px-7 py-3 rounded-md font-medium"
-                  style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+                  className="btn btn-lg"
+                  style={{ background: 'var(--color-ink)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.12)' }}
                 >
                   对完了 →
                 </button>
@@ -244,8 +241,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
           <div className="flex justify-center">
             <button
               onClick={() => onDone({ correct: false, hintUsed: hintLevel > 0, errorTags, wrongChars, wrongShots })}
-              className="px-6 py-2.5 rounded-md font-medium"
-              style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
+              className="btn btn-success btn-lg"
             >
               订正好了，下一题 →
             </button>

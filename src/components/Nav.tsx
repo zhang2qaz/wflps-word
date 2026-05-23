@@ -38,8 +38,8 @@ function AccountChip() {
     <div className="relative flex-shrink-0">
       <button
         onClick={() => setOpen(o => !o)}
-        className="text-sm px-2.5 py-1 rounded-md"
-        style={{ border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink)' }}
+        className="btn btn-glass btn-sm"
+        style={{ color: 'var(--color-ink)' }}
       >
         👤 {active?.name ?? '账号'} ▾
       </button>
@@ -47,8 +47,8 @@ function AccountChip() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-1 z-50 rounded-lg overflow-hidden min-w-[160px]"
-            style={{ background: 'var(--color-paper)', border: '1px solid var(--color-stone-dark)', boxShadow: '0 4px 16px rgba(26,32,48,0.15)' }}
+            className="glass-strong absolute right-0 top-full mt-2 z-50 overflow-hidden min-w-[180px]"
+            style={{ borderRadius: 'var(--r-lg)', boxShadow: 'var(--shadow-xl)' }}
           >
             {acc.children.map(c => (
               <button
@@ -87,7 +87,7 @@ function AccountChip() {
 export default function Nav() {
   const pathname = usePathname();
   return (
-    <header className="border-b border-stone bg-paper-warm/70 backdrop-blur sticky top-0 z-30 safe-top">
+    <header className="glass-warm sticky top-0 z-30 safe-top">
       <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3">
         <Link href="/" className="flex items-center gap-2.5 mr-2">
           <Logo size={34} />
@@ -105,16 +105,20 @@ export default function Nav() {
                 {showDivider && (
                   <span
                     className="mx-1.5 hidden sm:inline-block h-4 w-px"
-                    style={{ background: 'var(--color-stone-dark)' }}
+                    style={{ background: 'color-mix(in srgb, var(--color-ink) 12%, transparent)' }}
                     aria-hidden
                   />
                 )}
                 <Link
                   href={l.href}
-                  className="px-3 py-1.5 rounded-md transition-colors"
+                  className="px-3.5 py-1.5 rounded-full transition-all"
                   style={
                     active
-                      ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
+                      ? {
+                          background: 'var(--color-ink)',
+                          color: 'var(--color-paper)',
+                          boxShadow: 'var(--shadow-md)',
+                        }
                       : { color: 'var(--color-ink-soft)' }
                   }
                 >

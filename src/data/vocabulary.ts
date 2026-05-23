@@ -8,6 +8,7 @@
 // ============================================================
 
 import { VAULT_WORDS } from './vault-words.generated';
+import { GRADE5_WORDS, GRADE5_POEMS, GRADE5_SENTENCES } from './grade5';
 
 export type CharKind = '象形' | '指事' | '会意' | '形声' | '独体';
 
@@ -1484,6 +1485,9 @@ pushDraftUnit(3, '下', 8, '有趣的故事', [
   ] },
 ]);
 
+// 五年级（统编版上下册）—— 见 ./grade5.ts
+WORDS.push(...GRADE5_WORDS);
+
 // 护栏：所有词语（手写 + vault 笔记 + 草稿）合并后查一遍 id 撞车。
 // vault 笔记若误用了已存在的 id，构建日志里会立刻报出来。
 {
@@ -1511,6 +1515,7 @@ export type Poem = {
   title: string;
   author: string;
   dynasty: string;
+  grade?: number;     // 年级（默认 2，与早期数据兼容）
   semester: '上' | '下';
   unit: number;
   unitTitle: string;
@@ -1585,6 +1590,7 @@ export const POEMS: Poem[] = [
 export type Sentence = {
   id: string;
   text: string;
+  grade?: number;     // 年级（默认 2，与早期数据兼容）
   semester: '上' | '下';
   unit: number;
   unitTitle: string;
@@ -1613,6 +1619,10 @@ export const SENTENCES: Sentence[] = [
   },
 ];
 
+// 五年级（统编版）古诗 + 文言文 —— 见 ./grade5.ts
+POEMS.push(...GRADE5_POEMS);
+SENTENCES.push(...GRADE5_SENTENCES);
+
 // ============================================================
 // 工具函数
 // ============================================================
@@ -1629,12 +1639,14 @@ export function getSentence(id: string): Sentence | undefined {
   return SENTENCES.find(s => s.id === id);
 }
 
-export function poemsByUnit(semester: '上' | '下', unit: number): Poem[] {
-  return POEMS.filter(p => p.semester === semester && p.unit === unit);
+export function poemsByUnit(semester: '上' | '下', unit: number, grade?: number): Poem[] {
+  return POEMS.filter(p => p.semester === semester && p.unit === unit
+    && (grade === undefined || (p.grade ?? 2) === grade));
 }
 
-export function sentencesByUnit(semester: '上' | '下', unit: number): Sentence[] {
-  return SENTENCES.filter(s => s.semester === semester && s.unit === unit);
+export function sentencesByUnit(semester: '上' | '下', unit: number, grade?: number): Sentence[] {
+  return SENTENCES.filter(s => s.semester === semester && s.unit === unit
+    && (grade === undefined || (s.grade ?? 2) === grade));
 }
 
 // 古诗 / 句子的统一引用（错题本、家长报告、SRS 用）
@@ -1704,6 +1716,8 @@ export type UnitGroup = {
 // 课本（有数据的「年级+学期」组合）
 export type Book = { grade: number; semester: '上' | '下'; label: string };
 
+const GRADE_LABEL = ['', '一', '二', '三', '四', '五', '六'];
+
 export function books(): Book[] {
   const seen = new Set<string>();
   const out: Book[] = [];
@@ -1712,7 +1726,7 @@ export function books(): Book[] {
     const key = `${g}${w.semester}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push({ grade: g, semester: w.semester, label: `${g === 2 ? '二' : '三'}年级${w.semester}册` });
+    out.push({ grade: g, semester: w.semester, label: `${GRADE_LABEL[g] ?? g}年级${w.semester}册` });
   }
   return out.sort((a, b) => (a.grade !== b.grade ? a.grade - b.grade : a.semester === '上' ? -1 : 1));
 }
@@ -1738,8 +1752,8 @@ export function unitGroups(grade: number, semester: '上' | '下'): UnitGroup[] 
       unit,
       unitTitle: u.unitTitle,
       lessons,
-      poems: grade === 2 ? poemsByUnit(semester, unit) : [],
-      sentences: grade === 2 ? sentencesByUnit(semester, unit) : [],
+      poems: poemsByUnit(semester, unit, grade),
+      sentences: sentencesByUnit(semester, unit, grade),
       draft,
     };
   });

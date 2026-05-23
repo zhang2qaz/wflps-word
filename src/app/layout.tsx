@@ -2,20 +2,31 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import TouchGuard from "@/components/TouchGuard";
 import AccountProvider from "@/components/AccountProvider";
+import MotionProvider from "@/components/MotionProvider";
 
 export const metadata: Metadata = {
   title: "世外默写 · 上海世界外国语小学校本版",
   description: "上海市世界外国语小学（WFLPS）国际部 P2 校本定制 · 中文词语默写科学记忆 App：拆字 + 形声字规律 + 字族 + 故事记成语 + 艾宾浩斯间隔重复。",
+  appleWebApp: {
+    capable: true,
+    title: "世外默写本",
+    statusBarStyle: "default",
+  },
 };
 
 // iPad 适配：允许双指缩放（方便放大田字格写字）；双击放大由 CSS 的
 // touch-action: manipulation 关掉，避免误触。
+// themeColor 跟随深浅模式切换 —— 状态栏与 App 背景一致。
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafbfd" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1320" },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -31,7 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <TouchGuard />
-        <AccountProvider>{children}</AccountProvider>
+        <MotionProvider>
+          <AccountProvider>{children}</AccountProvider>
+        </MotionProvider>
       </body>
     </html>
   );

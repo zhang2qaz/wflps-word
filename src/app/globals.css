@@ -21,6 +21,46 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
+/* 深色模式 —— 自动跟随系统设置（孩子晚上做作业不刺眼） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #e8ecf4;
+    --color-ink-soft: #9aa3b8;
+    --color-paper: #0f1320;
+    --color-paper-warm: #181d2d;
+    --color-stone: #2a3145;
+    --color-stone-dark: #5b6478;        /* 暗模式下当文字颜色用也达 AA */
+    --color-vermilion: #6c83e0;         /* 主色提亮以适应深色底 */
+    --color-cinnabar: #f06868;
+    --color-jade: #5cb38f;
+    --color-mustard: #ecc05a;
+    --color-grid: #b86b6b;
+    --color-grid-soft: #6b3f3f;
+  }
+}
+
+/* 减少动效 —— 尊重系统「减少动态效果」开关（前庭敏感 / 癫痫安全） */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 键盘焦点环 —— WCAG 2.4.7：键盘用户必须看得见焦点。
+   用 box-shadow 而不是 outline，可绕过组件里的 `outline-none` */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(108,131,224,0.55);
+  border-radius: 4px;
+}
+
+/* 安全区辅助类 —— 顶部导航 / 底部按钮避开刘海与 Home 指示条 */
+.safe-top    { padding-top: max(0px, env(safe-area-inset-top)); }
+.safe-bottom { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+
 @layer base {
   html, body {
     background: var(--color-paper);

@@ -193,6 +193,8 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       )}
       <canvas
         ref={canvasRef}
+        role="img"
+        aria-label={guideChar ? `手写练习格，描红字「${guideChar}」` : '手写练习格，在格子里写字'}
         className="absolute inset-0 brush-cursor select-none"
         style={{
           zIndex: 10,

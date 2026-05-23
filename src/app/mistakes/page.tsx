@@ -83,7 +83,7 @@ function MistakeRow({ item }: { item: Row }) {
                 <button
                   type="button"
                   onClick={() => setShowShots((v) => !v)}
-                  className="text-[10px] underline ml-1"
+                  className="text-xs underline ml-1 px-2 py-1 rounded min-h-[28px]"
                   style={{ color: 'var(--color-ink-soft)' }}
                 >
                   {showShots ? '收起手写' : '✍️ 看手写'}
@@ -206,7 +206,11 @@ export default function MistakesPage() {
           </div>
           <button
             type="button"
-            onClick={() => router.push('/redo')}
+            onClick={() => {
+              if (window.confirm(`要把这 ${sorted.length} 道错题全部重新听写一遍吗？\n（中途可以随时退出，不会丢进度。）`)) {
+                router.push('/redo');
+              }
+            }}
             className="px-5 py-2.5 rounded-md font-medium"
             style={{ background: 'var(--color-cinnabar)', color: 'var(--color-paper)' }}
           >

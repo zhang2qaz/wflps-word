@@ -18,6 +18,7 @@ type Child = { id: string; name: string };
 
 type AccountValue = {
   cloud: boolean;
+  offline: boolean;          // 云端连不上时为 true，本地照常用
   email: string | null;
   children: Child[];
   activeChildId: string | null;
@@ -74,6 +75,7 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   const [session, setSession] = useState<Session | null>(null);
   const [childList, setChildList] = useState<Child[]>([]);
   const [activeChildId, setActiveChildId] = useState<string | null>(null);
+  const [offline, setOffline] = useState(false);   // 云端连不上 → 顶部提示「离线模式」
   const loadingChild = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -135,6 +137,7 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         if (cancelled) return;
         const list = (data ?? []) as Child[];
         setChildList(list);
+        setOffline(false);
         if (list.length === 0) {
           setPhase(hasLocalData() ? 'ready' : 'no-child');
           return;
@@ -145,7 +148,8 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         await activateChild(sb, pick);
         if (!cancelled) setPhase('ready');
       } catch {
-        // 云端不可达：靠本机缓存 + 8 秒安全兜底，不卡住
+        // 云端不可达：标记离线，靠本机缓存继续用
+        if (!cancelled) setOffline(true);
       }
     };
 
@@ -173,7 +177,10 @@ export default function AccountProvider({ children }: { children: React.ReactNod
       .then(({ data }) => apply(data.session))
       .catch(() => {
         // getSession 超时（Supabase 可能不可达）：有缓存就离线进 App
-        if (!cancelled) setPhase(hasLocalData() ? 'ready' : 'auth');
+        if (!cancelled) {
+          setOffline(true);
+          setPhase(hasLocalData() ? 'ready' : 'auth');
+        }
       });
 
     const { data: sub } = sb.auth.onAuthStateChange((_e, s) => apply(s));
@@ -231,6 +238,7 @@ export default function AccountProvider({ children }: { children: React.ReactNod
     <AccountCtx.Provider
       value={{
         cloud: !!sb,
+        offline,
         email: session?.user?.email ?? null,
         children: childList,
         activeChildId,
@@ -239,6 +247,15 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         signOut,
       }}
     >
+      {offline && (
+        <div
+          role="status"
+          className="text-center text-xs py-1.5 safe-top"
+          style={{ background: 'rgba(224,163,42,0.18)', color: 'var(--color-mustard)' }}
+        >
+          📡 离线模式 · 进度暂存本机,联网后自动同步
+        </div>
+      )}
       {children}
     </AccountCtx.Provider>
   );
@@ -263,7 +280,18 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Splash() {
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-paper)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'var(--color-paper)' }}>
+      <div
+        aria-label="加载中"
+        role="status"
+        className="w-9 h-9 rounded-full border-2 border-transparent animate-spin"
+        style={{
+          borderTopColor: 'var(--color-vermilion)',
+          borderRightColor: 'var(--color-vermilion)',
+          borderBottomColor: 'var(--color-stone)',
+          borderLeftColor: 'var(--color-stone)',
+        }}
+      />
       <div className="text-sm" style={{ color: 'var(--color-ink-soft)' }}>加载中…</div>
     </div>
   );

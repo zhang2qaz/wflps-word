@@ -57,7 +57,8 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
           <button
             type="button"
             onClick={() => refs.current[i]?.clear()}
-            className="erase-btn text-[11px] px-2 py-0.5 rounded"
+            aria-label={`擦掉第 ${i + 1} 格`}
+            className="erase-btn text-xs px-3 py-2 rounded-md min-h-[36px]"
             style={{
               border: '1px solid var(--color-stone-dark)',
               color: 'var(--color-ink-soft)',

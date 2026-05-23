@@ -87,7 +87,7 @@ function AccountChip() {
 export default function Nav() {
   const pathname = usePathname();
   return (
-    <header className="border-b border-stone bg-paper-warm/70 backdrop-blur sticky top-0 z-30">
+    <header className="border-b border-stone bg-paper-warm/70 backdrop-blur sticky top-0 z-30 safe-top">
       <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3">
         <Link href="/" className="flex items-center gap-2.5 mr-2">
           <Logo size={34} />
@@ -115,9 +115,7 @@ export default function Nav() {
                   style={
                     active
                       ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
-                      : l.group === 'parent'
-                        ? { color: 'var(--color-stone-dark)' }
-                        : { color: 'var(--color-ink-soft)' }
+                      : { color: 'var(--color-ink-soft)' }
                   }
                 >
                   {l.label}

@@ -41,11 +41,14 @@ export default function AnswerCheck({ target, empties = [], shots = [], wrong, o
               key={i}
               type="button"
               onClick={readOnly ? undefined : () => onToggle(i)}
+              aria-label={`第 ${i + 1} 个字「${c}」${isEmpty ? '没写' : isWrong ? '已标错' : '正确'}${readOnly ? '' : '，点一下切换对错'}`}
+              aria-pressed={!readOnly ? isWrong : undefined}
               className="relative flex flex-col items-center rounded-lg overflow-hidden"
               style={{
                 width: 58,
                 border: `2px solid ${isWrong ? 'var(--color-cinnabar)' : 'var(--color-stone-dark)'}`,
                 background: isWrong ? 'rgba(212,73,61,0.08)' : 'var(--color-paper)',
+                touchAction: 'manipulation',
               }}
             >
               {/* 上：孩子写的 */}

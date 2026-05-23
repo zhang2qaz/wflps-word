@@ -633,7 +633,11 @@ export function SentenceStudy({ sentence, onExit }: { sentence: Sentence; onExit
             </div>
           )}
           <div className="flex justify-center gap-3">
-            <button onClick={reset} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
+            <button
+              onClick={() => { if (window.confirm('再写一遍会清空这次的成绩,确定吗?')) reset(); }}
+              className="px-5 py-2.5 rounded-md border"
+              style={{ borderColor: 'var(--color-stone-dark)' }}
+            >
               再写一遍
             </button>
             <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>

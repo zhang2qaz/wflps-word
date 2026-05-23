@@ -6,6 +6,7 @@ import WriteGrid, { type WriteGridHandle } from './WriteGrid';
 import AnswerCheck from './AnswerCheck';
 import { type Word } from '@/data/vocabulary';
 import { speak } from '@/lib/tts';
+import { haptic } from '@/lib/haptic';
 import { memoryStrength, review, defaultSrs, binaryToGrade, type SrsState } from '@/lib/srs';
 
 export type DictationResult = {
@@ -66,6 +67,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
 
   // 写好了 → 对答案：抓快照、空格自动标红
   const toCheck = () => {
+    haptic.submit();
     const e = gridRef.current?.emptyFlags() ?? chars.map(() => true);
     const s = gridRef.current?.snapshots() ?? chars.map(() => null);
     const auto = new Set<number>();
@@ -78,6 +80,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
   };
 
   const toggle = (i: number) => {
+    haptic.tap();
     setWrong((prev) => {
       const next = new Set(prev);
       if (next.has(i)) next.delete(i); else next.add(i);
@@ -210,7 +213,10 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
                   ← 回去改改
                 </button>
                 <button
-                  onClick={() => setConfirmed(true)}
+                  onClick={() => {
+                    correct ? haptic.success() : haptic.error();
+                    setConfirmed(true);
+                  }}
                   className="px-7 py-3 rounded-md font-medium"
                   style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
                 >

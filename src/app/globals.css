@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* WFLPS 校徽色系 —— 主色对准世外校徽盾身蓝 */
-  --color-ink: #1a2030;
-  --color-ink-soft: #5b6478;
-  --color-paper: #fafbfd;
-  --color-paper-warm: #eef1f8;
+  /* 颜色 —— iOS 风:背景偏中性灰,卡片偏纯白,有明确层级差 */
+  --color-ink: #1c1c1e;             /* iOS labelColor */
+  --color-ink-soft: #6b7280;        /* iOS secondaryLabel */
+  --color-paper: #f2f2f7;           /* iOS systemGroupedBackground —— 灰底,卡片才能浮出来 */
+  --color-paper-warm: #ffffff;      /* iOS secondarySystemGroupedBackground —— 卡片纯白 */
   --color-vermilion: #21348c;       /* WFLPS 校徽蓝 · 品牌主色 */
   --color-vermilion-soft: #8b96c5;
   --color-cinnabar: #e3242b;        /* WFLPS 校徽红 · 错误状态 */
-  --color-jade: #2d8a6f;            /* 正确绿 */
-  --color-mustard: #e0a32a;         /* 提示金 */
-  --color-stone: #e3e6ef;
-  --color-stone-dark: #bdc4d6;
+  --color-jade: #34a853;            /* iOS systemGreen 调向暖绿 */
+  --color-mustard: #ff9f0a;         /* iOS systemOrange 偏中国黄 */
+  --color-stone: #e5e5ea;           /* iOS systemGray5 */
+  --color-stone-dark: #c7c7cc;      /* iOS systemGray3 */
   --color-grid: #d98a8a;            /* 米字格 · 沿用红色书写习惯 */
   --color-grid-soft: #ebb9b9;
 
   --font-serif-cn: "Noto Serif SC", "Songti SC", "STSong", serif;
   --font-display: "Ma Shan Zheng", "ZCOOL XiaoWei", "STKaiti", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  /* iOS 上自动是 SF Pro,中文回落 PingFang SC —— 默认 UI 字体 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  --font-display-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", system-ui, sans-serif;
 
   /* iOS 26「Liquid Glass」基础变量 ───────────────────────── */
   /* 大圆角阶梯 —— iOS 风偏好连续曲率,radii 更大 */
@@ -40,19 +42,19 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* 深色模式 —— 自动跟随系统设置（孩子晚上做作业不刺眼） */
+/* 深色模式 —— 跟随 iOS systemBackground 层级关系 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-ink: #e8ecf4;
-    --color-ink-soft: #9aa3b8;
-    --color-paper: #0f1320;
-    --color-paper-warm: #181d2d;
-    --color-stone: #2a3145;
-    --color-stone-dark: #5b6478;        /* 暗模式下当文字颜色用也达 AA */
-    --color-vermilion: #6c83e0;         /* 主色提亮以适应深色底 */
-    --color-cinnabar: #f06868;
-    --color-jade: #5cb38f;
-    --color-mustard: #ecc05a;
+    --color-ink: #ffffff;             /* iOS dark labelColor */
+    --color-ink-soft: #98989f;        /* iOS dark secondaryLabel */
+    --color-paper: #000000;           /* iOS dark systemGroupedBackground */
+    --color-paper-warm: #1c1c1e;      /* iOS dark secondarySystemGroupedBackground */
+    --color-stone: #2c2c2e;
+    --color-stone-dark: #48484a;
+    --color-vermilion: #6c83e0;       /* 主色提亮以适应深色底 */
+    --color-cinnabar: #ff453a;        /* iOS systemRed dark */
+    --color-jade: #30d158;            /* iOS systemGreen dark */
+    --color-mustard: #ff9f0a;
     --color-grid: #b86b6b;
     --color-grid-soft: #6b3f3f;
   }
@@ -81,20 +83,47 @@
 .safe-bottom { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
 
 @layer base {
-  html, body {
+  /* html 拿底色,body 透明 —— 这样 blob 用 z:-1 放进 html 底色之上、内容之下,
+     不需要给 body 直系子元素加 position:relative,sticky 不被破坏 */
+  html {
     background: var(--color-paper);
     color: var(--color-ink);
+  }
+  body {
+    background: transparent;
+    color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "kern" 1, "liga" 1;
+    font-feature-settings: "kern" 1, "liga" 1, "ss01" 1;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     /* iPad 适配 */
-    overscroll-behavior-y: none;            /* 去掉橡皮筋回弹 */
-    -webkit-tap-highlight-color: transparent; /* 去掉点击灰块闪烁 */
-    -webkit-text-size-adjust: 100%;          /* 禁止 Safari 自动放大字体 */
-    /* 防止写字时误触选中文字 / 弹出「复制·查询」菜单 */
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
+  }
+
+  /* 环境光斑 —— 放在 html 底色上、body 内容下,不打扰任何 sticky */
+  html::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(55vw 50vh at 10% 5%, color-mix(in srgb, var(--color-vermilion) 22%, transparent), transparent 60%),
+      radial-gradient(45vw 40vh at 98% 35%, color-mix(in srgb, var(--color-cinnabar) 16%, transparent), transparent 60%),
+      radial-gradient(60vw 50vh at 50% 110%, color-mix(in srgb, var(--color-mustard) 14%, transparent), transparent 60%);
+    filter: saturate(115%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html::before { animation: ambient-drift 28s ease-in-out infinite alternate; }
+  }
+  @keyframes ambient-drift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(-2%, 1.5%, 0) scale(1.06); }
   }
 
   /* 输入框仍可选中 / 可粘贴（导入页、改名字用） */
@@ -210,18 +239,49 @@
   .glass-strong { background: color-mix(in srgb, var(--color-paper-warm) 90%, transparent); }
 }
 
-/* 卡片基类 —— 默认承载,无 hover */
+/* 卡片基类 —— iOS 风：白卡浮在灰底上 */
 .card {
-  background: var(--color-paper);
-  border-radius: var(--r-xl);
+  background: var(--color-paper-warm);     /* 纯白(暗下灰白卡) */
+  border-radius: var(--r-2xl);             /* 大圆角 28px */
   box-shadow: var(--shadow-md);
-  border: 0.5px solid color-mix(in srgb, var(--color-ink) 6%, transparent);
   transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
 }
 .card-warm { background: var(--color-paper-warm); }
 .card-hover { cursor: pointer; }
 .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .card-hover:active { transform: translateY(0) scale(0.99); transition-duration: 120ms; }
+
+/* iOS 分组列表 —— 一个圆角容器,内部多行用 hairline 分割 */
+.ios-list {
+  background: var(--color-paper-warm);
+  border-radius: var(--r-2xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.ios-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  min-height: 56px;
+  position: relative;
+  transition: background 160ms var(--ease-out);
+}
+.ios-row + .ios-row::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 64px; right: 0;
+  height: 0.5px;
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+.ios-row:active { background: color-mix(in srgb, var(--color-ink) 5%, transparent); }
+.ios-chevron::after {
+  content: '›';
+  color: var(--color-stone-dark);
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-left: auto;
+}
 
 /* 按钮基类 —— 统一几何 + 按压反馈 + 弹簧 */
 .btn {
@@ -245,12 +305,12 @@
 
 .btn-primary {
   background: var(--color-vermilion);
-  color: var(--color-paper);
+  color: #ffffff;                              /* 永远白色 —— 不受深色模式影响 */
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 .btn-primary:hover {
   box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.22);
-  filter: brightness(1.05);
+  filter: brightness(1.08);
 }
 
 .btn-secondary {
@@ -268,13 +328,13 @@
 
 .btn-danger {
   background: var(--color-cinnabar);
-  color: var(--color-paper);
+  color: #ffffff;
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
 .btn-success {
   background: var(--color-jade);
-  color: var(--color-paper);
+  color: #ffffff;
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 

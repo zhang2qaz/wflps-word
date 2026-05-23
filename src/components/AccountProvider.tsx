@@ -267,11 +267,8 @@ export default function AccountProvider({ children }: { children: React.ReactNod
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-paper)' }}>
-      <div
-        className="w-full max-w-sm rounded-2xl p-7"
-        style={{ background: 'var(--color-paper-warm)', border: '1px solid var(--color-stone-dark)' }}
-      >
+    <div className="min-h-screen flex items-center justify-center px-5">
+      <div className="card w-full max-w-sm p-8">
         {children}
       </div>
     </div>
@@ -344,15 +341,26 @@ function AuthForm({ sb }: { sb: SupabaseClient }) {
 
   return (
     <Shell>
-      <div className="text-center mb-6">
-        <div className="seal text-2xl mx-auto mb-3" style={{ width: 64, height: 64, fontSize: '1.5rem' }}>默</div>
-        <h1 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>世外默写本</h1>
-        <p className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>
+      <div className="text-center mb-7">
+        <div
+          className="mx-auto mb-4 flex flex-col overflow-hidden"
+          style={{
+            width: 72, height: 72, borderRadius: 18,
+            background: 'var(--color-vermilion)',
+            boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.18)',
+          }}
+          aria-hidden
+        >
+          <div style={{ height: 22, background: 'var(--color-cinnabar)' }} />
+          <div className="flex-1 flex items-center justify-center text-white font-bold" style={{ fontSize: 40, fontFamily: 'var(--font-serif-cn)', lineHeight: 1 }}>默</div>
+        </div>
+        <h1 className="text-[26px] font-bold tracking-tight" style={{ fontFamily: 'var(--font-display-sans)', letterSpacing: '-0.02em' }}>世外默写本</h1>
+        <p className="text-[14px] mt-1.5" style={{ color: 'var(--color-ink-soft)' }}>
           {mode === 'login' ? '登录你的账号' : '注册一个新账号'}
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <input
           type="email"
           inputMode="email"
@@ -360,39 +368,44 @@ function AuthForm({ sb }: { sb: SupabaseClient }) {
           placeholder="邮箱"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2.5 text-sm bg-transparent outline-none"
-          style={{ borderColor: 'var(--color-stone-dark)' }}
+          className="w-full px-4 py-3 text-[15px] outline-none"
+          style={{
+            background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)',
+            borderRadius: 12,
+          }}
         />
         <input
           type="password"
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-          placeholder={mode === 'login' ? '密码' : '设置密码（至少 6 位）'}
+          placeholder={mode === 'login' ? '密码' : '设置密码(至少 6 位)'}
           value={pw}
           onChange={(e) => setPw(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
-          className="w-full border rounded-lg px-3 py-2.5 text-sm bg-transparent outline-none"
-          style={{ borderColor: 'var(--color-stone-dark)' }}
+          className="w-full px-4 py-3 text-[15px] outline-none"
+          style={{
+            background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)',
+            borderRadius: 12,
+          }}
         />
       </div>
 
-      {err && <p className="text-xs mt-3" style={{ color: 'var(--color-cinnabar)' }}>{err}</p>}
-      {info && <p className="text-xs mt-3" style={{ color: 'var(--color-jade)' }}>{info}</p>}
+      {err && <p className="text-[13px] mt-3" style={{ color: 'var(--color-cinnabar)' }}>{err}</p>}
+      {info && <p className="text-[13px] mt-3" style={{ color: 'var(--color-jade)' }}>{info}</p>}
 
       <button
         onClick={submit}
         disabled={busy}
-        className="w-full mt-5 py-2.5 rounded-md font-medium disabled:opacity-50"
-        style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
+        className="btn btn-primary btn-lg w-full mt-5 disabled:opacity-50"
       >
         {busy ? '请稍候…' : mode === 'login' ? '登录' : '注册'}
       </button>
 
       <button
         onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setErr(''); setInfo(''); }}
-        className="w-full mt-3 text-xs underline"
-        style={{ color: 'var(--color-ink-soft)' }}
+        className="w-full mt-3 text-[13px]"
+        style={{ color: 'var(--color-vermilion)' }}
       >
-        {mode === 'login' ? '还没有账号？去注册' : '已有账号？去登录'}
+        {mode === 'login' ? '还没有账号? 去注册' : '已有账号? 去登录'}
       </button>
     </Shell>
   );

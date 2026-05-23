@@ -101,46 +101,54 @@ export default function Home() {
           </motion.div>
         </div>
       )}
-      <main className="max-w-5xl mx-auto px-5 py-10">
-        {/* Hero */}
-        <section className="mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-start gap-6 flex-wrap"
+      <main className="max-w-2xl mx-auto px-5 pt-8 pb-10">
+        {/* Hero —— iOS app 风格居中 */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
+        >
+          {/* App 图标 —— 与主屏图标一致,先有视觉锚点 */}
+          <div
+            className="mx-auto mb-5 flex flex-col overflow-hidden"
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 22,
+              background: 'var(--color-vermilion)',
+              boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.2)',
+            }}
+            aria-hidden
           >
-            <div className="flex-1 min-w-[280px]">
-              <div className="flex items-center gap-3 mb-4">
-                <Logo size={48} />
-                <div className="flex flex-col gap-1">
-                  <span
-                    className="text-[11px] tracking-wide px-2 py-0.5 rounded self-start"
-                    style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
-                  >
-                    上海市世界外国语小学 · 校本版
-                  </span>
-                  <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                    WFLPS 国际部 P2 · 二下（已核对）· 三上 / 三下（统编版）
-                  </span>
-                </div>
-              </div>
-              <h1
-                className="text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-4"
-                style={{ fontFamily: 'var(--font-serif-cn)' }}
-              >
-                弄懂一个字，
-                <br />
-                <span className="brush-underline">才记得住一个字</span>。
-              </h1>
-              <p className="text-ink-soft text-base md:text-lg leading-relaxed max-w-xl" style={{ color: 'var(--color-ink-soft)' }}>
-                这不是机械的抄写练习。<br />
-                它把每个字<b>拆成你已认识的部件</b>，讲清形声字规律、关联字族、用故事记成语，
-                再用 <b>艾宾浩斯间隔重复</b> 安排复习 — 让孩子用最少的时间真正记牢。
-              </p>
+            <div style={{ height: 26, background: 'var(--color-cinnabar)' }} />
+            <div
+              className="flex-1 flex items-center justify-center font-bold text-white"
+              style={{ fontSize: 54, fontFamily: 'var(--font-serif-cn)', lineHeight: 1 }}
+            >
+              默
             </div>
-          </motion.div>
-        </section>
+          </div>
+
+          {/* iOS 大标题 —— 系统字体 (PingFang/SF Pro Display),非宋体 */}
+          <h1
+            className="text-4xl md:text-5xl font-bold tracking-tight mb-2"
+            style={{ fontFamily: 'var(--font-display-sans)', letterSpacing: '-0.025em' }}
+          >
+            {displayName ? `${displayName},继续加油` : '默写本'}
+          </h1>
+          <p className="text-base mb-6" style={{ color: 'var(--color-ink-soft)' }}>
+            弄懂每一个字 · 科学间隔记忆
+          </p>
+
+          {/* 校本徽章 —— 缩成低优先级 chip */}
+          <div className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full"
+            style={{ background: 'color-mix(in srgb, var(--color-vermilion) 12%, transparent)', color: 'var(--color-vermilion)' }}
+          >
+            <Logo size={14} />
+            上海世外 WFLPS · 校本版
+          </div>
+        </motion.section>
 
         {/* Stats strip */}
         {mounted && (
@@ -157,144 +165,100 @@ export default function Home() {
           <RecommendBar dueCount={dueCount} mistakeCount={mistakeCount} newCount={newCount} />
         )}
 
-        {/* 学习路线图 */}
-        <section className="mb-16">
-          <h3 className="text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--color-vermilion)' }}>
-            怎么学 · 学习路线
+        {/* 学习入口 —— iOS Settings 风分组列表 */}
+        <section className="mb-10">
+          <h3 className="text-[13px] uppercase tracking-wider mb-2 ml-4" style={{ color: 'var(--color-ink-soft)' }}>
+            每天三步
           </h3>
-          <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-            这几个功能不是并排的、各管各的——它们是<b>一个循环</b>：
-            刚学的新单元先点①，学过了用②检验，之后<b>每天打开先做③</b>。错的字会自动进错题本。
-          </p>
-
-          <div>
-            {FLOW.map((s, i) => (
-              <div key={s.href}>
-                <Link
-                  href={s.href}
-                  className="card card-hover flex items-center gap-4 p-4 group"
+          <div className="ios-list">
+            {FLOW.map((s) => (
+              <Link key={s.href} href={s.href} className="ios-row ios-chevron">
+                <div
+                  className="flex-shrink-0 flex items-center justify-center font-bold text-white"
+                  style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    background: s.accent, fontSize: 17,
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                  }}
+                  aria-hidden
                 >
-                  <div
-                    className="flex-shrink-0 flex items-center justify-center text-2xl font-bold"
-                    style={{
-                      width: 52, height: 52, borderRadius: 'var(--r-md)',
-                      background: s.accent, color: 'var(--color-paper)',
-                      fontFamily: 'var(--font-serif-cn)',
-                      boxShadow: 'var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.18)',
-                    }}
-                  >
-                    {s.n}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{s.title}</h2>
-                      <span className="text-[11px]" style={{ color: s.accent }}>{s.tag}</span>
-                    </div>
-                    <p className="text-sm mt-0.5 leading-snug" style={{ color: 'var(--color-ink-soft)' }}>{s.desc}</p>
-                  </div>
-                  <span className="flex-shrink-0 text-sm transition-transform group-hover:translate-x-1">开始 →</span>
-                </Link>
-
-                {/* 错题本 —— 听写之后的分支 */}
-                {i === 1 && (
-                  <div className="pl-8 mt-1.5">
-                    <Link
-                      href="/mistakes"
-                      className="card-hover flex items-center gap-2 px-4 py-2.5 text-sm"
-                      style={{
-                        background: 'color-mix(in srgb, var(--color-cinnabar) 8%, transparent)',
-                        border: '0.5px solid color-mix(in srgb, var(--color-cinnabar) 28%, transparent)',
-                        borderRadius: 'var(--r-md)',
-                      }}
-                    >
-                      <span style={{ color: 'var(--color-cinnabar)' }}>↳ 错题本</span>
-                      <span className="flex-1" style={{ color: 'var(--color-ink-soft)' }}>
-                        听写、复习里写错的字自动收进来，重点重练
-                      </span>
-                      <span className="flex-shrink-0" style={{ color: 'var(--color-cinnabar)' }}>开始 →</span>
-                    </Link>
-                  </div>
-                )}
-
-                {i < FLOW.length - 1 && (
-                  <div className="flex justify-center py-2">
-                    <span style={{ color: 'var(--color-stone-dark)' }}>↓</span>
-                  </div>
-                )}
-              </div>
+                  {s.n}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[17px] font-semibold leading-tight">{s.title}</div>
+                  <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>{s.tag}</div>
+                </div>
+              </Link>
             ))}
-          </div>
-
-          <div className="text-center text-xs mt-3" style={{ color: 'var(--color-ink-soft)' }}>
-            🔁 学过的字会一次次循环回来，直到牢牢记住——这就是科学记忆。
-          </div>
-
-          {/* 古诗 · 句子 —— 平行轨道 */}
-          <div className="mt-6 pt-5 border-t" style={{ borderColor: 'var(--color-stone)' }}>
-            <div className="text-xs mb-2" style={{ color: 'var(--color-ink-soft)' }}>另一类内容 · 同样三步</div>
-            <Link
-              href="/recite"
-              className="card card-hover flex items-center gap-4 p-4 group"
-              style={{
-                background: 'color-mix(in srgb, var(--color-mustard) 10%, var(--color-paper))',
-                border: '0.5px solid color-mix(in srgb, var(--color-mustard) 36%, transparent)',
-              }}
-            >
+            <Link href="/mistakes" className="ios-row ios-chevron">
               <div
-                className="flex-shrink-0 flex items-center justify-center text-2xl"
+                className="flex-shrink-0 flex items-center justify-center text-white"
                 style={{
-                  width: 52, height: 52, borderRadius: 'var(--r-md)',
-                  background: 'var(--color-mustard)',
-                  boxShadow: 'var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.2)',
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--color-cinnabar)', fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
                 }}
+                aria-hidden
               >
-                📜
+                ✗
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>古诗 · 句子</h2>
-                <p className="text-sm mt-0.5 leading-snug" style={{ color: 'var(--color-ink-soft)' }}>
-                  古诗、课文长句——也是「学 → 默写 → 复习」，只是单独一页练。
-                </p>
+                <div className="text-[17px] font-semibold leading-tight">错题本</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>写错的字自动进来重点重练</div>
               </div>
-              <span className="flex-shrink-0 text-sm transition-transform group-hover:translate-x-1">开始 →</span>
             </Link>
           </div>
         </section>
 
-        {/* Method explainer */}
-        <section className="border-t border-stone pt-10 mb-16" style={{ borderColor: 'var(--color-stone)' }}>
-          <h3 className="text-xs tracking-widest uppercase mb-6" style={{ color: 'var(--color-vermilion)' }}>
-            为什么这套方法管用
+        {/* 古诗 · 句子 —— 第二组列表 */}
+        <section className="mb-10">
+          <h3 className="text-[13px] uppercase tracking-wider mb-2 ml-4" style={{ color: 'var(--color-ink-soft)' }}>
+            另一条线
           </h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <MethodCard
-              n="01"
-              title="精细编码 · 拆字"
-              body="孤立地记一个字最难。把字拆成已认识的部件（堵 = 土 + 者），把新知识挂在旧知识上 — 这叫精细编码，是记忆科学里最高效的编码方式。"
-            />
-            <MethodCard
-              n="02"
-              title="形声字规律"
-              body="八成汉字是形声字：一半表意思、一半表读音。教会孩子这个规律，他看到「拦、挡、摆、排」就知道都和手有关 — 学一个，会一串。"
-            />
-            <MethodCard
-              n="03"
-              title="主动回忆 + 间隔重复"
-              body="读 10 遍不如回想 1 遍。听写就是主动回忆；再按艾宾浩斯曲线在快遗忘时复习。两者结合，长期保留率远超反复抄写。"
-            />
-            <MethodCard
-              n="04"
-              title="故事记成语"
-              body="成语别拆字硬背。亡羊补牢、揠苗助长本身就是寓言 — 记住故事，四个字自然记住。叙事记忆是大脑最牢固的记忆。"
-            />
+          <div className="ios-list">
+            <Link href="/recite" className="ios-row ios-chevron">
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-white"
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--color-mustard)', fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+                aria-hidden
+              >
+                📜
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[17px] font-semibold leading-tight">古诗 · 句子</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>整首默写,带逐句对照</div>
+              </div>
+            </Link>
           </div>
         </section>
 
-        <footer className="text-center text-xs py-8" style={{ color: 'var(--color-ink-soft)' }}>
-          <div className="mb-1">每天 10 分钟，胜过周末突击 2 小时。</div>
-          <div style={{ color: 'var(--color-stone-dark)' }}>
-            上海市世界外国语小学 · 国际部 P2 · 校本定制版
+        {/* 为什么这套方法管用 —— 折叠到底部,不抢主线 */}
+        <details className="mb-8 ios-list">
+          <summary className="ios-row cursor-pointer list-none">
+            <div
+              className="flex-shrink-0 flex items-center justify-center text-white"
+              style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--color-vermilion)', fontSize: 18 }}
+              aria-hidden
+            >
+              ？
+            </div>
+            <div className="flex-1 text-[17px] font-semibold">为什么这套方法管用</div>
+            <span style={{ color: 'var(--color-stone-dark)', fontSize: '1.4rem', lineHeight: 1 }}>›</span>
+          </summary>
+          <div className="px-5 py-4 grid sm:grid-cols-2 gap-5 text-[14px] leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+            <div><b style={{ color: 'var(--color-ink)' }}>精细编码 · 拆字</b><br/>把字拆成已认识的部件,把新知识挂在旧知识上——记忆科学里最高效的编码。</div>
+            <div><b style={{ color: 'var(--color-ink)' }}>形声字规律</b><br/>八成汉字是形声字,学会规律,看到「拦挡摆排」就知道都和手有关。</div>
+            <div><b style={{ color: 'var(--color-ink)' }}>主动回忆 + 间隔重复</b><br/>读 10 遍不如回想 1 遍。听写 + 艾宾浩斯曲线,长期保留远超抄写。</div>
+            <div><b style={{ color: 'var(--color-ink)' }}>故事记成语</b><br/>亡羊补牢、揠苗助长本身就是故事。叙事记忆最牢固。</div>
           </div>
+        </details>
+
+        <footer className="text-center text-xs py-6" style={{ color: 'var(--color-ink-soft)' }}>
+          每天 10 分钟,胜过周末突击 2 小时
         </footer>
       </main>
     </div>
@@ -303,19 +267,27 @@ export default function Home() {
 
 function StatCard({ label, value, accent, hint }: { label: string; value: number; accent: string; hint?: string }) {
   return (
-    <div className="card card-warm p-4">
-      <div className="text-xs mb-1" style={{ color: 'var(--color-ink-soft)' }}>{label}</div>
+    <div className="card p-4">
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <span
+          aria-hidden
+          className="inline-block"
+          style={{ width: 8, height: 8, borderRadius: '50%', background: accent }}
+        />
+        <div className="text-[12px] font-medium" style={{ color: 'var(--color-ink-soft)' }}>{label}</div>
+      </div>
       <div
-        className="text-4xl font-bold tracking-tight"
+        className="text-[32px] font-bold leading-none"
         style={{
-          color: accent,
-          fontFamily: 'var(--font-serif-cn)',
+          color: 'var(--color-ink)',
+          fontFamily: 'var(--font-display-sans)',
           fontVariantNumeric: 'tabular-nums',
+          letterSpacing: '-0.02em',
         }}
       >
         {value}
       </div>
-      {hint && <div className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>{hint}</div>}
+      {hint && <div className="text-[11px] mt-1.5" style={{ color: 'var(--color-ink-soft)' }}>{hint}</div>}
     </div>
   );
 }
@@ -335,37 +307,34 @@ function RecommendBar({ dueCount, mistakeCount, newCount }: { dueCount: number; 
   return (
     <Link
       href={action.href}
-      className="card card-hover mb-10 flex items-center justify-between gap-4 p-5"
+      className="card-hover mb-10 flex items-center justify-between gap-4 p-5"
       style={{
-        background: 'color-mix(in srgb, var(--color-vermilion) 8%, var(--color-paper))',
-        border: '0.5px solid color-mix(in srgb, var(--color-vermilion) 32%, transparent)',
+        background: 'linear-gradient(135deg, var(--color-vermilion) 0%, #2e4ab8 100%)',
+        color: '#ffffff',
+        borderRadius: 'var(--r-2xl)',
+        boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.18)',
       }}
     >
       <div>
-        <div className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--color-vermilion)' }}>
-          智能推荐
+        <div className="text-[12px] uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          推荐 · 现在做这个
         </div>
-        <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{action.label}</div>
-        <div className="text-xs mt-1" style={{ color: 'var(--color-ink-soft)' }}>{action.reason}</div>
+        <div className="text-[19px] font-semibold leading-tight">{action.label}</div>
+        <div className="text-[13px] mt-1" style={{ color: 'rgba(255,255,255,0.75)' }}>{action.reason}</div>
       </div>
       <div
-        className="seal text-base flex-shrink-0 glow-vermilion"
-        style={{ width: 56, height: 56, fontSize: '1.5rem' }}
+        className="flex-shrink-0 flex items-center justify-center font-bold"
+        style={{
+          width: 56, height: 56, borderRadius: 18,
+          background: 'rgba(255,255,255,0.18)',
+          backdropFilter: 'blur(10px)',
+          fontSize: 28,
+          fontFamily: 'var(--font-serif-cn)',
+        }}
       >
-        开
+        →
       </div>
     </Link>
   );
 }
 
-function MethodCard({ n, title, body }: { n: string; title: string; body: string }) {
-  return (
-    <div>
-      <div className="text-3xl font-bold mb-2" style={{ color: 'var(--color-vermilion)', fontFamily: 'var(--font-serif-cn)' }}>
-        {n}
-      </div>
-      <h4 className="font-bold text-lg mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>{title}</h4>
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>{body}</p>
-    </div>
-  );
-}

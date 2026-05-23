@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Nav from '@/components/Nav';
-import Logo from '@/components/Logo';
+import DailyDoodle from '@/components/DailyDoodle';
 import { motion } from 'framer-motion';
 import { useStore, selectStats, selectMistakeWords, selectNewWords } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
@@ -102,53 +102,8 @@ export default function Home() {
         </div>
       )}
       <main className="max-w-2xl mx-auto px-5 pt-8 pb-10">
-        {/* Hero —— iOS app 风格居中 */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
-        >
-          {/* App 图标 —— 与主屏图标一致,先有视觉锚点 */}
-          <div
-            className="mx-auto mb-5 flex flex-col overflow-hidden"
-            style={{
-              width: 88,
-              height: 88,
-              borderRadius: 22,
-              background: 'var(--color-vermilion)',
-              boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.2)',
-            }}
-            aria-hidden
-          >
-            <div style={{ height: 26, background: 'var(--color-cinnabar)' }} />
-            <div
-              className="flex-1 flex items-center justify-center font-bold text-white"
-              style={{ fontSize: 54, fontFamily: 'var(--font-serif-cn)', lineHeight: 1 }}
-            >
-              默
-            </div>
-          </div>
-
-          {/* iOS 大标题 —— 系统字体 (PingFang/SF Pro Display),非宋体 */}
-          <h1
-            className="text-4xl md:text-5xl font-bold tracking-tight mb-2"
-            style={{ fontFamily: 'var(--font-display-sans)', letterSpacing: '-0.025em' }}
-          >
-            {displayName ? `${displayName},继续加油` : '默写本'}
-          </h1>
-          <p className="text-base mb-6" style={{ color: 'var(--color-ink-soft)' }}>
-            弄懂每一个字 · 科学间隔记忆
-          </p>
-
-          {/* 校本徽章 —— 缩成低优先级 chip */}
-          <div className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full"
-            style={{ background: 'color-mix(in srgb, var(--color-vermilion) 12%, transparent)', color: 'var(--color-vermilion)' }}
-          >
-            <Logo size={14} />
-            上海世外 WFLPS · 校本版
-          </div>
-        </motion.section>
+        {/* 每日 Doodle Hero —— 节日 / 季节主题插画 + 与今天相关的话 */}
+        <DailyDoodle childName={displayName || undefined} />
 
         {/* Stats strip */}
         {mounted && (

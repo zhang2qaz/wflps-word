@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Nav from '@/components/Nav';
+import VoiceInput from '@/components/VoiceInput';
 import { haptic } from '@/lib/haptic';
 import { useEssays, randomPrompt, reviewFor, statsOf, type Essay } from '@/lib/essays';
 import { useShallow } from 'zustand/react/shallow';
@@ -29,6 +30,7 @@ export default function WritePage() {
   const [view, setView] = useState<View>('write');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [interimVoice, setInterimVoice] = useState('');     // 语音说话中的实时显示
   const [grade, setGrade] = useState(3);
   const [prompt, setPrompt] = useState<string | null>(null);
   const [reviewChecks, setReviewChecks] = useState<boolean[]>([]);
@@ -132,17 +134,35 @@ export default function WritePage() {
               className="w-full text-[15px] leading-relaxed outline-none resize-y bg-transparent"
               style={{ fontFamily: 'var(--font-serif-cn)', minHeight: 280 }}
             />
-            <div className="flex items-center justify-between gap-2 mt-3 pt-3 text-xs tabular-nums"
-              style={{ color: 'var(--color-ink-soft)', borderTop: '0.5px solid color-mix(in srgb, var(--color-ink) 10%, transparent)' }}
+            {/* 语音中间结果显示 */}
+            {interimVoice && (
+              <div
+                className="mt-2 text-[14px] italic"
+                style={{
+                  color: 'var(--color-ink-soft)',
+                  fontFamily: 'var(--font-serif-cn)',
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  background: 'color-mix(in srgb, var(--color-vermilion) 6%, transparent)',
+                }}
+              >
+                🎙️ {interimVoice}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-2 mt-3 pt-3"
+              style={{ borderTop: '0.5px solid color-mix(in srgb, var(--color-ink) 10%, transparent)' }}
             >
-              <div className="flex gap-3">
+              <VoiceInput
+                size="sm"
+                onText={(t) => { setContent((c) => c + t); setInterimVoice(''); }}
+                onInterim={(t) => setInterimVoice(t)}
+              />
+              <div className="flex gap-3 text-xs tabular-nums" style={{ color: 'var(--color-ink-soft)' }}>
                 <span>字数 <b style={{ color: 'var(--color-ink)' }}>{stats.chars}</b></span>
                 <span>不重复 <b style={{ color: 'var(--color-vermilion)' }}>{stats.unique}</b></span>
                 <span>标点 <b style={{ color: 'var(--color-jade)' }}>{stats.punctuation}</b></span>
               </div>
-              {mounted && draft && (
-                <span className="text-[11px]">已自动保存</span>
-              )}
             </div>
           </div>
 

@@ -9,3 +9,6 @@ next-env.d.ts
 
 # Obsidian 本地配置（每个人各自的，不进仓库）
 vault/.obsidian/
+
+# Vosk 中文语音模型 —— 构建时由 scripts/fetch-vosk-model.mjs 拉取,42MB 不进 git
+public/models/

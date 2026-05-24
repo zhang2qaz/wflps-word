@@ -7,9 +7,11 @@
 // 模型源:alphacephei.com(Vosk 官方)。如要自托管,把 .tar.gz 放进 public/models/
 // 然后改 MODEL_URL。
 
+// 默认同源加载:模型由 scripts/fetch-vosk-model.mjs 在构建时下载进 public/models/
+// 想用外部 CDN,设环境变量 NEXT_PUBLIC_VOSK_MODEL_URL 即可。
 const MODEL_URL =
   process.env.NEXT_PUBLIC_VOSK_MODEL_URL ||
-  'https://ccoreilly.github.io/vosk-browser/models/vosk-model-small-cn-0.3.tar.gz';
+  '/models/vosk-model-small-cn-0.3.tar.gz';
 
 // 语音识别结果回调
 export type VoskRecognizer = {

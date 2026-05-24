@@ -165,7 +165,68 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 古诗 · 句子 —— 第二组列表 */}
+        {/* 写字 · 写作 —— 第二组列表 */}
+        <section className="mb-10">
+          <h3 className="text-[13px] uppercase tracking-wider mb-2 ml-4" style={{ color: 'var(--color-ink-soft)' }}>
+            写字 · 写作
+          </h3>
+          <div className="ios-list">
+            <Link href="/voice" className="ios-row ios-chevron">
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-white"
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'linear-gradient(135deg, var(--color-vermilion) 0%, var(--color-cinnabar) 100%)',
+                  fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+                aria-hidden
+              >
+                🎙️
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[17px] font-semibold leading-tight">语音作文</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>张嘴说,自动变文字 · 完全离线</div>
+              </div>
+            </Link>
+            <Link href="/write" className="ios-row ios-chevron">
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-white"
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--color-vermilion)', fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+                aria-hidden
+              >
+                📝
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[17px] font-semibold leading-tight">作文本</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>自由写作 + 自检清单 + 历史归档</div>
+              </div>
+            </Link>
+            <Link href="/strokes" className="ios-row ios-chevron">
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-white"
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--color-jade)', fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+                aria-hidden
+              >
+                ✍️
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[17px] font-semibold leading-tight">笔顺挑战</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>一笔一笔写,写错立刻提示</div>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* 古诗 —— 第三组 */}
         <section className="mb-10">
           <h3 className="text-[13px] uppercase tracking-wider mb-2 ml-4" style={{ color: 'var(--color-ink-soft)' }}>
             另一条线

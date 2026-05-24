@@ -8,7 +8,11 @@
 // ============================================================
 
 import { VAULT_WORDS } from './vault-words.generated';
+import { GRADE2_WORDS, GRADE2_POEMS, GRADE2_SENTENCES } from './grade2';
+import { GRADE3_WORDS, GRADE3_POEMS, GRADE3_SENTENCES } from './grade3';
+import { GRADE4_WORDS, GRADE4_POEMS, GRADE4_SENTENCES } from './grade4';
 import { GRADE5_WORDS, GRADE5_POEMS, GRADE5_SENTENCES } from './grade5';
+import { GRADE6_WORDS, GRADE6_POEMS, GRADE6_SENTENCES } from './grade6';
 
 export type CharKind = '象形' | '指事' | '会意' | '形声' | '独体';
 
@@ -1221,269 +1225,13 @@ pushDraftUnit(2, '下', 8, '世界之初', [
   ] },
 ]);
 
-// ============ 三年级上册 —— 统编版标准词表（草稿，待家长核对）============
-pushDraftUnit(3, '上', 1, '校园生活', [
-  { lesson: '大青树下的小学', words: [
-    ['早晨', 'zǎo chen', '一天的开始'],
-    ['穿戴', 'chuān dài', '穿和戴的衣物'],
-    ['鲜艳', 'xiān yàn', '颜色明亮好看'],
-    ['打扮', 'dǎ ban', '装饰使好看'],
-  ] },
-  { lesson: '花的学校', words: [
-    ['荒野', 'huāng yě', '荒凉的野外'],
-    ['放假', 'fàng jià', '停止上课或上班'],
-    ['互相', 'hù xiāng', '彼此'],
-  ] },
-  { lesson: '不懂就要问', words: [
-    ['背诵', 'bèi sòng', '凭记忆念出'],
-    ['糊涂', 'hú tu', '不明事理'],
-  ] },
-]);
 
-pushDraftUnit(3, '上', 2, '金秋时节', [
-  { lesson: '铺满金色巴掌的水泥道', words: [
-    ['水泥', 'shuǐ ní', '一种建筑材料'],
-    ['铺满', 'pū mǎn', '满满地铺开'],
-    ['规则', 'guī zé', '规定的条文'],
-    ['迟到', 'chí dào', '到得比规定时间晚'],
-  ] },
-  { lesson: '秋天的雨', words: [
-    ['钥匙', 'yào shi', '开锁的工具'],
-    ['清凉', 'qīng liáng', '清爽凉快'],
-    ['颜料', 'yán liào', '着色的材料'],
-    ['丰收', 'fēng shōu', '收成很好'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 3, '童话世界', [
-  { lesson: '卖火柴的小女孩', words: [
-    ['火柴', 'huǒ chái', '取火的小木条'],
-    ['围裙', 'wéi qún', '系在腰前的布'],
-    ['蜡烛', 'là zhú', '照明用的烛'],
-  ] },
-  { lesson: '那一定会很好', words: [
-    ['旅行', 'lǚ xíng', '到外地游历'],
-    ['拼命', 'pīn mìng', '尽最大力量'],
-  ] },
-  { lesson: '一块奶酪', words: [
-    ['奶酪', 'nǎi lào', '牛羊奶做的食品'],
-    ['犹豫', 'yóu yù', '拿不定主意'],
-    ['诱人', 'yòu rén', '吸引人'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 4, '预测故事', [
-  { lesson: '总也倒不了的老屋', words: [
-    ['老屋', 'lǎo wū', '年代久的房子'],
-    ['孤单', 'gū dān', '单身无伴'],
-    ['暴风雨', 'bào fēng yǔ', '猛烈的风雨'],
-  ] },
-  { lesson: '胡萝卜先生的长胡子', words: [
-    ['萝卜', 'luó bo', '一种蔬菜'],
-    ['胡子', 'hú zi', '嘴周围的毛'],
-    ['浓密', 'nóng mì', '又多又密'],
-    ['营养', 'yíng yǎng', '养分'],
-  ] },
-  { lesson: '不会叫的狗', words: [
-    ['招呼', 'zhāo hu', '打招呼、问候'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 5, '留心观察', [
-  { lesson: '搭船的鸟', words: [
-    ['搭船', 'dā chuán', '乘船'],
-    ['羽毛', 'yǔ máo', '鸟身上的毛'],
-    ['翠绿', 'cuì lǜ', '鲜亮的绿色'],
-    ['悄悄', 'qiāo qiāo', '没有声音地'],
-  ] },
-  { lesson: '金色的草地', words: [
-    ['玩耍', 'wán shuǎ', '游戏、玩'],
-    ['绒毛', 'róng máo', '又细又软的毛'],
-    ['手掌', 'shǒu zhǎng', '手心一面'],
-    ['合拢', 'hé lǒng', '合在一起'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 6, '祖国河山', [
-  { lesson: '富饶的西沙群岛', words: [
-    ['富饶', 'fù ráo', '物产丰富'],
-    ['群岛', 'qún dǎo', '聚在一起的岛'],
-    ['物产', 'wù chǎn', '出产的东西'],
-  ] },
-  { lesson: '海滨小城', words: [
-    ['海滨', 'hǎi bīn', '海边'],
-    ['街道', 'jiē dào', '城市里的道路'],
-  ] },
-  { lesson: '美丽的小兴安岭', words: [
-    ['宝库', 'bǎo kù', '储藏珍宝的地方'],
-    ['葱郁', 'cōng yù', '草木青翠茂盛'],
-    ['野花', 'yě huā', '野生的花'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 7, '我与自然', [
-  { lesson: '大自然的声音', words: [
-    ['自然', 'zì rán', '天然存在的世界'],
-    ['演奏', 'yǎn zòu', '用乐器表演'],
-    ['感受', 'gǎn shòu', '受到影响而体会'],
-    ['雄伟', 'xióng wěi', '雄壮高大'],
-  ] },
-  { lesson: '父亲、树林和鸟', words: [
-    ['父亲', 'fù qīn', '爸爸'],
-    ['黎明', 'lí míng', '天快亮的时候'],
-    ['舒畅', 'shū chàng', '心情开朗愉快'],
-  ] },
-]);
-
-pushDraftUnit(3, '上', 8, '美好品质', [
-  { lesson: '掌声', words: [
-    ['掌声', 'zhǎng shēng', '鼓掌的声音'],
-    ['文静', 'wén jìng', '性格安静'],
-    ['热烈', 'rè liè', '气氛兴奋高涨'],
-    ['镇定', 'zhèn dìng', '遇事不慌'],
-  ] },
-  { lesson: '灰雀', words: [
-    ['灰雀', 'huī què', '一种小鸟'],
-    ['郊外', 'jiāo wài', '城市外面'],
-    ['严寒', 'yán hán', '极冷'],
-  ] },
-  { lesson: '司马光', words: [
-    ['众人', 'zhòng rén', '大家'],
-  ] },
-]);
-
-// ============ 三年级下册 —— 统编版标准词表（草稿，待家长核对）============
-pushDraftUnit(3, '下', 1, '可爱的生灵', [
-  { lesson: '燕子', words: [
-    ['燕子', 'yàn zi', '春天飞回的候鸟'],
-    ['乌黑', 'wū hēi', '深黑色'],
-    ['伶俐', 'líng lì', '聪明灵活'],
-    ['活泼', 'huó pō', '生动不呆板'],
-  ] },
-  { lesson: '荷花', words: [
-    ['荷花', 'hé huā', '夏天开的水生花'],
-    ['莲蓬', 'lián peng', '荷花的果实'],
-    ['舞蹈', 'wǔ dǎo', '跳舞'],
-  ] },
-  { lesson: '昆虫备忘录', words: [
-    ['昆虫', 'kūn chóng', '蝴蝶蜜蜂等小动物'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 2, '寓言故事', [
-  { lesson: '守株待兔', words: [
-    ['守株待兔', 'shǒu zhū dài tù', '死守经验、不知变通'],
-  ] },
-  { lesson: '陶罐和铁罐', words: [
-    ['陶罐', 'táo guàn', '陶土烧的罐子'],
-    ['铁罐', 'tiě guàn', '铁做的罐子'],
-    ['骄傲', 'jiāo ào', '自以为了不起'],
-    ['谦虚', 'qiān xū', '不自满'],
-  ] },
-  { lesson: '鹿角和鹿腿', words: [
-    ['欣赏', 'xīn shǎng', '享受美好的事物'],
-    ['鹿腿', 'lù tuǐ', '鹿的腿'],
-    ['狮子', 'shī zi', '一种猛兽'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 3, '中华传统', [
-  { lesson: '纸的发明', words: [
-    ['发明', 'fā míng', '创造出新事物'],
-    ['造纸', 'zào zhǐ', '制造纸张'],
-    ['欧洲', 'ōu zhōu', '一个大洲'],
-    ['保存', 'bǎo cún', '使事物不受损坏'],
-  ] },
-  { lesson: '赵州桥', words: [
-    ['雄伟', 'xióng wěi', '雄壮高大'],
-    ['设计', 'shè jì', '事先的规划'],
-    ['智慧', 'zhì huì', '聪明才智'],
-  ] },
-  { lesson: '一幅名扬中外的画', words: [
-    ['热闹', 'rè nao', '场面活跃喧闹'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 4, '观察与发现', [
-  { lesson: '花钟', words: [
-    ['花钟', 'huā zhōng', '按花开时间排的钟'],
-    ['芬芳', 'fēn fāng', '香气'],
-    ['苏醒', 'sū xǐng', '醒过来'],
-  ] },
-  { lesson: '蜜蜂', words: [
-    ['蜜蜂', 'mì fēng', '会采蜜的昆虫'],
-    ['试验', 'shì yàn', '为查明而进行的活动'],
-    ['逆风', 'nì fēng', '迎着风'],
-  ] },
-  { lesson: '小虾', words: [
-    ['小虾', 'xiǎo xiā', '小的虾'],
-    ['搏斗', 'bó dòu', '激烈地对打'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 5, '奇妙的想象', [
-  { lesson: '宇宙的另一边', words: [
-    ['宇宙', 'yǔ zhòu', '无边的天地空间'],
-    ['回忆', 'huí yì', '想过去的事'],
-  ] },
-  { lesson: '我变成了一棵树', words: [
-    ['变成', 'biàn chéng', '由一种变为另一种'],
-    ['形状', 'xíng zhuàng', '物体的样子'],
-    ['继续', 'jì xù', '连下去、不间断'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 6, '多彩童年', [
-  { lesson: '童年的水墨画', words: [
-    ['水墨画', 'shuǐ mò huà', '用墨画的中国画'],
-    ['蘑菇', 'mó gu', '一种菌类食物'],
-  ] },
-  { lesson: '剃头大师', words: [
-    ['剃头', 'tì tóu', '理发'],
-    ['付钱', 'fù qián', '交钱'],
-  ] },
-  { lesson: '肥皂泡', words: [
-    ['肥皂泡', 'féi zào pào', '肥皂水吹出的泡'],
-    ['玲珑', 'líng lóng', '精巧细致'],
-  ] },
-  { lesson: '我不能失信', words: [
-    ['失信', 'shī xìn', '答应了却没做到'],
-    ['道歉', 'dào qiàn', '表示歉意'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 7, '奇妙世界', [
-  { lesson: '我们奇妙的世界', words: [
-    ['奇妙', 'qí miào', '稀奇巧妙'],
-    ['光芒', 'guāng máng', '射出的光'],
-  ] },
-  { lesson: '海底世界', words: [
-    ['海底', 'hǎi dǐ', '大海的底部'],
-    ['宁静', 'níng jìng', '安静'],
-    ['警报', 'jǐng bào', '危险的信号'],
-  ] },
-  { lesson: '火烧云', words: [
-    ['火烧云', 'huǒ shāo yún', '日出日落时的红云'],
-    ['凶猛', 'xiōng měng', '凶恶强大'],
-  ] },
-]);
-
-pushDraftUnit(3, '下', 8, '有趣的故事', [
-  { lesson: '慢性子裁缝和急性子顾客', words: [
-    ['裁缝', 'cái feng', '做衣服的人'],
-    ['顾客', 'gù kè', '上门买东西的人'],
-    ['性子', 'xìng zi', '脾气'],
-    ['夸奖', 'kuā jiǎng', '称赞'],
-  ] },
-  { lesson: '方帽子店', words: [
-    ['方帽子', 'fāng mào zi', '方形的帽子'],
-    ['厉害', 'lì hai', '难对付、程度深'],
-  ] },
-  { lesson: '枣核', words: [
-    ['枣核', 'zǎo hú', '枣的核'],
-    ['勤快', 'qín kuai', '勤劳、不偷懒'],
-  ] },
-]);
+// 二上、三上下、四上下、六上下 —— 见 ./grade{2,3,4,6}.ts
+// (二下保留 WFL 校本版 + 草稿,不被覆盖)
+WORDS.push(...GRADE2_WORDS);
+WORDS.push(...GRADE3_WORDS);
+WORDS.push(...GRADE4_WORDS);
+WORDS.push(...GRADE6_WORDS);
 
 // 五年级（统编版上下册）—— 见 ./grade5.ts
 WORDS.push(...GRADE5_WORDS);
@@ -1619,9 +1367,17 @@ export const SENTENCES: Sentence[] = [
   },
 ];
 
-// 五年级（统编版）古诗 + 文言文 —— 见 ./grade5.ts
+// 二/三/四/五/六年级 古诗 + 文言文 —— 见 ./grade{2,3,4,5,6}.ts
+POEMS.push(...GRADE2_POEMS);
+POEMS.push(...GRADE3_POEMS);
+POEMS.push(...GRADE4_POEMS);
 POEMS.push(...GRADE5_POEMS);
+POEMS.push(...GRADE6_POEMS);
+SENTENCES.push(...GRADE2_SENTENCES);
+SENTENCES.push(...GRADE3_SENTENCES);
+SENTENCES.push(...GRADE4_SENTENCES);
 SENTENCES.push(...GRADE5_SENTENCES);
+SENTENCES.push(...GRADE6_SENTENCES);
 
 // ============================================================
 // 工具函数

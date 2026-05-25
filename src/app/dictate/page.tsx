@@ -16,6 +16,7 @@ export default function DictatePage() {
   const customWords = useStore(useShallow(s => s.customWords));
   const progress = useStore(s => s.progress);
   const recordAnswer = useStore(s => s.recordAnswer);
+  const selectedBook = useStore(s => s.selectedBook);
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
@@ -27,6 +28,15 @@ export default function DictatePage() {
 
   const bookList = useMemo(() => books(), []);
   const book = bookList[bookIdx] ?? bookList[0];
+
+  // 默认对齐用户在首页选的课本
+  useEffect(() => {
+    if (!selectedBook) return;
+    const bi = bookList.findIndex(b => b.grade === selectedBook.grade && b.semester === selectedBook.semester);
+    if (bi >= 0) setBookIdx(bi);
+    // 只在 selectedBook 改变时跑;bookList 是固定的
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedBook]);
   const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
   const allWords = useMemo(() => [...WORDS, ...customWords], [customWords]);
 

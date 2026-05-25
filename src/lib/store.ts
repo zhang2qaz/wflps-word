@@ -28,14 +28,19 @@ type SessionStats = {
   wrong: number;
 };
 
+// 用户当前选定的课本(年级 + 上/下册) —— 全局学习范围锚点
+export type SelectedBook = { grade: number; semester: '上' | '下' };
+
 type State = {
   progress: Record<string, WordProgress>;
   history: SessionStats[];
   childName: string;
   customWords: Word[];           // 家长导入的词语
   milestoneSeen: number;         // 已庆祝过的「掌握字数」里程碑
+  selectedBook: SelectedBook | null; // null = 还没选过,展示选课本界面
   setChildName: (name: string) => void;
   setMilestoneSeen: (n: number) => void;
+  setSelectedBook: (book: SelectedBook | null) => void;
   recordAnswer: (id: string, correct: boolean, opts?: AnswerOpts) => void;
   recordGrade: (id: string, grade: Grade) => void;
   markLearned: (id: string) => void;
@@ -77,8 +82,10 @@ export const useStore = create<State>()(
       childName: '',
       customWords: [],
       milestoneSeen: 0,
+      selectedBook: null,
       setChildName: (name) => set({ childName: name }),
       setMilestoneSeen: (n) => set({ milestoneSeen: n }),
+      setSelectedBook: (book) => set({ selectedBook: book }),
 
       recordAnswer: (id, correct, opts = {}) => {
         const { hintUsed = false, errorTags = [], wrongChars = [], wrongShots = [], grade } = opts;

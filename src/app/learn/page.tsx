@@ -13,6 +13,7 @@ import { speak } from '@/lib/tts';
 
 export default function LearnPage() {
   const progress = useStore(s => s.progress);
+  const selectedBook = useStore(s => s.selectedBook);
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
@@ -23,7 +24,7 @@ export default function LearnPage() {
   const book = bookList[bookIdx] ?? bookList[0];
   const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
 
-  // 进入页面时，自动定位到「当前学到的单元」
+  // 进入页面时:优先用「用户在首页选的课本」(selectedBook),没选过再退回历史进度自动定位
   const [pos, setPos] = useState<{ grade: number; semester: '上' | '下'; unit: number } | null>(null);
   const initRef = useRef(false);
   useEffect(() => {
@@ -31,7 +32,9 @@ export default function LearnPage() {
     initRef.current = true;
     const p = currentPosition(id => !!progress[id]?.lastReview);
     setPos(p);
-    const bi = bookList.findIndex(b => b.grade === p.grade && b.semester === p.semester);
+    // selectedBook 优先 —— 用户已经在首页声明了「我在学这一本」,以此为准
+    const targetBook = selectedBook ?? { grade: p.grade, semester: p.semester };
+    const bi = bookList.findIndex(b => b.grade === targetBook.grade && b.semester === targetBook.semester);
     if (bi > 0) setBookIdx(bi);
     const t = setTimeout(() => {
       document

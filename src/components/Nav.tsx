@@ -5,20 +5,38 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import Logo from './Logo';
 import { useAccount } from './AccountProvider';
+import { useStore } from '@/lib/store';
 
 type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
 
 const LINKS: NavLink[] = [
-  { href: '/learn', label: '学新字', group: 'kid' },
+  { href: '/learn', label: '学字词', group: 'kid' },
+  { href: '/recite?kind=sentences', label: '学句子', group: 'kid' },
+  { href: '/recite?kind=poems', label: '学古诗', group: 'kid' },
   { href: '/dictate', label: '听写', group: 'kid' },
-  { href: '/recite?kind=poems', label: '古诗', group: 'kid' },
-  { href: '/recite?kind=sentences', label: '句子', group: 'kid' },
-  { href: '/write', label: '作文', group: 'kid' },
-  { href: '/review', label: '复习', group: 'kid' },
-  { href: '/mistakes', label: '错题本', group: 'kid' },
+  { href: '/mistakes', label: '错题集合', group: 'kid' },
+  { href: '/write', label: '写作', group: 'kid' },
   { href: '/import', label: '导入', group: 'parent' },
   { href: '/progress', label: '家长', group: 'parent' },
 ];
+
+// 当前课本 chip —— 显示「二下 ▾」,点开跳 /setup 换课本
+const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
+function BookChip() {
+  const selectedBook = useStore(s => s.selectedBook);
+  if (!selectedBook) return null;
+  const label = `${GRADE_CHAR[selectedBook.grade] ?? selectedBook.grade}${selectedBook.semester}`;
+  return (
+    <Link
+      href="/setup"
+      className="btn btn-glass btn-sm flex-shrink-0"
+      style={{ color: 'var(--color-ink)' }}
+      title="切换课本"
+    >
+      📚 {label} ▾
+    </Link>
+  );
+}
 
 // 账号 / 孩子切换 —— 只在启用了账号系统时显示
 function AccountChip() {
@@ -154,6 +172,7 @@ function NavInner() {
             );
           })}
         </nav>
+        <BookChip />
         <AccountChip />
       </div>
     </header>

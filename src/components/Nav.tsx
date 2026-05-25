@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
 import Logo from './Logo';
 import { useAccount } from './AccountProvider';
 
@@ -11,7 +11,8 @@ type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
 const LINKS: NavLink[] = [
   { href: '/learn', label: '学新字', group: 'kid' },
   { href: '/dictate', label: '听写', group: 'kid' },
-  { href: '/recite', label: '古诗', group: 'kid' },
+  { href: '/recite?kind=poems', label: '古诗', group: 'kid' },
+  { href: '/recite?kind=sentences', label: '句子', group: 'kid' },
   { href: '/write', label: '作文', group: 'kid' },
   { href: '/review', label: '复习', group: 'kid' },
   { href: '/mistakes', label: '错题本', group: 'kid' },
@@ -86,7 +87,25 @@ function AccountChip() {
 }
 
 export default function Nav() {
+  return (
+    <Suspense fallback={<NavShell />}>
+      <NavInner />
+    </Suspense>
+  );
+}
+
+function NavShell() {
+  return (
+    <header className="glass-warm sticky top-0 z-30 safe-top">
+      <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3" />
+    </header>
+  );
+}
+
+function NavInner() {
   const pathname = usePathname();
+  const sp = useSearchParams();
+  const currentKind = sp.get('kind');
   return (
     <header className="glass-warm sticky top-0 z-30 safe-top">
       <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-3">
@@ -99,7 +118,13 @@ export default function Nav() {
         </Link>
         <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">
           {LINKS.map((l, i) => {
-            const active = pathname === l.href;
+            // 拆 pathname + query 判 active —— /recite?kind=poems 与 /recite?kind=sentences 共用 pathname
+            const [linkPath, linkQuery = ''] = l.href.split('?');
+            const linkKind = new URLSearchParams(linkQuery).get('kind');
+            const pathMatch = pathname === linkPath;
+            const active = linkKind
+              ? pathMatch && currentKind === linkKind
+              : pathMatch && !(linkPath === '/recite' && currentKind);
             const showDivider = i > 0 && LINKS[i - 1].group === 'kid' && l.group === 'parent';
             return (
               <span key={l.href} className="flex items-center">

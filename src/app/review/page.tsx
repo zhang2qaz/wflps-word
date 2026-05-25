@@ -23,12 +23,14 @@ function ReciteDueBanner({ count }: { count: number }) {
   );
 }
 
+const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 function bookLabel(grade: number, semester: '上' | '下') {
-  return `${grade === 2 ? '二' : '三'}年级${semester}册`;
+  return `${GRADE_CHAR[grade] ?? grade}年级${semester}册`;
 }
 
 export default function ReviewPage() {
   const progress = useStore(useShallow((s) => s.progress));
+  const selectedBook = useStore((s) => s.selectedBook);
   const dueIds = useStore(useShallow((s) => selectUnitReviewDue(s)));
   const dueReciteCount = useStore((s) => selectDueRecite(s).length);
   const recordAnswer = useStore((s) => s.recordAnswer);
@@ -36,11 +38,14 @@ export default function ReviewPage() {
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState(false);
 
-  // 当前学到的单元
-  const pos = useMemo(
-    () => currentPosition((id) => !!progress[id]?.lastReview),
-    [progress],
-  );
+  // 当前单元 —— 优先 selectedBook 下的进度,没选过再退回全局 currentPosition
+  const pos = useMemo(() => {
+    const p = currentPosition((id) => !!progress[id]?.lastReview);
+    if (!selectedBook) return p;
+    // 用户已经声明在学这本课本 —— 强制锚定到这本
+    if (p.grade === selectedBook.grade && p.semester === selectedBook.semester) return p;
+    return { grade: selectedBook.grade, semester: selectedBook.semester, unit: 1 };
+  }, [progress, selectedBook]);
   const unitLabel = `${bookLabel(pos.grade, pos.semester)} · 第 ${pos.unit} 单元`;
   const unitHasLearned = useMemo(
     () => unitWords(pos.grade, pos.semester, pos.unit).some((w) => progress[w.id]?.lastReview),

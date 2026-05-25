@@ -121,21 +121,16 @@ export default function DictatePage() {
             </span>
           </button>
 
-          <div className="flex gap-2 mb-6 flex-wrap">
-            {bookList.map((b, i) => (
-              <button
-                key={b.label}
-                onClick={() => setBookIdx(i)}
-                className="px-4 py-2 rounded-md text-sm font-medium"
-                style={
-                  i === bookIdx
-                    ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
-                    : { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
-                }
-              >
-                {b.label}
-              </button>
-            ))}
+          <div className="flex items-center gap-2 mb-5">
+            <span
+              className="px-3 py-1.5 rounded-md text-sm font-medium"
+              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+            >
+              {book.label}
+            </span>
+            <Link href="/setup" className="text-xs underline" style={{ color: 'var(--color-ink-soft)' }}>
+              换课本
+            </Link>
           </div>
 
 

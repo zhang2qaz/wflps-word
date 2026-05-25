@@ -7,6 +7,9 @@ import Nav from '@/components/Nav';
 import { haptic } from '@/lib/haptic';
 import { createRecognizer, isModelCached } from '@/lib/voice';
 import { useEssays, statsOf } from '@/lib/essays';
+import { useStore } from '@/lib/store';
+
+const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 
 // 语音作文 —— 专为「不会打字 / 不想打字」的孩子设计:
 // · 大麦克风 + 实时显示中间结果
@@ -23,7 +26,8 @@ export default function VoiceWritePage() {
   const [error, setError] = useState<string | null>(null);
   const [interim, setInterim] = useState('');
   const [text, setText] = useState('');
-  const [grade, setGrade] = useState(3);
+  const selectedBook = useStore(s => s.selectedBook);
+  const grade = selectedBook?.grade ?? 2;
   const [savedToast, setSavedToast] = useState(false);
   const recRef = useRef<{ start: () => Promise<void>; stop: () => void } | null>(null);
   const lastFinalRef = useRef('');
@@ -211,14 +215,12 @@ export default function VoiceWritePage() {
           <div className="flex items-center justify-between gap-2 mt-3 pt-3 text-xs tabular-nums"
             style={{ color: 'var(--color-ink-soft)', borderTop: '0.5px solid color-mix(in srgb, var(--color-ink) 10%, transparent)' }}
           >
-            <select
-              value={grade}
-              onChange={(e) => setGrade(Number(e.target.value))}
-              className="px-2 py-1 rounded outline-none text-[12px]"
+            <span
+              className="px-2 py-1 rounded text-[12px]"
               style={{ background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)' }}
             >
-              {[1, 2, 3, 4, 5, 6].map((g) => <option key={g} value={g}>{g} 年级</option>)}
-            </select>
+              {GRADE_CHAR[grade] ?? grade} 年级
+            </span>
             <div className="flex gap-3">
               <span>字数 <b style={{ color: 'var(--color-ink)' }}>{stats.chars}</b></span>
               <span>不重复 <b style={{ color: 'var(--color-vermilion)' }}>{stats.unique}</b></span>

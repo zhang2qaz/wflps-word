@@ -6,7 +6,10 @@ import Nav from '@/components/Nav';
 import VoiceInput from '@/components/VoiceInput';
 import { haptic } from '@/lib/haptic';
 import { useEssays, randomPrompt, reviewFor, statsOf, type Essay } from '@/lib/essays';
+import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
+
+const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 
 // 作文本 —— 完全离线,无 API。
 // · 写作时自动存草稿(关掉网页不丢)
@@ -27,23 +30,24 @@ export default function WritePage() {
     })),
   );
 
+  const selectedBook = useStore(s => s.selectedBook);
   const [view, setView] = useState<View>('write');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [interimVoice, setInterimVoice] = useState('');     // 语音说话中的实时显示
-  const [grade, setGrade] = useState(3);
+  // 年级锁定到首页选的课本 —— 不再让用户在写作页里挑别的年级
+  const grade = selectedBook?.grade ?? 2;
   const [prompt, setPrompt] = useState<string | null>(null);
   const [reviewChecks, setReviewChecks] = useState<boolean[]>([]);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // 挂载时载入草稿
+  // 挂载时载入草稿(只复原标题 + 内容,不再吃旧草稿里的 grade)
   useEffect(() => {
     setMounted(true);
     if (draft) {
       setTitle(draft.title);
       setContent(draft.content);
-      setGrade(draft.grade);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,16 +85,14 @@ export default function WritePage() {
             )}
           </header>
 
-          {/* 年级 + 来一个题目 */}
+          {/* 当前年级标签(只读) + 来一个题目 */}
           <div className="flex items-center gap-2 mb-3">
-            <select
-              value={grade}
-              onChange={(e) => setGrade(Number(e.target.value))}
-              className="px-3 py-2 rounded-lg outline-none text-sm"
-              style={{ background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)' }}
+            <span
+              className="px-3 py-2 rounded-lg text-sm font-medium"
+              style={{ background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)', color: 'var(--color-ink-soft)' }}
             >
-              {[1, 2, 3, 4, 5, 6].map((g) => <option key={g} value={g}>{g} 年级</option>)}
-            </select>
+              {GRADE_CHAR[grade] ?? grade} 年级 · 适配你选的课本
+            </span>
             <button
               onClick={() => { haptic.tap(); setPrompt(randomPrompt(grade)); }}
               className="text-sm px-3 py-2 rounded-lg"

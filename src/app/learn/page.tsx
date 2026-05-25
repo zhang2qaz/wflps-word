@@ -80,26 +80,22 @@ export default function LearnPage() {
             </span>
           </div>
 
-          <div className="flex gap-2 mb-6 flex-wrap">
-            {bookList.map((b, i) => (
-              <button
-                key={b.label}
-                onClick={() => setBookIdx(i)}
-                className="px-4 py-2 rounded-md text-sm font-medium"
-                style={
-                  i === bookIdx
-                    ? { background: 'var(--color-ink)', color: 'var(--color-paper)' }
-                    : { border: '1px solid var(--color-stone-dark)', color: 'var(--color-ink-soft)' }
-                }
-              >
-                {b.label}
-              </button>
-            ))}
+          {/* 只显示当前课本(不再让用户在子页里跳别的年级);改课本走 Nav 上的「📚」chip → /setup */}
+          <div className="flex items-center gap-2 mb-5">
+            <span
+              className="px-3 py-1.5 rounded-md text-sm font-medium"
+              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
+            >
+              {book.label}
+            </span>
+            <Link href="/setup" className="text-xs underline" style={{ color: 'var(--color-ink-soft)' }}>
+              换课本
+            </Link>
           </div>
 
-          {pos && (
+          {pos && pos.grade === book.grade && pos.semester === book.semester && (
             <p className="text-xs mb-5 -mt-2 flex items-center gap-1" style={{ color: 'var(--color-jade)' }}>
-              📍 已为你定位到上次学习的单元（{pos.grade === 2 ? '二' : '三'}年级{pos.semester}册 · 第 {pos.unit} 单元）
+              📍 已为你定位到上次学习的单元(第 {pos.unit} 单元)
             </p>
           )}
 

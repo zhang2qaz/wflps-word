@@ -6,7 +6,7 @@ import Nav from '@/components/Nav';
 import { useStore } from '@/lib/store';
 import { useShots } from '@/lib/shots';
 import { useShallow } from 'zustand/react/shallow';
-import { WORDS, getReciteRef } from '@/data/vocabulary';
+import { WORDS, getReciteRef, getPoem, getSentence } from '@/data/vocabulary';
 import { masteryLevel } from '@/lib/srs';
 
 type Row = {
@@ -142,10 +142,17 @@ export default function MistakesPage() {
   const router = useRouter();
   const progress = useStore(s => s.progress);
   const customWords = useStore(useShallow(s => s.customWords));
+  const selectedBook = useStore(s => s.selectedBook);
   const shotsMap = useShots(useShallow(s => s.shots));
 
   const sorted = useMemo<Row[]>(() => {
     const wordMap = new Map([...WORDS, ...customWords].map(w => [w.id, w]));
+    // 只显示当前课本范围内的错题 —— 跨年级旧错题不掺进来干扰
+    const inBook = (item: { grade?: number; semester: '上' | '下' } | undefined): boolean => {
+      if (!selectedBook) return true;
+      if (!item) return false;
+      return (item.grade ?? 2) === selectedBook.grade && item.semester === selectedBook.semester;
+    };
     const rows: Row[] = [];
     for (const p of Object.values(progress)) {
       if ((p.wrong ?? 0) <= 0 && (p.wrongChars?.length ?? 0) === 0) continue;
@@ -153,6 +160,7 @@ export default function MistakesPage() {
       const level = masteryLevel(p);
       const w = wordMap.get(p.id);
       if (w) {
+        if (!inBook(w)) continue;
         rows.push({
           id: p.id, kind: 'word', title: w.char, pinyin: w.pinyin, meaning: w.meaning,
           lesson: w.lesson, wrong: p.wrong, correct: p.correct, accuracy,
@@ -162,6 +170,11 @@ export default function MistakesPage() {
       }
       const r = getReciteRef(p.id);
       if (r) {
+        // recite 的 grade/semester 在原始 POEMS/SENTENCES 里查
+        const poem = getPoem(p.id);
+        const sent = poem ? undefined : getSentence(p.id);
+        const ref = poem ?? sent;
+        if (!inBook(ref)) continue;
         rows.push({
           id: p.id, kind: 'recite', title: r.title, lesson: r.lesson,
           wrong: p.wrong, correct: p.correct, accuracy,
@@ -170,7 +183,7 @@ export default function MistakesPage() {
       }
     }
     return rows.sort((a, b) => (a.accuracy !== b.accuracy ? a.accuracy - b.accuracy : b.wrong - a.wrong));
-  }, [progress, customWords, shotsMap]);
+  }, [progress, customWords, shotsMap, selectedBook]);
 
   if (sorted.length === 0) {
     return (

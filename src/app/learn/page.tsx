@@ -10,8 +10,10 @@ import Link from 'next/link';
 import { unitGroups, books, currentPosition, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { speak } from '@/lib/tts';
+import { useRequireBook } from '@/components/RequireBook';
 
 export default function LearnPage() {
+  const guard = useRequireBook();
   const progress = useStore(s => s.progress);
   const selectedBook = useStore(s => s.selectedBook);
   const [queue, setQueue] = useState<Word[]>([]);
@@ -52,6 +54,9 @@ export default function LearnPage() {
     setQueueName(name);
     setIdx(firstNew >= 0 ? firstNew : 0);
   };
+
+  // 没选课本 —— 引导去 /setup
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   // ---------- 选择界面 ----------
   if (queue.length === 0) {

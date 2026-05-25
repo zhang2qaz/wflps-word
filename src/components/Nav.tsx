@@ -20,12 +20,26 @@ const LINKS: NavLink[] = [
   { href: '/progress', label: '家长', group: 'parent' },
 ];
 
-// 当前课本 chip —— 显示「二下 ▾」,点开跳 /setup 换课本
+// Nav 副标题 —— 显示当前课本(没选过就空白,不再写死「WFLPS · 国际部 P2」)
 const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
-function BookChip() {
+function NavBookSubtitle() {
   const selectedBook = useStore(s => s.selectedBook);
   if (!selectedBook) return null;
-  const label = `${GRADE_CHAR[selectedBook.grade] ?? selectedBook.grade}${selectedBook.semester}`;
+  const label = `${GRADE_CHAR[selectedBook.grade] ?? selectedBook.grade}年级${selectedBook.semester}册`;
+  return (
+    <span className="text-[9px] tracking-wide mt-0.5" style={{ color: 'var(--color-ink-soft)' }}>
+      {label}
+    </span>
+  );
+}
+
+// 当前课本 chip —— 显示「二下 ▾」,点开跳 /setup 换课本
+function BookChip() {
+  const selectedBook = useStore(s => s.selectedBook);
+  // 未选过课本时也显示一个入口 chip,让用户随时能进 /setup
+  const label = selectedBook
+    ? `${GRADE_CHAR[selectedBook.grade] ?? selectedBook.grade}${selectedBook.semester}`
+    : '选课本';
   return (
     <Link
       href="/setup"
@@ -131,7 +145,7 @@ function NavInner() {
           <Logo size={34} />
           <span className="flex flex-col leading-none">
             <span className="font-bold text-lg tracking-wider" style={{ fontFamily: 'var(--font-serif-cn)' }}>世外默写本</span>
-            <span className="text-[9px] tracking-wide mt-0.5" style={{ color: 'var(--color-ink-soft)' }}>WFLPS · 国际部 P2</span>
+            <NavBookSubtitle />
           </span>
         </Link>
         <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">

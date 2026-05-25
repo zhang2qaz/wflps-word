@@ -80,7 +80,14 @@ const WRITING: Entry[] = [
   },
 ];
 
-const MILESTONES = [10, 25, 50, 100, 150, 200, 300];
+// 「里程碑数列」按当前课本总字数动态生成 —— 二下 200 字 vs 六上 400 字时,顶峰高度要不同
+function buildMilestones(total: number): number[] {
+  if (total <= 0) return [];
+  // 大致 5 档:25% / 50% / 75% / 90% / 100%,并补 10 / 25 启动档
+  const seeds = [10, 25, Math.round(total * 0.25), Math.round(total * 0.5),
+                 Math.round(total * 0.75), Math.round(total * 0.9), total];
+  return Array.from(new Set(seeds.filter(n => n > 0))).sort((a, b) => a - b);
+}
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -95,16 +102,17 @@ export default function Home() {
   const displayName =
     acc?.children.find((c) => c.id === acc.activeChildId)?.name || childName;
 
-  // 里程碑庆祝
+  // 里程碑庆祝 —— 按当前课本总字数计算
   const milestoneSeen = useStore(s => s.milestoneSeen);
   const setMilestoneSeen = useStore(s => s.setMilestoneSeen);
   const [milestone, setMilestone] = useState<number | null>(null);
   useEffect(() => {
     if (!mounted) return;
-    const reached = MILESTONES.filter(m => stats.mastered >= m);
+    const milestones = buildMilestones(stats.total);
+    const reached = milestones.filter(m => stats.mastered >= m);
     const top = reached.length ? reached[reached.length - 1] : 0;
     if (top > milestoneSeen) setMilestone(top);
-  }, [mounted, stats.mastered, milestoneSeen]);
+  }, [mounted, stats.mastered, stats.total, milestoneSeen]);
 
   // SSR 一致性:挂载前不读 store(zustand persist 客户端独有)
   if (!mounted) {

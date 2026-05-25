@@ -8,6 +8,7 @@ import { haptic } from '@/lib/haptic';
 import { createRecognizer, isModelCached } from '@/lib/voice';
 import { useEssays, statsOf } from '@/lib/essays';
 import { useStore } from '@/lib/store';
+import { useRequireBook } from '@/components/RequireBook';
 
 const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 
@@ -19,6 +20,7 @@ const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 type Phase = 'idle' | 'loading' | 'listening' | 'error';
 
 export default function VoiceWritePage() {
+  const guard = useRequireBook();
   const router = useRouter();
   const saveEssay = useEssays((s) => s.saveEssay);
   const [phase, setPhase] = useState<Phase>('idle');
@@ -117,6 +119,8 @@ export default function VoiceWritePage() {
   const stats = statsOf(text);
   const listening = phase === 'listening';
   const loading = phase === 'loading';
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   return (
     <div className="min-h-screen">

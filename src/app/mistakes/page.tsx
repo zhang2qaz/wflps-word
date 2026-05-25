@@ -8,6 +8,7 @@ import { useShots } from '@/lib/shots';
 import { useShallow } from 'zustand/react/shallow';
 import { WORDS, getReciteRef, getPoem, getSentence } from '@/data/vocabulary';
 import { masteryLevel } from '@/lib/srs';
+import { useRequireBook } from '@/components/RequireBook';
 
 type Row = {
   id: string;
@@ -139,6 +140,7 @@ function MistakeRow({ item }: { item: Row }) {
 }
 
 export default function MistakesPage() {
+  const guard = useRequireBook();
   const router = useRouter();
   const progress = useStore(s => s.progress);
   const customWords = useStore(useShallow(s => s.customWords));
@@ -185,15 +187,17 @@ export default function MistakesPage() {
     return rows.sort((a, b) => (a.accuracy !== b.accuracy ? a.accuracy - b.accuracy : b.wrong - a.wrong));
   }, [progress, customWords, shotsMap, selectedBook]);
 
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
+
   if (sorted.length === 0) {
     return (
       <div className="min-h-screen">
         <Nav />
         <main className="max-w-2xl mx-auto px-5 py-16 text-center">
           <div className="seal text-2xl mx-auto mb-6" style={{ width: 80, height: 80, fontSize: '1.8rem' }}>净</div>
-          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>错题本是空的</h1>
+          <h1 className="text-3xl font-bold mb-3" style={{ fontFamily: 'var(--font-serif-cn)' }}>这本课本暂时没有错题</h1>
           <p className="text-sm mb-8" style={{ color: 'var(--color-ink-soft)' }}>
-            还没有写错过的字词，或者你都已经把它们攻克了！👏
+            还没在当前课本里写错过字词,或者你都已经把它们攻克了!👏
           </p>
           <a href="/dictate" className="btn btn-lg inline-flex" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.12)' }}>
             去练听写

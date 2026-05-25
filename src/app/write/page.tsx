@@ -8,6 +8,7 @@ import { haptic } from '@/lib/haptic';
 import { useEssays, randomPrompt, reviewFor, statsOf, type Essay } from '@/lib/essays';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
+import { useRequireBook } from '@/components/RequireBook';
 
 const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 
@@ -20,6 +21,7 @@ const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
 type View = 'write' | 'review' | 'archive';
 
 export default function WritePage() {
+  const guard = useRequireBook();
   const { essays, draft, saveDraft, saveEssay, deleteEssay } = useEssays(
     useShallow((s) => ({
       essays: s.essays,
@@ -62,6 +64,8 @@ export default function WritePage() {
 
   const stats = statsOf(content);
   const canFinish = stats.chars >= 20;
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   // ───── 写作视图 ─────
   if (view === 'write') {

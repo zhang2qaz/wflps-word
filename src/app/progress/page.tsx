@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Nav from '@/components/Nav';
 import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
-import { unitGroups, reciteRefs, books } from '@/data/vocabulary';
+import { unitGroups, reciteRefs, books, getPoem, getSentence } from '@/data/vocabulary';
 import { isMastered } from '@/lib/srs';
 
 export default function ProgressPage() {
@@ -13,6 +13,7 @@ export default function ProgressPage() {
   const history = useStore(s => s.history);
   const childName = useStore(s => s.childName);
   const customWords = useStore(useShallow(s => s.customWords));
+  const selectedBook = useStore(s => s.selectedBook);
   const reset = useStore(s => s.reset);
 
   const last7 = useMemo(() => {
@@ -36,9 +37,16 @@ export default function ProgressPage() {
 
   const maxBar = Math.max(1, ...last7.map(d => d.reviewed + d.learned));
 
+  // 家长报告也按 selectedBook 过滤 —— 只看当前课本进度,不混跨年级数据
+  const bookList = useMemo(() => {
+    const all = books();
+    if (!selectedBook) return all;
+    return all.filter(b => b.grade === selectedBook.grade && b.semester === selectedBook.semester);
+  }, [selectedBook]);
+
   const unitProgress = useMemo(() => {
     const rows: { label: string; total: number; learned: number; mastered: number }[] = [];
-    for (const b of books()) {
+    for (const b of bookList) {
       for (const g of unitGroups(b.grade, b.semester)) {
         const words = g.lessons.flatMap(l => l.words);
         const learned = words.filter(w => progress[w.id]?.lastReview).length;
@@ -47,12 +55,15 @@ export default function ProgressPage() {
           return p ? isMastered(p) : false;
         }).length;
         rows.push({
-          label: `${b.label} 第${g.unit}单元 · ${g.unitTitle}`,
+          label: selectedBook
+            ? `第${g.unit}单元 · ${g.unitTitle}`
+            : `${b.label} 第${g.unit}单元 · ${g.unitTitle}`,
           total: words.length, learned, mastered,
         });
       }
     }
-    if (customWords.length > 0) {
+    // 自定义词单只在「全课本」视图显示(否则归不到具体课本里)
+    if (!selectedBook && customWords.length > 0) {
       const learned = customWords.filter(w => progress[w.id]?.lastReview).length;
       const mastered = customWords.filter(w => {
         const p = progress[w.id];
@@ -61,24 +72,32 @@ export default function ProgressPage() {
       rows.push({ label: '我导入的词单', total: customWords.length, learned, mastered });
     }
     return rows;
-  }, [progress, customWords]);
+  }, [progress, customWords, bookList, selectedBook]);
 
   const reciteProgress = useMemo(() => {
-    return reciteRefs().map(r => {
-      const p = progress[r.id];
-      let statusLabel = '未学', statusColor = '#5b6478';
-      if (p && p.lastReview !== 0) {
-        if (isMastered(p)) { statusLabel = '已掌握'; statusColor = '#2d8a6f'; }
-        else if (p.nextDue <= Date.now()) { statusLabel = '待复习'; statusColor = '#21348c'; }
-        else { statusLabel = '学习中'; statusColor = '#e0a32a'; }
-      }
-      return {
-        id: r.id, kind: r.kind, title: r.title,
-        correct: p?.correct ?? 0, wrong: p?.wrong ?? 0,
-        statusLabel, statusColor,
-      };
-    });
-  }, [progress]);
+    return reciteRefs()
+      .filter(r => {
+        if (!selectedBook) return true;
+        const poem = getPoem(r.id);
+        const sent = poem ? undefined : getSentence(r.id);
+        const ref = poem ?? sent;
+        return !!ref && (ref.grade ?? 2) === selectedBook.grade && ref.semester === selectedBook.semester;
+      })
+      .map(r => {
+        const p = progress[r.id];
+        let statusLabel = '未学', statusColor = '#5b6478';
+        if (p && p.lastReview !== 0) {
+          if (isMastered(p)) { statusLabel = '已掌握'; statusColor = '#2d8a6f'; }
+          else if (p.nextDue <= Date.now()) { statusLabel = '待复习'; statusColor = '#21348c'; }
+          else { statusLabel = '学习中'; statusColor = '#e0a32a'; }
+        }
+        return {
+          id: r.id, kind: r.kind, title: r.title,
+          correct: p?.correct ?? 0, wrong: p?.wrong ?? 0,
+          statusLabel, statusColor,
+        };
+      });
+  }, [progress, selectedBook]);
 
   const accuracy7d = (() => {
     const c = last7.reduce((s, d) => s + d.correct, 0);

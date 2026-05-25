@@ -9,10 +9,12 @@ import { WORDS, unitGroups, books, type Word } from '@/data/vocabulary';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { stopSpeak } from '@/lib/tts';
+import { useRequireBook } from '@/components/RequireBook';
 
 type RoundResult = { id: string; word: string; correct: boolean };
 
 export default function DictatePage() {
+  const guard = useRequireBook();
   const customWords = useStore(useShallow(s => s.customWords));
   const progress = useStore(s => s.progress);
   const recordAnswer = useStore(s => s.recordAnswer);
@@ -68,6 +70,8 @@ export default function DictatePage() {
     if (idx >= queue.length - 1) setDone(true);
     else setIdx(i => i + 1);
   };
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   // ---------- 选择界面 ----------
   if (queue.length === 0) {

@@ -9,6 +9,7 @@ import { currentPosition, unitWords, type Word } from '@/data/vocabulary';
 import { useStore, selectUnitReviewDue, selectDueRecite } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { stopSpeak } from '@/lib/tts';
+import { useRequireBook } from '@/components/RequireBook';
 
 function ReciteDueBanner({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -29,6 +30,7 @@ function bookLabel(grade: number, semester: '上' | '下') {
 }
 
 export default function ReviewPage() {
+  const guard = useRequireBook();
   const progress = useStore(useShallow((s) => s.progress));
   const selectedBook = useStore((s) => s.selectedBook);
   const dueIds = useStore(useShallow((s) => selectUnitReviewDue(s)));
@@ -69,6 +71,8 @@ export default function ReviewPage() {
     if (idx >= queue.length - 1) setDone(true);
     else setIdx((i) => i + 1);
   };
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   // 空状态
   if (queue.length === 0) {

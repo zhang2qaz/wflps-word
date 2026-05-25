@@ -17,6 +17,7 @@ export default function ImportPage() {
   const addCustomWords = useStore(s => s.addCustomWords);
   const clearCustomWords = useStore(s => s.clearCustomWords);
   const customWords = useStore(useShallow(s => s.customWords));
+  const selectedBook = useStore(s => s.selectedBook);
 
   const parse = () => {
     // 支持换行 / 空格 / 逗号 / 顿号 分隔
@@ -49,14 +50,16 @@ export default function ImportPage() {
         char: d.char,
         pinyin: d.pinyin,
         meaning: '',
-        semester: '下',
+        // 跟随当前课本,使导入词出现在当前课本的视图里
+        grade: selectedBook?.grade ?? 2,
+        semester: selectedBook?.semester ?? '下',
         unit: 99,
         unitTitle: '我的导入',
         lesson: name,
         type: d.char.length >= 4 ? 'idiom' : 'word',
         examples: [],
         sentence: '',
-        tip: '把这个词拆成单个字记，再用它造个句子。',
+        tip: '把这个词拆成单个字记,再用它造个句子。',
         chars,
         custom: true,
       };
@@ -76,8 +79,8 @@ export default function ImportPage() {
           导入词单
         </h1>
         <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-          这个 App 已内置<b>世外小学国际部 P2 · 二下第五、六单元</b>（按 WFL 默写卷逐词核对，带科学记忆拆解）。
-          其他单元 / 其他学校的词单，把词语贴进来就能练 — 拼音会自动生成（<b>多音字请检查一下</b>）。
+          App 已内置<b>统编版二~六年级</b>全套字词、古诗、关键句(默认范围 = 顶部「📚 课本」chip 选的那本)。
+          如果学校用的是别的词单,把词语贴进来就能练 —— 拼音会自动生成(<b>多音字请检查一下</b>)。
         </p>
 
         {saved && (

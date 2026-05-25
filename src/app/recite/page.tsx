@@ -9,6 +9,7 @@ import AnswerCheck from '@/components/AnswerCheck';
 import HanziStrokes from '@/components/HanziStrokes';
 import { POEMS, SENTENCES, type Poem, type Sentence } from '@/data/vocabulary';
 import { useStore, selectDueRecite } from '@/lib/store';
+import { useRequireBook } from '@/components/RequireBook';
 import { isMastered, type SrsState } from '@/lib/srs';
 import { useShallow } from 'zustand/react/shallow';
 import { speak, stopSpeak } from '@/lib/tts';
@@ -52,8 +53,11 @@ function ReciteInner() {
   const sp = useSearchParams();
   const kind = parseKind(sp.get('kind'));
   const [view, setView] = useState<View>({ kind: 'select' });
+  const guard = useRequireBook();
 
   useEffect(() => () => stopSpeak(), []);
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   return (
     <div className="min-h-screen">
@@ -134,7 +138,7 @@ function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void 
 
       {groups.length === 0 && (
         <div className="card p-8 text-center" style={{ color: 'var(--color-ink-soft)' }}>
-          暂无{kind === 'sentences' ? '句子' : '古诗'}内容
+          这本课本暂无{kind === 'sentences' ? '句子' : '古诗'}内容
         </div>
       )}
 

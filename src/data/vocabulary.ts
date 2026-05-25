@@ -13,6 +13,7 @@ import { GRADE3_WORDS, GRADE3_POEMS, GRADE3_SENTENCES } from './grade3';
 import { GRADE4_WORDS, GRADE4_POEMS, GRADE4_SENTENCES } from './grade4';
 import { GRADE5_WORDS, GRADE5_POEMS, GRADE5_SENTENCES } from './grade5';
 import { GRADE6_WORDS, GRADE6_POEMS, GRADE6_SENTENCES } from './grade6';
+import { MODERN_SENTENCES } from './sentences-modern';
 
 export type CharKind = '象形' | '指事' | '会意' | '形声' | '独体';
 
@@ -1378,6 +1379,7 @@ SENTENCES.push(...GRADE3_SENTENCES);
 SENTENCES.push(...GRADE4_SENTENCES);
 SENTENCES.push(...GRADE5_SENTENCES);
 SENTENCES.push(...GRADE6_SENTENCES);
+SENTENCES.push(...MODERN_SENTENCES);
 
 // ============================================================
 // 工具函数

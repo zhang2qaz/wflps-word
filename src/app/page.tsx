@@ -245,8 +245,25 @@ export default function Home() {
                 📜
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[17px] font-semibold leading-tight">古诗 · 句子</div>
-                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>整首默写,带逐句对照</div>
+                <div className="text-[17px] font-semibold leading-tight">古诗</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>整首默写,逐句对照</div>
+              </div>
+            </Link>
+            <Link href="/recite?kind=sentences" className="ios-row ios-chevron">
+              <div
+                className="flex-shrink-0 flex items-center justify-center text-white"
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--color-jade)', fontSize: 18,
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}
+                aria-hidden
+              >
+                💬
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[17px] font-semibold leading-tight">句子默写</div>
+                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>课文关键句 · 现代汉语 + 文言文</div>
               </div>
             </Link>
           </div>

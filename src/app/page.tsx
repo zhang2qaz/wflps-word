@@ -206,23 +206,6 @@ export default function Home() {
                 <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>自由写作 + 自检清单 + 历史归档</div>
               </div>
             </Link>
-            <Link href="/strokes" className="ios-row ios-chevron">
-              <div
-                className="flex-shrink-0 flex items-center justify-center text-white"
-                style={{
-                  width: 36, height: 36, borderRadius: 10,
-                  background: 'var(--color-jade)', fontSize: 18,
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
-                }}
-                aria-hidden
-              >
-                ✍️
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-[17px] font-semibold leading-tight">笔顺挑战</div>
-                <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>一笔一笔写,写错立刻提示</div>
-              </div>
-            </Link>
           </div>
         </section>
 

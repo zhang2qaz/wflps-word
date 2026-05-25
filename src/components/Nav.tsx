@@ -11,7 +11,6 @@ type NavLink = { href: string; label: string; group: 'kid' | 'parent' };
 const LINKS: NavLink[] = [
   { href: '/learn', label: '学新字', group: 'kid' },
   { href: '/dictate', label: '听写', group: 'kid' },
-  { href: '/strokes', label: '笔顺', group: 'kid' },
   { href: '/recite', label: '古诗', group: 'kid' },
   { href: '/write', label: '作文', group: 'kid' },
   { href: '/review', label: '复习', group: 'kid' },

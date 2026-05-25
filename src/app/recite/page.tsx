@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Nav from '@/components/Nav';
 import WriteGrid, { type WriteGridHandle } from '@/components/WriteGrid';
@@ -11,6 +12,11 @@ import { useStore, selectDueRecite } from '@/lib/store';
 import { isMastered, type SrsState } from '@/lib/srs';
 import { useShallow } from 'zustand/react/shallow';
 import { speak, stopSpeak } from '@/lib/tts';
+
+type Kind = 'poems' | 'sentences' | 'both';
+function parseKind(v: string | null): Kind {
+  return v === 'sentences' ? 'sentences' : v === 'poems' ? 'poems' : 'both';
+}
 
 type View =
   | { kind: 'select' }
@@ -35,6 +41,16 @@ const STATUS_COLOR: Record<Status, string> = {
 };
 
 export default function RecitePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen"><Nav /></div>}>
+      <ReciteInner />
+    </Suspense>
+  );
+}
+
+function ReciteInner() {
+  const sp = useSearchParams();
+  const kind = parseKind(sp.get('kind'));
   const [view, setView] = useState<View>({ kind: 'select' });
 
   useEffect(() => () => stopSpeak(), []);
@@ -43,7 +59,7 @@ export default function RecitePage() {
     <div className="min-h-screen">
       <Nav />
       <main className="max-w-2xl mx-auto px-5 py-8">
-        {view.kind === 'select' && <SelectScreen onPick={setView} />}
+        {view.kind === 'select' && <SelectScreen kind={kind} onPick={setView} />}
         {view.kind === 'poem' && (
           <PoemStudy poem={view.poem} onExit={() => setView({ kind: 'select' })} />
         )}
@@ -58,29 +74,46 @@ export default function RecitePage() {
 // ============================================================
 // 选择界面
 // ============================================================
-function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
+function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void }) {
   const progress = useStore(s => s.progress);
   const dueRecite = useStore(useShallow(s => selectDueRecite(s)));
 
+  // 按 kind 过滤数据源
+  const filteredPoems = kind === 'sentences' ? [] : POEMS;
+  const filteredSentences = kind === 'poems' ? [] : SENTENCES;
+
   const groups = Array.from(
     new Map(
-      [...POEMS, ...SENTENCES].map(x => [`${x.semester}-${x.unit}`, { semester: x.semester, unit: x.unit }]),
+      [...filteredPoems, ...filteredSentences].map(x => [
+        `${x.grade ?? 2}-${x.semester}-${x.unit}`,
+        { grade: x.grade ?? 2, semester: x.semester, unit: x.unit },
+      ]),
     ).values(),
-  ).sort((a, b) =>
-    a.semester !== b.semester ? (a.semester === '上' ? -1 : 1) : a.unit - b.unit,
-  );
+  ).sort((a, b) => (
+    a.grade !== b.grade ? a.grade - b.grade :
+    a.semester !== b.semester ? (a.semester === '上' ? -1 : 1) :
+    a.unit - b.unit
+  ));
+
+  // 标题 + 简介按 kind 切
+  const heading =
+    kind === 'sentences' ? '句子默写' :
+    kind === 'poems'     ? '古诗默写'   :
+    '古诗 · 句子 背默';
+  const intro =
+    kind === 'sentences'
+      ? <>课文里值得整句默的<b>关键句</b>(现代汉语 + 文言文)。听一整句,写下来——别忘了<b>标点</b>。</>
+      : kind === 'poems'
+        ? <>先<b>读懂诗意</b>,再<b>一句一句</b>默写整首古诗。练过的会进入<b>间隔复习</b>。</>
+        : <>古诗:先<b>读懂诗意</b>,再<b>一句一句</b>默写。句子:听一整句,写下来——别忘了标点。</>;
 
   return (
     <>
-      <div className="text-xs tracking-wide mb-1" style={{ color: 'var(--color-vermilion)' }}>
-        世外小学 · 国际部 P2 · 二年级下册
-      </div>
-      <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-        古诗 · 句子 背默
+      <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-display-sans)', letterSpacing: '-0.02em' }}>
+        {heading}
       </h1>
       <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-        古诗：先<b>读懂诗意</b>，再<b>一句一句</b>默写。句子：听一整句，写下来——别忘了标点。
-        练过的会进入<b>间隔复习</b>，到点会提醒。
+        {intro}
       </p>
 
       {dueRecite.length > 0 && (
@@ -88,17 +121,24 @@ function SelectScreen({ onPick }: { onPick: (v: View) => void }) {
           className="mb-5 p-3 rounded-xl text-sm"
           style={{ background: 'rgba(33,52,140,0.08)', border: '1px solid var(--color-vermilion)' }}
         >
-          🔔 <b>今天有 {dueRecite.length} 项</b>古诗 / 句子该复习了 —— 下面带「今日复习」标记的就是。
+          🔔 <b>今天有 {dueRecite.length} 项</b>该复习了 —— 下面带「今日复习」标记的就是。
         </div>
       )}
 
-      {groups.map(({ semester, unit }) => {
-        const poems = POEMS.filter(p => p.semester === semester && p.unit === unit);
-        const sentences = SENTENCES.filter(s => s.semester === semester && s.unit === unit);
+      {groups.length === 0 && (
+        <div className="card p-8 text-center" style={{ color: 'var(--color-ink-soft)' }}>
+          暂无{kind === 'sentences' ? '句子' : '古诗'}内容
+        </div>
+      )}
+
+      {groups.map(({ grade, semester, unit }) => {
+        const poems = filteredPoems.filter(p => (p.grade ?? 2) === grade && p.semester === semester && p.unit === unit);
+        const sentences = filteredSentences.filter(s => (s.grade ?? 2) === grade && s.semester === semester && s.unit === unit);
+        if (poems.length === 0 && sentences.length === 0) return null;
         return (
-          <div key={`${semester}${unit}`} className="mb-7">
+          <div key={`${grade}${semester}${unit}`} className="mb-7">
             <div className="text-xs font-bold mb-2" style={{ color: 'var(--color-vermilion)' }}>
-              二年级{semester}册 · 第 {unit} 单元
+              {['一', '二', '三', '四', '五', '六'][grade - 1]}年级{semester}册 · 第 {unit} 单元
             </div>
             <div className="space-y-2">
               {poems.map(p => {

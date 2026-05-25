@@ -232,7 +232,7 @@ export default function Home() {
             另一条线
           </h3>
           <div className="ios-list">
-            <Link href="/recite" className="ios-row ios-chevron">
+            <Link href="/recite?kind=poems" className="ios-row ios-chevron">
               <div
                 className="flex-shrink-0 flex items-center justify-center text-white"
                 style={{
@@ -245,7 +245,7 @@ export default function Home() {
                 📜
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[17px] font-semibold leading-tight">古诗</div>
+                <div className="text-[17px] font-semibold leading-tight">古诗默写</div>
                 <div className="text-[13px] mt-0.5 truncate" style={{ color: 'var(--color-ink-soft)' }}>整首默写,逐句对照</div>
               </div>
             </Link>

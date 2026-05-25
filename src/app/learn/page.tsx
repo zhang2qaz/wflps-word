@@ -59,58 +59,31 @@ export default function LearnPage() {
       <div className="min-h-screen">
         <Nav />
         <main className="max-w-3xl mx-auto px-5 py-10">
-          <div className="mb-2 text-xs tracking-wide" style={{ color: 'var(--color-vermilion)' }}>
-            上海世界外国语小学 · 国际部 P2
-          </div>
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-            学新字 · 科学记忆四步法
+            学字词 · {book.label}
           </h1>
-          <p className="text-sm mb-3 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-            不靠死记硬背。每个字带你走四步：<b>认词 → 拆字 → 记法 → 运用</b>。
-            把陌生的字拆成你已经认识的部件，弄懂它「为什么这样写」，记得又快又牢。
+          <p className="text-sm mb-4 leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+            每个字四步:<b>认词 → 拆字 → 记法 → 运用</b>。建议一次学 6–8 个,学完去「听写」检验。
           </p>
-          <div
-            className="mb-4 p-3 rounded-lg text-sm flex gap-2"
-            style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
-          >
-            <span>💡</span>
-            <span>
-              <b>建议每次只学 6–8 个字</b>，学完马上去「听写」检验，明天再学几个。
-              一口气学一整单元，记得快、忘得也快。
-            </span>
-          </div>
-
-          {/* 只显示当前课本(不再让用户在子页里跳别的年级);改课本走 Nav 上的「📚」chip → /setup */}
-          <div className="flex items-center gap-2 mb-5">
-            <span
-              className="px-3 py-1.5 rounded-md text-sm font-medium"
-              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-            >
-              {book.label}
-            </span>
-            <Link href="/setup" className="text-xs underline" style={{ color: 'var(--color-ink-soft)' }}>
-              换课本
-            </Link>
-          </div>
 
           {pos && pos.grade === book.grade && pos.semester === book.semester && (
-            <p className="text-xs mb-5 -mt-2 flex items-center gap-1" style={{ color: 'var(--color-jade)' }}>
+            <p className="text-xs mb-4 flex items-center gap-1" style={{ color: 'var(--color-jade)' }}>
               📍 已为你定位到上次学习的单元(第 {pos.unit} 单元)
             </p>
           )}
 
           {groups.some(g => g.draft) && (
-            <div
-              className="mb-5 p-3 rounded-lg text-sm flex gap-2"
-              style={{ background: 'rgba(224,163,42,0.1)', border: '1px dashed var(--color-mustard)' }}
-            >
-              <span>⚠️</span>
-              <span>
-                标<b style={{ color: 'var(--color-mustard)' }}>「草稿 · 待核对」</b>的单元用的是
-                <b>统编版标准词表</b>，<b>尚未逐字对照世外默写卷</b> —— 请家长核对后再作正式默写。
-                目前已核对的是<b>二年级下册第五、六单元</b>。
-              </span>
-            </div>
+            <details className="mb-5 rounded-lg" style={{ border: '1px dashed var(--color-mustard)' }}>
+              <summary className="px-3 py-2 text-xs cursor-pointer list-none flex items-center gap-2"
+                style={{ color: 'var(--color-mustard)' }}>
+                <span>⚠️</span>
+                <span>本课本有「草稿 · 待核对」单元 —— 点开看说明</span>
+              </summary>
+              <div className="px-3 pb-3 text-xs leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+                带<b style={{ color: 'var(--color-mustard)' }}>「草稿 · 待核对」</b>标记的单元用的是
+                统编版标准词表,尚未逐字对照世外默写卷,请家长核对后再作正式默写。
+              </div>
+            </details>
           )}
 
           <div className="space-y-8">

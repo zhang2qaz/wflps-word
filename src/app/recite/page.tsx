@@ -99,10 +99,14 @@ function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void 
   ));
 
   // 标题 + 简介按 kind 切
+  const GRADE_CHAR = ['', '一', '二', '三', '四', '五', '六'];
+  const bookLabel = selectedBook
+    ? ` · ${GRADE_CHAR[selectedBook.grade] ?? selectedBook.grade}年级${selectedBook.semester}册`
+    : '';
   const heading =
-    kind === 'sentences' ? '句子默写' :
-    kind === 'poems'     ? '古诗默写'   :
-    '古诗 · 句子 背默';
+    kind === 'sentences' ? `句子默写${bookLabel}` :
+    kind === 'poems'     ? `古诗默写${bookLabel}`   :
+    `古诗 · 句子 背默${bookLabel}`;
   const intro =
     kind === 'sentences'
       ? <>课文里值得整句默的<b>关键句</b>(现代汉语 + 文言文)。听一整句,写下来——别忘了<b>标点</b>。</>
@@ -141,7 +145,9 @@ function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void 
         return (
           <div key={`${grade}${semester}${unit}`} className="mb-7">
             <div className="text-xs font-bold mb-2" style={{ color: 'var(--color-vermilion)' }}>
-              {['一', '二', '三', '四', '五', '六'][grade - 1]}年级{semester}册 · 第 {unit} 单元
+              {selectedBook
+                ? `第 ${unit} 单元`
+                : `${['一', '二', '三', '四', '五', '六'][grade - 1]}年级${semester}册 · 第 ${unit} 单元`}
             </div>
             <div className="space-y-2">
               {poems.map(p => {

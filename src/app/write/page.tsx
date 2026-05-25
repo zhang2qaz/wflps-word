@@ -85,20 +85,14 @@ export default function WritePage() {
             )}
           </header>
 
-          {/* 当前年级标签(只读) + 来一个题目 */}
+          {/* 直接来一个题目 —— 年级跟 Nav 的「📚 二下」一致,不再赘述 */}
           <div className="flex items-center gap-2 mb-3">
-            <span
-              className="px-3 py-2 rounded-lg text-sm font-medium"
-              style={{ background: 'color-mix(in srgb, var(--color-ink) 5%, transparent)', color: 'var(--color-ink-soft)' }}
-            >
-              {GRADE_CHAR[grade] ?? grade} 年级 · 适配你选的课本
-            </span>
             <button
               onClick={() => { haptic.tap(); setPrompt(randomPrompt(grade)); }}
               className="text-sm px-3 py-2 rounded-lg"
               style={{ background: 'color-mix(in srgb, var(--color-mustard) 18%, transparent)', color: 'var(--color-mustard)' }}
             >
-              🎲 来个题目
+              🎲 来个题目(按 {GRADE_CHAR[grade] ?? grade} 年级)
             </button>
           </div>
 

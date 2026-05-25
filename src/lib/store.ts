@@ -178,8 +178,14 @@ export function selectDueRecite(state: State, now: number = Date.now()): string[
 }
 
 // 当前学习单元里「到期该复习」的字 —— 复习页 / 首页 / 家长报告统一口径
+// 优先用用户在首页选的 selectedBook 锚定单元;没选过再退回历史进度启发式
 export function selectUnitReviewDue(state: State, now: number = Date.now()): string[] {
-  const pos = currentPosition(id => (state.progress[id]?.lastReview ?? 0) !== 0);
+  const histPos = currentPosition(id => (state.progress[id]?.lastReview ?? 0) !== 0);
+  const pos = state.selectedBook
+    ? (histPos.grade === state.selectedBook.grade && histPos.semester === state.selectedBook.semester
+        ? histPos
+        : { grade: state.selectedBook.grade, semester: state.selectedBook.semester, unit: 1 })
+    : histPos;
   return unitWords(pos.grade, pos.semester, pos.unit)
     .filter(w => {
       const p = state.progress[w.id];
@@ -189,15 +195,31 @@ export function selectUnitReviewDue(state: State, now: number = Date.now()): str
     .map(w => w.id);
 }
 
+// 错题:也按 selectedBook 过滤 —— 跨年级旧错题不进当前视图
 export function selectMistakeWords(state: State): string[] {
+  const sb = state.selectedBook;
+  const inBook = (id: string): boolean => {
+    if (!sb) return true;
+    const w = [...WORDS, ...state.customWords].find(x => x.id === id);
+    if (w) return (w.grade ?? 2) === sb.grade && w.semester === sb.semester;
+    const p = POEMS.find(x => x.id === id);
+    if (p) return (p.grade ?? 2) === sb.grade && p.semester === sb.semester;
+    const s = SENTENCES.find(x => x.id === id);
+    if (s) return (s.grade ?? 2) === sb.grade && s.semester === sb.semester;
+    return false;
+  };
   return Object.values(state.progress)
     .filter(p => p.wrong > 0 && p.wrong >= p.correct - 1)
+    .filter(p => inBook(p.id))
     .sort((a, b) => b.wrong - a.wrong)
     .map(p => p.id);
 }
 
+// 没学过的字:也按 selectedBook 过滤
 export function selectNewWords(state: State): string[] {
+  const sb = state.selectedBook;
   return allWords(state)
+    .filter(w => !sb || ((w.grade ?? 2) === sb.grade && w.semester === sb.semester))
     .filter(w => {
       const p = state.progress[w.id];
       return !p || p.lastReview === 0;
@@ -206,10 +228,21 @@ export function selectNewWords(state: State): string[] {
 }
 
 export function selectStats(state: State) {
-  // 总数 = 词语（含导入）+ 古诗 + 句子
-  const total = allWords(state).length + POEMS.length + SENTENCES.length;
-  const learned = Object.values(state.progress).filter(p => p.lastReview !== 0).length;
-  const mastered = Object.values(state.progress).filter(p => isMastered(p)).length;
+  // 总数 / 已学 / 已掌握 都限定在 selectedBook 范围内 —— 跨年级别的字不进当前数字
+  const sb = state.selectedBook;
+  const inBook = <T extends { grade?: number; semester: '上' | '下' }>(x: T): boolean =>
+    !sb || ((x.grade ?? 2) === sb.grade && x.semester === sb.semester);
+  const bookWords = allWords(state).filter(inBook);
+  const bookPoems = POEMS.filter(inBook);
+  const bookSents = SENTENCES.filter(inBook);
+  const bookIds = new Set<string>([
+    ...bookWords.map(w => w.id),
+    ...bookPoems.map(p => p.id),
+    ...bookSents.map(s => s.id),
+  ]);
+  const total = bookIds.size;
+  const learned = Object.values(state.progress).filter(p => p.lastReview !== 0 && bookIds.has(p.id)).length;
+  const mastered = Object.values(state.progress).filter(p => isMastered(p) && bookIds.has(p.id)).length;
   const due = selectUnitReviewDue(state).length;
   const todays = state.history.find(h => h.date === todayKey());
   const streak = computeStreak(state.history);

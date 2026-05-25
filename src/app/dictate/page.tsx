@@ -79,18 +79,11 @@ export default function DictatePage() {
         <Nav />
         <main className="max-w-2xl mx-auto px-5 py-10">
           <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
-            听写练习
+            听写 · {book.label}
           </h1>
           <p className="text-sm mb-3" style={{ color: 'var(--color-ink-soft)' }}>
-            老师读词 → 你写 → <b>卡住有提示，写错能诊断，错了当场订正</b>。
+            老师读词 → 你写 → <b>卡住有提示,写错能诊断,错了当场订正</b>。一次练一篇课文(十几个词)刚好。
           </p>
-          <div
-            className="mb-4 p-3 rounded-lg text-sm flex gap-2"
-            style={{ background: 'rgba(224,163,42,0.12)', border: '1px solid var(--color-mustard)' }}
-          >
-            <span>💡</span>
-            <span>一次练 <b>一篇课文</b>（十几个词）刚好。整单元一起听写较长，建议分两三次完成。</span>
-          </div>
 
           {/* 满分挑战开关 */}
           <button
@@ -106,7 +99,7 @@ export default function DictatePage() {
             <span className="flex-1 text-left">
               <span className="font-bold text-sm">满分挑战模式</span>
               <span className="block text-xs" style={{ color: 'var(--color-ink-soft)' }}>
-                关掉提示，全靠自己 —— 看看能不能拿满分
+                关掉提示,全靠自己 —— 看看能不能拿满分
               </span>
             </span>
             <span
@@ -121,33 +114,18 @@ export default function DictatePage() {
             </span>
           </button>
 
-          <div className="flex items-center gap-2 mb-5">
-            <span
-              className="px-3 py-1.5 rounded-md text-sm font-medium"
-              style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}
-            >
-              {book.label}
-            </span>
-            <Link href="/setup" className="text-xs underline" style={{ color: 'var(--color-ink-soft)' }}>
-              换课本
-            </Link>
-          </div>
-
-
-          <div className="text-xs tracking-wide mb-3" style={{ color: 'var(--color-vermilion)' }}>
-            世外小学 · 国际部 P2
-          </div>
           {groups.some(g => g.draft) && (
-            <div
-              className="mb-4 p-3 rounded-lg text-sm flex gap-2"
-              style={{ background: 'rgba(224,163,42,0.1)', border: '1px dashed var(--color-mustard)' }}
-            >
-              <span>⚠️</span>
-              <span>
-                标<b style={{ color: 'var(--color-mustard)' }}>「草稿」</b>的单元为统编版标准词表，
-                <b>未对照世外默写卷</b>，请家长核对后再用。已核对：二下第五、六单元。
-              </span>
-            </div>
+            <details className="mb-4 rounded-lg" style={{ border: '1px dashed var(--color-mustard)' }}>
+              <summary className="px-3 py-2 text-xs cursor-pointer list-none flex items-center gap-2"
+                style={{ color: 'var(--color-mustard)' }}>
+                <span>⚠️</span>
+                <span>本课本有「草稿」单元 —— 点开看说明</span>
+              </summary>
+              <div className="px-3 pb-3 text-xs leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
+                带<b style={{ color: 'var(--color-mustard)' }}>「草稿」</b>标记的单元用的是统编版标准词表,
+                尚未对照世外默写卷,请家长核对后再用。
+              </div>
+            </details>
           )}
           <div className="space-y-7 mb-6">
             {groups.map(g => {

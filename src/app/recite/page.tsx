@@ -53,9 +53,27 @@ function ReciteInner() {
   const sp = useSearchParams();
   const kind = parseKind(sp.get('kind'));
   const [view, setView] = useState<View>({ kind: 'select' });
+  const [lastUnit, setLastUnit] = useState<number | null>(null);
   const guard = useRequireBook();
 
   useEffect(() => () => stopSpeak(), []);
+
+  // 返回 select 时滚回上次进入的单元锚点
+  useEffect(() => {
+    if (view.kind !== 'select' || lastUnit == null) return;
+    const t = setTimeout(() => {
+      document
+        .getElementById(`recite-unit-${lastUnit}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [view.kind, lastUnit]);
+
+  const enterView = (v: View) => {
+    if (v.kind === 'poem') setLastUnit(v.poem.unit);
+    if (v.kind === 'sentence') setLastUnit(v.sentence.unit);
+    setView(v);
+  };
 
   if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
@@ -63,7 +81,7 @@ function ReciteInner() {
     <div className="min-h-screen">
       <Nav />
       <main className="max-w-2xl mx-auto px-5 py-8">
-        {view.kind === 'select' && <SelectScreen kind={kind} onPick={setView} />}
+        {view.kind === 'select' && <SelectScreen kind={kind} onPick={enterView} />}
         {view.kind === 'poem' && (
           <PoemStudy poem={view.poem} onExit={() => setView({ kind: 'select' })} />
         )}
@@ -147,7 +165,7 @@ function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void 
         const sentences = filteredSentences.filter(s => (s.grade ?? 2) === grade && s.semester === semester && s.unit === unit);
         if (poems.length === 0 && sentences.length === 0) return null;
         return (
-          <div key={`${grade}${semester}${unit}`} className="mb-7">
+          <div key={`${grade}${semester}${unit}`} id={`recite-unit-${unit}`} className="mb-7 scroll-mt-6">
             <div className="text-xs font-bold mb-2" style={{ color: 'var(--color-vermilion)' }}>
               {selectedBook
                 ? `第 ${unit} 单元`

@@ -21,6 +21,7 @@ export default function LearnPage() {
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
   const [bookIdx, setBookIdx] = useState(0);
+  const [lastUnit, setLastUnit] = useState<number | null>(null); // 记住用户最后进入学习的单元
   const markLearned = useStore(s => s.markLearned);
 
   const bookList = useMemo(() => books(), []);
@@ -47,8 +48,21 @@ export default function LearnPage() {
     return () => clearTimeout(t);
   }, [progress, bookList]);
 
+  // 返回选择界面时(从某课退出),自动滚回那个单元而不是顶部
+  useEffect(() => {
+    if (queue.length !== 0 || lastUnit == null) return;
+    const t = setTimeout(() => {
+      document
+        .getElementById(`learn-unit-${lastUnit}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [queue.length, lastUnit]);
+
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
+    // 记住正在学的单元 → 返回时滚回去
+    setLastUnit(words[0]?.unit ?? null);
     // 跳到上次学到的位置：第一个还没学过的词
     const firstNew = words.findIndex(w => !progress[w.id]?.lastReview);
     setQueue(words);

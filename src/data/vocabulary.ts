@@ -538,7 +538,7 @@ export const WORDS: Word[] = [
   // ===================== 第六单元 · 雷雨 =====================
   {
     id: 'd6-01', char: '乌云', pinyin: 'wū yún',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '黑色的云，常预示着要下雨。',
     examples: ['乌云密布', '满天乌云'],
     sentence: '满天的乌云，黑沉沉地压下来。',
@@ -550,7 +550,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-02', char: '黑沉沉', pinyin: 'hēi chén chén',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '形容黑暗、天色又黑又重的样子。',
     examples: ['黑沉沉的天', '黑沉沉一片'],
     sentence: '天空黑沉沉的，好像要塌下来。',
@@ -562,7 +562,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-03', char: '压下来', pinyin: 'yā xià lái',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '从上往下压过来。',
     examples: ['压下来', '压住'],
     sentence: '乌云越来越低，像要压下来。',
@@ -575,7 +575,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-04', char: '越来越响', pinyin: 'yuè lái yuè xiǎng',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '声音渐渐变得更大。',
     examples: ['雷声越来越响', '越来越大'],
     sentence: '雷声越来越响，闪电越来越亮。',
@@ -587,7 +587,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-05', char: '清新', pinyin: 'qīng xīn',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '清爽、新鲜（多形容空气）。',
     examples: ['空气清新', '清新的空气'],
     sentence: '雷雨过后，空气格外清新。',
@@ -599,7 +599,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-06', char: '迎面扑来', pinyin: 'yíng miàn pū lái',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     examples: ['凉风迎面扑来'],
     meaning: '正对着脸冲过来。',
     sentence: '一股清新的空气迎面扑来。',
@@ -613,7 +613,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-07', char: '雷雨', pinyin: 'léi yǔ',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '伴有雷电的阵雨。',
     examples: ['一场雷雨', '雷雨天气'],
     sentence: '夏天的午后常常下雷雨。',
@@ -625,7 +625,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-08', char: '逃走', pinyin: 'táo zǒu',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '为躲避而跑掉。',
     examples: ['逃走了', '吓得逃走'],
     sentence: '一只蜘蛛从网上垂下来，逃走了。',
@@ -637,7 +637,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-09', char: '窗户', pinyin: 'chuāng hu',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '房屋墙上通风、采光的开口。',
     examples: ['打开窗户', '关窗户'],
     sentence: '雷雨来了，妈妈赶紧关上窗户。',
@@ -649,7 +649,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-10', char: '闪电', pinyin: 'shǎn diàn',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '雷雨时天空中一闪而过的电光。',
     examples: ['一道闪电', '电闪雷鸣'],
     sentence: '一道闪电划过，照亮了整个天空。',
@@ -661,7 +661,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-11', char: '彩虹', pinyin: 'cǎi hóng',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '雨后天空中出现的七色弧。',
     examples: ['美丽的彩虹', '雨后彩虹'],
     sentence: '雷雨过后，天边挂起一道彩虹。',
@@ -673,7 +673,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-12', char: '垂下来', pinyin: 'chuí xià lái',
-    ...U6, lesson: '雷雨', type: 'word',
+    ...U6, lesson: '15 雷雨', type: 'word',
     meaning: '一头固定，另一头向下挂着。',
     examples: ['柳枝垂下来', '垂下'],
     sentence: '一只蜘蛛从网上垂下来。',
@@ -686,7 +686,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-13', char: '一动不动', pinyin: 'yí dòng bú dòng',
-    ...U6, lesson: '雷雨', type: 'idiom',
+    ...U6, lesson: '15 雷雨', type: 'idiom',
     meaning: '形容完全不动。',
     examples: ['一动不动地站着'],
     sentence: '雷雨前，蜘蛛在网上一动不动。',
@@ -701,7 +701,7 @@ export const WORDS: Word[] = [
   // ============== 第六单元 · 要是你在野外迷了路 ==============
   {
     id: 'd6-14', char: '野外', pinyin: 'yě wài',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '离居民点较远的地方。',
     examples: ['野外探险', '到野外去'],
     sentence: '要是你在野外迷了路，可别慌张。',
@@ -713,7 +713,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-15', char: '时候', pinyin: 'shí hou',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '时间里的某一点或某一段。',
     examples: ['小时候', '什么时候'],
     sentence: '天黑的时候，可以看北极星辨方向。',
@@ -725,7 +725,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-16', char: '帮助', pinyin: 'bāng zhù',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '替别人出力、出主意。',
     examples: ['互相帮助', '帮助别人'],
     sentence: '大自然能帮助我们辨别方向。',
@@ -737,7 +737,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-17', char: '向导', pinyin: 'xiàng dǎo',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '带路的人。',
     examples: ['当向导', '天然的向导'],
     sentence: '太阳是个忠实的向导。',
@@ -749,7 +749,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-18', char: '永远', pinyin: 'yǒng yuǎn',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '时间长久，没有终止。',
     examples: ['永远不忘', '永远快乐'],
     sentence: '北极星永远挂在北方的天空。',
@@ -761,7 +761,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-19', char: '碰上', pinyin: 'pèng shàng',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '遇到、碰见。',
     examples: ['碰上difficulty', '路上碰上'],
     sentence: '要是碰上阴天，就看不到太阳了。',
@@ -773,7 +773,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-20', char: '特别', pinyin: 'tè bié',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '与众不同；非常。',
     examples: ['特别好', '特别的礼物'],
     sentence: '北极星特别亮，很容易找到。',
@@ -785,7 +785,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-21', char: '积雪', pinyin: 'jī xuě',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '积存在地上的雪。',
     examples: ['一层积雪', '山顶积雪'],
     sentence: '沟渠里积雪化得快的一边是南方。',
@@ -797,7 +797,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-22', char: '慌张', pinyin: 'huāng zhāng',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '心里不沉着，动作忙乱。',
     examples: ['别慌张', '神色慌张'],
     sentence: '在野外迷了路，可千万别慌张。',
@@ -809,7 +809,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-23', char: '忠实', pinyin: 'zhōng shí',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '忠诚可靠。',
     examples: ['忠实的朋友', '忠实可靠'],
     sentence: '太阳是个忠实的向导。',
@@ -821,7 +821,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-24', char: '分辨', pinyin: 'fēn biàn',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '辨别、区分清楚。',
     examples: ['分辨方向', '分辨是非'],
     sentence: '我们可以靠太阳来分辨方向。',
@@ -833,7 +833,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-25', char: '北极星', pinyin: 'běi jí xīng',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '北方天空中一颗较亮的星，可指示北方。',
     examples: ['找到北极星', '北极星指北'],
     sentence: '夜晚，北极星永远高挂在北方。',
@@ -846,7 +846,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-26', char: '指南针', pinyin: 'zhǐ nán zhēn',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '利用磁针指示方向的仪器，是中国古代四大发明之一。',
     examples: ['用指南针', '一只指南针'],
     sentence: '大自然有很多天然的指南针。',
@@ -859,7 +859,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-27', char: '黑夜', pinyin: 'hēi yè',
-    ...U6, lesson: '要是你在野外迷了路', type: 'word',
+    ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '天黑的夜晚。',
     examples: ['黑夜里', '漫漫黑夜'],
     sentence: '黑夜里，北极星给人们指路。',
@@ -873,7 +873,7 @@ export const WORDS: Word[] = [
   // ============== 第六单元 · 太空生活趣事多 ==============
   {
     id: 'd6-28', char: '舒服', pinyin: 'shū fu',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '身体或精神感到轻松愉快。',
     examples: ['很舒服', '舒舒服服'],
     sentence: '在太空睡觉，得把自己绑住才舒服。',
@@ -885,7 +885,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-29', char: '即使', pinyin: 'jí shǐ',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '连词，表示假设的让步，相当于「就算」。',
     examples: ['即使…也…'],
     sentence: '即使在太空，宇航员也要好好工作。',
@@ -897,7 +897,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-30', char: '难题', pinyin: 'nán tí',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '不容易解决的问题。',
     examples: ['解决难题', '一道难题'],
     sentence: '在太空喝水是个难题。',
@@ -909,7 +909,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-31', char: '有趣', pinyin: 'yǒu qù',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '有意思、引人喜欢。',
     examples: ['很有趣', '有趣的事'],
     sentence: '在太空中生活，是不是很有趣？',
@@ -921,7 +921,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-32', char: '杯子', pinyin: 'bēi zi',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '盛水或饮料的器具。',
     examples: ['一只杯子', '玻璃杯子'],
     sentence: '在太空里，杯子里的水会飘起来。',
@@ -933,7 +933,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-33', char: '地板', pinyin: 'dì bǎn',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '房间地面铺的板。',
     examples: ['擦地板', '木地板'],
     sentence: '在太空，地板和天花板都一样。',
@@ -945,7 +945,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-34', char: '容易', pinyin: 'róng yì',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '不难、不费事。',
     examples: ['很容易', '容易学'],
     sentence: '在太空里走路，可不像在地球上那么容易。',
@@ -957,7 +957,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-35', char: '浴室', pinyin: 'yù shì',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '专供洗澡的房间。',
     examples: ['进浴室', '宽敞的浴室'],
     sentence: '太空里的浴室和地球上很不一样。',
@@ -969,7 +969,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-36', char: '方向', pinyin: 'fāng xiàng',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '东、南、西、北等指向。',
     examples: ['辨别方向', '前进方向'],
     sentence: '在太空中很难分清方向。',
@@ -981,7 +981,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-37', char: '淋湿', pinyin: 'lín shī',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '被水浇湿。',
     examples: ['淋湿了', '被雨淋湿'],
     sentence: '太空洗澡，水珠会到处飘，容易淋湿别处。',
@@ -993,7 +993,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-38', char: '必须', pinyin: 'bì xū',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '一定要，表示事理上、情理上的必要。',
     examples: ['必须完成', '必须这样'],
     sentence: '在太空喝水，必须用带吸管的杯子。',
@@ -1005,7 +1005,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-39', char: '水桶', pinyin: 'shuǐ tǒng',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '提水、装水的桶。',
     examples: ['一只水桶', '提水桶'],
     sentence: '在太空里，水桶里的水不会自己流出来。',
@@ -1017,7 +1017,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-40', char: '宇航员', pinyin: 'yǔ háng yuán',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '驾驶或乘坐宇宙飞船在太空飞行的人。',
     examples: ['一名宇航员', '宇航员训练'],
     sentence: '宇航员在太空中要克服许多难题。',
@@ -1030,7 +1030,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-41', char: '宇宙飞船', pinyin: 'yǔ zhòu fēi chuán',
-    ...U6, lesson: '太空生活趣事多', type: 'idiom',
+    ...U6, lesson: '17 太空生活趣事多', type: 'idiom',
     meaning: '在太空中航行的飞行器。',
     examples: ['乘坐宇宙飞船'],
     sentence: '宇宙飞船把宇航员送上了太空。',
@@ -1044,7 +1044,7 @@ export const WORDS: Word[] = [
   },
   {
     id: 'd6-42', char: '或者', pinyin: 'huò zhě',
-    ...U6, lesson: '太空生活趣事多', type: 'word',
+    ...U6, lesson: '17 太空生活趣事多', type: 'word',
     meaning: '连词，表示选择关系。',
     examples: ['或者…或者…'],
     sentence: '在太空喝水，得用吸管或者特制的杯子。',
@@ -1437,7 +1437,7 @@ export const POEMS: Poem[] = [
     title: '村居',
     author: '高鼎',
     dynasty: '清',
-    semester: '下', unit: 1, unitTitle: '春天里', lesson: '古诗二首',
+    semester: '下', unit: 1, unitTitle: '春天里', lesson: '1 古诗两首',
     theme: '写早春二月的乡村风光，和孩子们放学回来、趁着春风放风筝的快乐。',
     lines: [
       { text: '草长莺飞二月天', pinyin: 'cǎo zhǎng yīng fēi èr yuè tiān', meaning: '二月里，小草生长，黄莺飞舞，' },
@@ -1451,7 +1451,7 @@ export const POEMS: Poem[] = [
     title: '咏柳',
     author: '贺知章',
     dynasty: '唐',
-    semester: '下', unit: 1, unitTitle: '春天里', lesson: '古诗二首',
+    semester: '下', unit: 1, unitTitle: '春天里', lesson: '1 古诗两首',
     theme: '用碧玉、丝带、剪刀打比方，赞美春天柳树的美，和春风的灵巧。',
     lines: [
       { text: '碧玉妆成一树高', pinyin: 'bì yù zhuāng chéng yí shù gāo', meaning: '高高的柳树，像是用碧玉打扮成的，' },
@@ -1465,7 +1465,7 @@ export const POEMS: Poem[] = [
     title: '晓出净慈寺送林子方',
     author: '杨万里',
     dynasty: '宋',
-    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '古诗二首',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '14 古诗二首',
     theme: '清晨在净慈寺送别朋友，诗人写下了六月西湖的荷花美景——莲叶碧、荷花红，色彩鲜明动人。',
     lines: [
       { text: '毕竟西湖六月中', pinyin: 'bì jìng xī hú liù yuè zhōng', meaning: '到底是六月里的西湖啊，' },
@@ -1479,7 +1479,7 @@ export const POEMS: Poem[] = [
     title: '绝句',
     author: '杜甫',
     dynasty: '唐',
-    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '古诗二首',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '14 古诗二首',
     theme: '诗人凭窗远望，用黄、翠、白、青四种颜色，画出一幅明媚生动的早春图。',
     lines: [
       { text: '两个黄鹂鸣翠柳', pinyin: 'liǎng gè huáng lí míng cuì liǔ', meaning: '两只黄鹂在翠绿的柳树上欢快鸣叫，' },
@@ -1509,19 +1509,19 @@ export const SENTENCES: Sentence[] = [
   {
     id: 's6-1',
     text: '忽然一阵大风，吹得树枝乱摆。一只蜘蛛从网上垂下来，逃走了。',
-    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '雷雨',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '15 雷雨',
     tip: '两句话，中间有逗号和句号，别漏标点。注意「蜘蛛」两个字都是虫字旁，「垂」笔画要数清。',
   },
   {
     id: 's6-2',
     text: '要是你在野外迷了路，可千万别慌张。大自然有很多天然的指南针，需要你细细观察，多多去想。',
-    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '要是你在野外迷了路',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '16 要是你在野外迷了路',
     tip: '句子较长，分两句写。注意「慌」是竖心旁，「指南针」的「针」是金字旁。',
   },
   {
     id: 's6-3',
     text: '你看，在太空中生活，是不是很有趣？',
-    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '太空生活趣事多',
+    semester: '下', unit: 6, unitTitle: '大自然的秘密', lesson: '17 太空生活趣事多',
     tip: '这是一个问句，结尾是问号「？」。注意「趣」是走字旁。',
   },
 ];

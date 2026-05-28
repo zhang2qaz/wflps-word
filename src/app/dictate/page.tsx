@@ -25,6 +25,7 @@ export default function DictatePage() {
   const [done, setDone] = useState(false);
   const [result, setResult] = useState<RoundResult[]>([]);
   const [bookIdx, setBookIdx] = useState(0);
+  const [lastUnit, setLastUnit] = useState<number | null>(null); // 记住最后听写的单元,返回后滚回去
   const [challengeMode, setChallengeMode] = useState(false);  // 满分挑战开关
   const [roundChallenge, setRoundChallenge] = useState(false); // 本轮是否挑战
 
@@ -54,8 +55,20 @@ export default function DictatePage() {
 
   useEffect(() => () => stopSpeak(), []);
 
+  // 返回选择界面时(从某课退出),自动滚回那个单元而不是顶部
+  useEffect(() => {
+    if (queue.length !== 0 || lastUnit == null) return;
+    const t = setTimeout(() => {
+      document
+        .getElementById(`dictate-unit-${lastUnit}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [queue.length, lastUnit]);
+
   const start = (words: Word[], name: string) => {
     if (words.length === 0) return;
+    setLastUnit(words[0]?.unit ?? null);  // 记住正在听写的单元,返回时滚回去
     setQueue([...words].sort(() => Math.random() - 0.5));
     setQueueName(name);
     setIdx(0);
@@ -136,7 +149,7 @@ export default function DictatePage() {
             {groups.map(g => {
               const unitWords = g.lessons.flatMap(l => l.words);
               return (
-                <div key={g.unit}>
+                <div key={g.unit} id={`dictate-unit-${g.unit}`} className="scroll-mt-6">
                   <div className="flex items-baseline gap-2 mb-2 flex-wrap">
                     <span
                       className="text-sm font-bold px-2 py-0.5 rounded"

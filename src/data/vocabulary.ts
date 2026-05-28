@@ -1093,6 +1093,33 @@ function pushDraftUnit(
   }
 }
 
+// 已逐词核对版(按家长提供的世外校本默写卷),没有 draft 标记
+function pushVerifiedUnit(
+  grade: number,
+  semester: '上' | '下',
+  unit: number,
+  unitTitle: string,
+  lessons: { lesson: string; words: DraftWord[] }[],
+) {
+  let n = 0;
+  const prefix = `g${grade}${semester === '上' ? 'a' : 'b'}v`;
+  for (const { lesson, words } of lessons) {
+    for (const [char, pinyin, meaning] of words) {
+      n += 1;
+      WORDS.push({
+        id: `${prefix}${unit}-${String(n).padStart(2, '0')}`,
+        char, pinyin, meaning,
+        grade, semester, unit, unitTitle, lesson,
+        type: char.length >= 4 ? 'idiom' : 'word',
+        examples: [],
+        sentence: '',
+        tip: '默写时把词拆成单个字记,再用它造个句子。',
+        chars: Array.from(char).map(c => ({ c, pinyin: '' })),
+      });
+    }
+  }
+}
+
 pushDraftUnit(2, '下', 1, '春天里', [
   { lesson: '古诗二首', words: [
     ['古诗', 'gǔ shī', '古代的诗'],
@@ -1183,24 +1210,56 @@ pushDraftUnit(2, '下', 4, '奇妙的想象', [
   ] },
 ]);
 
-pushDraftUnit(2, '下', 7, '改变', [
-  { lesson: '大象的耳朵', words: [
-    ['大象', 'dà xiàng', '体型很大的动物'],
-    ['耳朵', 'ěr duo', '听声音的器官'],
+// 第七单元 「改变」 —— 已按世外校本默写卷逐词核对(家长照片提供)
+pushVerifiedUnit(2, '下', 7, '改变', [
+  { lesson: '18 大象的耳朵', words: [
     ['扇子', 'shàn zi', '扇风的用具'],
-    ['跳舞', 'tiào wǔ', '随音乐做动作'],
+    ['遇到', 'yù dào', '碰到'],
+    ['生病', 'shēng bìng', '身体不舒服'],
+    ['一定', 'yī dìng', '必定'],
+    ['不安', 'bù ān', '心里不安宁'],
+    ['两根竹竿', 'liǎng gēn zhú gān', '两条长长的竹子'],
+    ['头痛', 'tóu tòng', '头疼'],
+    ['睡觉', 'shuì jiào', '休息入眠'],
+    ['最后', 'zuì hòu', '最末了'],
+    ['耷拉', 'dā lā', '向下垂'],
+    ['心烦', 'xīn fán', '心里烦躁'],
+    ['慢慢地', 'màn màn de', '不快地'],
+    ['自言自语', 'zì yán zì yǔ', '自己跟自己说话'],
   ] },
-  { lesson: '蜘蛛开店', words: [
-    ['蜘蛛', 'zhī zhū', '会织网的小动物'],
-    ['寂寞', 'jì mò', '孤单冷清'],
+  { lesson: '19 蜘蛛开店', words: [
+    ['商店', 'shāng diàn', '卖东西的店铺'],
     ['决定', 'jué dìng', '拿定主意'],
+    ['终于', 'zhōng yú', '到底'],
+    ['需要', 'xū yào', '应该有'],
+    ['付钱', 'fù qián', '给钱'],
+    ['袜子', 'wà zi', '穿在脚上的'],
+    ['星期', 'xīng qī', '一周七天'],
+    ['工夫', 'gōng fu', '时间'],
+    ['开店', 'kāi diàn', '开商店'],
     ['围巾', 'wéi jīn', '围在脖子上的布'],
+    ['简单', 'jiǎn dān', '不复杂'],
+    ['匆忙', 'cōng máng', '急急忙忙'],
+    ['寂寞', 'jì mò', '孤单冷清'],
   ] },
-  { lesson: '青蛙卖泥塘', words: [
+  { lesson: '20 青蛙卖泥塘', words: [
     ['青蛙', 'qīng wā', '会捉害虫的两栖动物'],
-    ['泥塘', 'ní táng', '有泥的小水坑'],
+    ['卖出', 'mài chū', '把东西卖给人'],
+    ['搬到', 'bān dào', '挪到别处'],
+    ['倒是', 'dào shì', '其实'],
+    ['草籽', 'cǎo zǐ', '草的种子'],
+    ['竖起', 'shù qǐ', '立起来'],
+    ['泉水', 'quán shuǐ', '从地里流出的水'],
+    ['打破', 'dǎ pò', '弄碎'],
+    ['砍树', 'kǎn shù', '用刀斧砍倒树'],
+    ['花丛', 'huā cóng', '一丛丛的花'],
+    ['尽情', 'jìn qíng', '没有约束地'],
+    ['舒服', 'shū fu', '感觉很惬意'],
+    ['游泳', 'yóu yǒng', '在水里行进'],
+    ['绿茵茵', 'lǜ yīn yīn', '形容绿油油'],
+    ['吆喝', 'yāo he', '大声招呼'],
   ] },
-  { lesson: '小毛虫', words: [
+  { lesson: '21 小毛虫', words: [
     ['可怜', 'kě lián', '值得同情'],
     ['尽心竭力', 'jìn xīn jié lì', '用尽全部心思和力气'],
   ] },
@@ -1489,10 +1548,15 @@ export function books(): Book[] {
   return out.sort((a, b) => (a.grade !== b.grade ? a.grade - b.grade : a.semester === '上' ? -1 : 1));
 }
 
-export function unitGroups(grade: number, semester: '上' | '下'): UnitGroup[] {
+/**
+ * 把某课本(年级+学期)里的字词按「单元 → 课文」分组。
+ * @param extra 调用方可传入用户导入词单(customWords) —— 让导入词也出现在「学字词」「听写」的单元列表里。
+ *              没传时只用内置 WORDS。
+ */
+export function unitGroups(grade: number, semester: '上' | '下', extra: Word[] = []): UnitGroup[] {
   const unitOrder: number[] = [];
   const byUnit = new Map<number, { unitTitle: string; lessons: Map<string, Word[]>; lessonOrder: string[] }>();
-  for (const w of WORDS) {
+  for (const w of [...WORDS, ...extra]) {
     if ((w.grade ?? 2) !== grade || w.semester !== semester) continue;
     if (!byUnit.has(w.unit)) {
       byUnit.set(w.unit, { unitTitle: w.unitTitle, lessons: new Map(), lessonOrder: [] });

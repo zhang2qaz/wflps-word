@@ -39,7 +39,8 @@ export default function DictatePage() {
     // 只在 selectedBook 改变时跑;bookList 是固定的
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedBook]);
-  const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
+
+  const groups = useMemo(() => unitGroups(book.grade, book.semester, customWords), [book, customWords]);
   const allWords = useMemo(() => [...WORDS, ...customWords], [customWords]);
 
   const customLists = useMemo(() => {

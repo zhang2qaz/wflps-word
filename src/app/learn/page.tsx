@@ -16,6 +16,7 @@ export default function LearnPage() {
   const guard = useRequireBook();
   const progress = useStore(s => s.progress);
   const selectedBook = useStore(s => s.selectedBook);
+  const customWords = useStore(s => s.customWords);
   const [queue, setQueue] = useState<Word[]>([]);
   const [queueName, setQueueName] = useState('');
   const [idx, setIdx] = useState(0);
@@ -24,7 +25,7 @@ export default function LearnPage() {
 
   const bookList = useMemo(() => books(), []);
   const book = bookList[bookIdx] ?? bookList[0];
-  const groups = useMemo(() => unitGroups(book.grade, book.semester), [book]);
+  const groups = useMemo(() => unitGroups(book.grade, book.semester, customWords), [book, customWords]);
 
   // 进入页面时:优先用「用户在首页选的课本」(selectedBook),没选过再退回历史进度自动定位
   const [pos, setPos] = useState<{ grade: number; semester: '上' | '下'; unit: number } | null>(null);

@@ -6,10 +6,12 @@ import Nav from '@/components/Nav';
 import { useStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import type { Word, CharInfo } from '@/data/vocabulary';
+import { useRequireBook } from '@/components/RequireBook';
 
 type Draft = { char: string; pinyin: string };
 
 export default function ImportPage() {
+  const guard = useRequireBook();
   const [raw, setRaw] = useState('');
   const [listName, setListName] = useState('');
   const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -70,6 +72,8 @@ export default function ImportPage() {
     setDrafts([]);
     setListName('');
   };
+
+  if (guard) return <div className="min-h-screen"><Nav />{guard}</div>;
 
   return (
     <div className="min-h-screen">

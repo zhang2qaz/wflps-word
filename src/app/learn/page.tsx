@@ -134,11 +134,13 @@ export default function LearnPage() {
                       className="text-sm font-bold px-2 py-0.5 rounded"
                       style={{ background: 'var(--color-vermilion)', color: 'var(--color-paper)' }}
                     >
-                      第 {g.unit} 单元
+                      {g.unit === 99 ? '我导入的' : `第 ${g.unit} 单元`}
                     </span>
-                    <span className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink-soft)' }}>
-                      {g.unitTitle}
-                    </span>
+                    {g.unit !== 99 && (
+                      <span className="text-sm" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink-soft)' }}>
+                        {g.unitTitle}
+                      </span>
+                    )}
                     {g.draft && (
                       <span
                         className="text-[10px] px-1.5 py-0.5 rounded"
@@ -208,11 +210,11 @@ export default function LearnPage() {
                     )}
 
                     <button
-                      onClick={() => start(allWords, `第${g.unit}单元全部`)}
+                      onClick={() => start(allWords, g.unit === 99 ? '我导入的全部' : `第${g.unit}单元全部`)}
                       className="w-full text-center p-2 text-xs underline"
                       style={{ color: 'var(--color-ink-soft)' }}
                     >
-                      （赶进度时）一次学完第 {g.unit} 单元 {allWords.length} 个词
+                      （赶进度时）一次学完{g.unit === 99 ? '导入的' : `第 ${g.unit} 单元`} {allWords.length} 个词
                     </button>
                   </div>
                 </div>

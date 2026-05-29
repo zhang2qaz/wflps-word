@@ -6,10 +6,11 @@ import Link from 'next/link';
 import Nav from '@/components/Nav';
 import DictationCard, { type DictationResult } from '@/components/DictationCard';
 import { WORDS, unitGroups, books, type Word } from '@/data/vocabulary';
-import { useStore } from '@/lib/store';
+import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { stopSpeak } from '@/lib/tts';
 import { useRequireBook } from '@/components/RequireBook';
+import { haptic } from '@/lib/haptic';
 
 type RoundResult = { id: string; word: string; correct: boolean };
 
@@ -266,6 +267,15 @@ export default function DictatePage() {
 
   // ---------- 完成界面 ----------
   if (done) {
+    // 算下一课:找当前 queue 第一个词所属的 lesson,定位单元里的下一节
+    const cur = queue[0];
+    let nextLesson: { lesson: string; words: Word[] } | null = null;
+    if (cur) {
+      const g = groups.find(g => g.unit === cur.unit);
+      const lessons = g?.lessons ?? [];
+      const ci = lessons.findIndex(l => l.lesson === cur.lesson);
+      if (ci >= 0 && ci + 1 < lessons.length) nextLesson = lessons[ci + 1];
+    }
     return (
       <div className="min-h-screen">
         <Nav />
@@ -273,8 +283,10 @@ export default function DictatePage() {
           <DoneScreen
             result={result}
             challenge={roundChallenge}
+            nextLesson={nextLesson}
             onRetry={() => start(queue, queueName)}
             onExit={() => setQueue([])}
+            onNext={(l) => start(l.words, `《${l.lesson}》`)}
           />
         </main>
       </div>
@@ -313,29 +325,80 @@ export default function DictatePage() {
 }
 
 function DoneScreen({
-  result, challenge = false, onRetry, onExit,
-}: { result: RoundResult[]; challenge?: boolean; onRetry: () => void; onExit: () => void }) {
+  result, challenge = false, nextLesson, onRetry, onExit, onNext,
+}: {
+  result: RoundResult[];
+  challenge?: boolean;
+  nextLesson: { lesson: string; words: Word[] } | null;
+  onRetry: () => void;
+  onExit: () => void;
+  onNext: (l: { lesson: string; words: Word[] }) => void;
+}) {
   const total = result.length;
   const correct = result.filter(r => r.correct).length;
   const pct = total === 0 ? 0 : Math.round((correct / total) * 100);
   const perfect = total > 0 && correct === total;
-  let comment = '继续加油！', mark = '良';
-  if (challenge && perfect) { comment = '🏆 满分挑战成功！没看一条提示，全部答对 —— 太厉害了！'; mark = '满'; }
-  else if (challenge) { comment = `挑战差 ${total - correct} 个就满分，再来一次冲满分！`; mark = pct >= 60 ? '良' : '中'; }
-  else if (pct >= 95) { comment = '近乎完美，记忆牢得像石碑！'; mark = '优'; }
-  else if (pct >= 80) { comment = '非常棒！错的几个进了错题本，明天再攻克。'; mark = '优'; }
-  else if (pct >= 60) { comment = '不错，错的字都当场订正过了，会越来越熟。'; mark = '良'; }
-  else { comment = '别灰心 — 错的字都找到了原因、订正过了，这就是进步。'; mark = '中'; }
+  const todays = useStore(useShallow(selectStats)).todays;
+  const streak = useStore(useShallow(selectStats)).streak;
+
+  // 庆祝 haptic —— 答对率 >= 60% 给 success,挑战满分给 unlock,否则给一个轻拍
+  useEffect(() => {
+    if (challenge && perfect) haptic.unlock();
+    else if (pct >= 60) haptic.success();
+    else haptic.tap();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  let comment = '继续加油!', mark = '良';
+  if (challenge && perfect) { comment = '🏆 满分挑战成功!没看一条提示,全部答对 —— 太厉害了!'; mark = '满'; }
+  else if (challenge) { comment = `挑战差 ${total - correct} 个就满分,再来一次冲满分!`; mark = pct >= 60 ? '良' : '中'; }
+  else if (pct >= 95) { comment = '近乎完美,记忆牢得像石碑!'; mark = '优'; }
+  else if (pct >= 80) { comment = '非常棒!错的几个进了错题本,明天再攻克。'; mark = '优'; }
+  else if (pct >= 60) { comment = '不错,错的字都当场订正过了,会越来越熟。'; mark = '良'; }
+  else { comment = '别灰心 — 错的字都找到了原因、订正过了,这就是进步。'; mark = '中'; }
+
+  // 8 颗 emoji 庆祝 spark,只在 >= 80% 时燃放
+  const sparks = pct >= 80 ? ['✨','⭐','🌟','✨','⭐','🌟','💫','✨'] : [];
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10">
+    <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10 relative">
+      {/* spark burst */}
+      {sparks.length > 0 && (
+        <div className="absolute left-1/2 top-12 -translate-x-1/2 pointer-events-none" aria-hidden>
+          {sparks.map((s, i) => {
+            const angle = (i / sparks.length) * Math.PI * 2;
+            const dx = Math.cos(angle) * 110;
+            const dy = Math.sin(angle) * 110;
+            return (
+              <motion.span
+                key={i}
+                className="absolute text-2xl"
+                initial={{ x: 0, y: 0, opacity: 1, scale: 0.6 }}
+                animate={{ x: dx, y: dy, opacity: 0, scale: 1.4 }}
+                transition={{ duration: 0.9, ease: 'easeOut', delay: 0.05 * i }}
+              >
+                {s}
+              </motion.span>
+            );
+          })}
+        </div>
+      )}
+
       <div className="seal text-2xl mx-auto mb-6" style={{ width: 80, height: 80, fontSize: '2rem' }}>
         {mark}
       </div>
       <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)' }}>
         {correct} / {total} 答对
       </h2>
-      <p className="text-sm mb-8" style={{ color: 'var(--color-ink-soft)' }}>{comment}</p>
+      <p className="text-sm mb-4" style={{ color: 'var(--color-ink-soft)' }}>{comment}</p>
+
+      {/* 今天累计 + 坚持天数 —— 让孩子看到自己做的不止这一课 */}
+      {todays && (
+        <p className="text-xs mb-7" style={{ color: 'var(--color-ink-soft)' }}>
+          今天累计 <b style={{ color: 'var(--color-jade)' }}>{todays.reviewed}</b> 题 · 答对 <b style={{ color: 'var(--color-jade)' }}>{todays.correct}</b>
+          {streak > 1 && <> · 🔥 已连续坚持 <b style={{ color: 'var(--color-cinnabar)' }}>{streak}</b> 天</>}
+        </p>
+      )}
 
       <div className="max-w-md mx-auto mb-8 flex flex-wrap gap-2 justify-center">
         {result.map((r, i) => (
@@ -354,13 +417,25 @@ function DoneScreen({
         ))}
       </div>
 
-      <div className="flex justify-center gap-3">
-        <button onClick={onRetry} className="px-5 py-2.5 rounded-md border" style={{ borderColor: 'var(--color-stone-dark)' }}>
-          再来一遍
-        </button>
-        <button onClick={onExit} className="px-5 py-2.5 rounded-md font-medium" style={{ background: 'var(--color-ink)', color: 'var(--color-paper)' }}>
-          完成
-        </button>
+      <div className="flex flex-col items-center gap-3">
+        {/* 主 CTA:下一课 —— 把孩子继续往前推一把 */}
+        {nextLesson && (
+          <button
+            onClick={() => onNext(nextLesson)}
+            className="px-6 py-3 rounded-lg font-semibold text-base"
+            style={{ background: 'var(--color-jade)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md)' }}
+          >
+            下一课《{nextLesson.lesson}》 →
+          </button>
+        )}
+        <div className="flex justify-center gap-3 text-sm">
+          <button onClick={onRetry} className="px-4 py-2 rounded-md" style={{ color: 'var(--color-ink-soft)' }}>
+            再来一遍
+          </button>
+          <button onClick={onExit} className="px-4 py-2 rounded-md" style={{ color: 'var(--color-ink-soft)' }}>
+            回单元列表
+          </button>
+        </div>
       </div>
     </motion.div>
   );

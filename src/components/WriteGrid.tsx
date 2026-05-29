@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import WriteCanvas, { type WriteCanvasHandle } from './WriteCanvas';
 
 export type WriteGridHandle = {
@@ -24,9 +24,18 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
 ) {
   const refs = useRef<(WriteCanvasHandle | null)[]>([]);
   const n = Math.max(1, count);
+  // 「擦这个」抬笔保护:孩子刚写完抬笔的瞬间手指容易落在按钮上,
+  // 把刚写好的字误擦。pointerup 后 500ms 内禁用所有擦按钮。
+  const liftLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [liftLocked, setLiftLocked] = useState(false);
+  const onCanvasStrokeEnd = () => {
+    if (liftLockTimer.current) clearTimeout(liftLockTimer.current);
+    setLiftLocked(true);
+    liftLockTimer.current = setTimeout(() => setLiftLocked(false), 500);
+  };
 
-  // 每格大小：尽量放大方便孩子手写；字数多了再换行。
-  const gap = 10;
+  // 每格大小:尽量放大方便孩子手写;字数多了再换行。
+  const gap = 14;  // 之前 10 太挤,擦按钮跟下一格挨太近
   const size = Math.min(300, Math.max(140, Math.floor((maxWidth - gap * (n - 1)) / n)));
 
   useImperativeHandle(ref, () => ({
@@ -48,21 +57,29 @@ const WriteGrid = forwardRef<WriteGridHandle, Props>(function WriteGrid(
       }}
     >
       {Array.from({ length: n }).map((_, i) => (
-        <div key={i} className="flex flex-col items-center" style={{ gap: 4 }}>
+        <div key={i} className="flex flex-col items-center" style={{ gap: 12 }}>
           <WriteCanvas
             ref={el => { refs.current[i] = el; }}
             size={size}
             guideChar={guide ? Array.from(guide)[i] : undefined}
+            onStrokeEnd={onCanvasStrokeEnd}
           />
           <button
             type="button"
-            onClick={() => refs.current[i]?.clear()}
+            onClick={() => {
+              if (liftLocked) return;  // 抬笔保护:500ms 内禁用
+              refs.current[i]?.clear();
+            }}
+            disabled={liftLocked}
             aria-label={`擦掉第 ${i + 1} 格`}
-            className="erase-btn text-xs px-3 py-2 rounded-md min-h-[36px]"
+            className="erase-btn text-sm px-4 rounded-md"
             style={{
               border: '1px solid var(--color-stone-dark)',
-              color: 'var(--color-ink-soft)',
+              color: liftLocked ? 'var(--color-stone-dark)' : 'var(--color-ink-soft)',
               touchAction: 'manipulation',
+              minHeight: 48,         // ≥ 44pt 触控目标
+              opacity: liftLocked ? 0.4 : 1,
+              transition: 'opacity 0.2s',
             }}
           >
             ⌫ 擦这个

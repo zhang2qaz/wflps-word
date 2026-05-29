@@ -43,9 +43,13 @@ export default function ImportPage() {
     const name = listName.trim() || `导入词单 ${new Date().toLocaleDateString('zh-CN')}`;
     const ts = Date.now();
     const words: Word[] = drafts.map((d, i) => {
-      const chars: CharInfo[] = Array.from(d.char).map(c => ({
+      // 多音字修复:逐字 pinyin 优先用「词级 d.pinyin」(家长可改) 切片,
+      // 没切到才退回 pinyin-pro 默认读音 —— 避免「圈/教/觉」始终读错。
+      const syllables = d.pinyin.trim().split(/\s+/);
+      const charList = Array.from(d.char);
+      const chars: CharInfo[] = charList.map((c, idx) => ({
         c,
-        pinyin: pinyin(c, { toneType: 'symbol', type: 'string' }),
+        pinyin: syllables[idx] || pinyin(c, { toneType: 'symbol', type: 'string' }),
       }));
       return {
         id: `custom-${ts}-${i}`,

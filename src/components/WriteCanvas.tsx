@@ -12,6 +12,7 @@ type Props = {
   size?: number;
   guideChar?: string; // 灰色描红字
   className?: string;
+  onStrokeEnd?: () => void;  // 一笔写完(抬笔)时回调,用于触发 lift-grace 等
 };
 
 const INK = '#1a2030';
@@ -32,9 +33,11 @@ function unlockPageForWriting() {
 }
 
 const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
-  { size = 260, guideChar, className = '' },
+  { size = 260, guideChar, className = '', onStrokeEnd },
   ref,
 ) {
+  const onStrokeEndRef = useRef(onStrokeEnd);
+  onStrokeEndRef.current = onStrokeEnd;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [empty, setEmpty] = useState(true);
 
@@ -149,6 +152,7 @@ const WriteCanvas = forwardRef<WriteCanvasHandle, Props>(function WriteCanvas(
       unlockPageForWriting();
       activeId = null;
       try { c.releasePointerCapture(e.pointerId); } catch {}
+      onStrokeEndRef.current?.();
     };
 
     // 田字格内：吞掉 touch 事件，杜绝 iOS 选字 / 复制菜单 / 放大镜。

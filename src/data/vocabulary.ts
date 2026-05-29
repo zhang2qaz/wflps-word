@@ -65,7 +65,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-01', char: '亡羊补牢', pinyin: 'wáng yáng bǔ láo',
     meaning: '羊丢了再去修羊圈。比喻出了问题以后想办法补救，可以防止继续受损失。',
-    ...UNIT, lesson: '寓言两则', type: 'idiom',
+    ...UNIT, lesson: '11 寓言两则', type: 'idiom',
     examples: ['亡羊补牢，为时不晚'],
     sentence: '虽然作业本弄丢了，但亡羊补牢，他马上重新整理了书包。',
     tip: '把成语拆成画面：丢了「羊」→ 去「补」→ 修「牢」（羊圈）。四个字就是一个完整的小故事。',
@@ -80,7 +80,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-02', char: '劝告', pinyin: 'quàn gào',
     meaning: '拿道理劝人，希望他改正错误或接受意见。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['接受劝告', '好心的劝告'],
     sentence: '街坊劝告他赶快修羊圈，他却不听。',
     tip: '劝告 = 用「力」+ 用「口」：花力气、开口讲道理。',
@@ -92,7 +92,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-03', char: '丢失', pinyin: 'diū shī',
     meaning: '东西不见了、弄丢了。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['丢失东西', '丢失钥匙'],
     sentence: '他丢失了一只羊，心里很着急。',
     tip: '「丢」=「去」字头上加一撇：东西一撇就「去」了，没了。',
@@ -104,7 +104,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-04', char: '揠苗助长', pinyin: 'yà miáo zhù zhǎng',
     meaning: '把禾苗往上拔，想帮它快长，结果禾苗全枯死了。比喻急于求成，反而把事情弄坏。',
-    ...UNIT, lesson: '寓言两则', type: 'idiom',
+    ...UNIT, lesson: '11 寓言两则', type: 'idiom',
     examples: ['学习不能揠苗助长'],
     sentence: '练琴要一步一步来，揠苗助长只会让人厌烦。',
     tip: '记顺序：「揠(拔)苗」→ 想「助(帮)」它「长」。一个想走捷径反而坏事的故事。',
@@ -119,7 +119,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-05', char: '累坏', pinyin: 'lèi huài',
     meaning: '累得很厉害、吃不消了。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['累坏了', '把人累坏'],
     sentence: '农夫拔了一天苗，累坏了。',
     tip: '「累」上面是「田」，下面是「糸」(丝)：在田里干活干到像被丝线缠住，动不了——累。',
@@ -131,7 +131,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-06', char: '枯死', pinyin: 'kū sǐ',
     meaning: '草木失去水分，干枯死掉。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['禾苗枯死', '大树枯死'],
     sentence: '禾苗被拔高后，第二天全都枯死了。',
     tip: '「枯」是典型形声字：木字旁告诉你「和树木有关」，「古」告诉你读音。',
@@ -143,7 +143,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-07', char: '堵住', pinyin: 'dǔ zhù',
     meaning: '把窟窿、通道封起来，使它不通。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['堵住窟窿', '堵住门口'],
     sentence: '他把羊圈的窟窿堵住，狼就进不来了。',
     tip: '堵 + 住 都是形声字：「堵」用土堵，「住」是人停下。',
@@ -155,7 +155,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-08', char: '焦急', pinyin: 'jiāo jí',
     meaning: '非常着急、心里像火烧一样。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['焦急地等待', '心情焦急'],
     sentence: '禾苗长得慢，农夫在田边焦急地转来转去。',
     tip: '「焦」下面是四点底「灬」(火)；「急」下面是「心」。火烧着心——所以焦急。',
@@ -167,7 +167,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-09', char: '后悔', pinyin: 'hòu huǐ',
     meaning: '事情过后才觉得自己做错了，心里懊恼。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['后悔莫及', '感到后悔'],
     sentence: '他后悔没有早点听街坊的劝告。',
     tip: '「悔」是竖心旁「忄」——后悔是一种心情。记住：和心情有关的字常带「忄」。',
@@ -179,7 +179,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-10', char: '羊圈', pinyin: 'yáng juàn',
     meaning: '关羊的栏圈。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['修羊圈', '走进羊圈'],
     sentence: '羊圈破了个窟窿，狼就钻进来了。',
     tip: '「圈」是多音字！羊圈读 juàn，圆圈、圈起来读 quān。外面「囗」表示「围起来」。',
@@ -191,7 +191,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-11', char: '叼走', pinyin: 'diāo zǒu',
     meaning: '用嘴衔着拿走。',
-    ...UNIT, lesson: '寓言两则', type: 'word',
+    ...UNIT, lesson: '11 寓言两则', type: 'word',
     examples: ['被狼叼走', '叼走骨头'],
     sentence: '夜里狼从窟窿钻进去，叼走了一只羊。',
     tip: '「叼」是口字旁——用「嘴」叼。和「嘴」有关的字常带「口」。',
@@ -203,7 +203,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-12', char: '筋疲力尽', pinyin: 'jīn pí lì jìn',
     meaning: '形容非常疲乏，一点力气都没有了。',
-    ...UNIT, lesson: '寓言两则', type: 'idiom',
+    ...UNIT, lesson: '11 寓言两则', type: 'idiom',
     examples: ['累得筋疲力尽'],
     sentence: '农夫拔了一整天禾苗，弄得筋疲力尽。',
     tip: '四个字拆开记：「筋」(肌肉)+「疲」(累)+「力」(力气)+「尽」(没了)——肌肉累了、力气没了。',
@@ -219,7 +219,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-13', char: '教室', pinyin: 'jiào shì',
     meaning: '学校里上课的房间。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['走进教室', '安静的教室'],
     sentence: '上课了，同学们安静地坐在教室里。',
     tip: '「室」是宝盖头「宀」——表示房屋。和房子有关的字常带「宀」。',
@@ -231,7 +231,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-14', char: '前排', pinyin: 'qián pái',
     meaning: '前面的一排。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['坐在前排', '前排同学'],
     sentence: '老师把那幅画摆在讲台上，让前排同学先看。',
     tip: '「排」是提手旁「扌」+「非」：用手把东西排成一行。「非」也提示读音。',
@@ -243,7 +243,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-15', char: '而且', pinyin: 'ér qiě',
     meaning: '连词，表示更进一步，相当于「并且、还」。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['不但…而且…'],
     sentence: '他画得很认真，而且画的是自己真正看到的样子。',
     tip: '「而且」是两个独体字。「而」原本画的是胡须，「且」要写满五横（中间三横）。',
@@ -255,7 +255,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-16', char: '老老实实', pinyin: 'lǎo lǎo shí shí',
     meaning: '形容很诚实、规规矩矩，不耍小聪明。',
-    ...UNIT, lesson: '画杨桃', type: 'idiom',
+    ...UNIT, lesson: '12 画杨桃', type: 'idiom',
     examples: ['老老实实做人', '老老实实做事'],
     sentence: '他老老实实地把自己看到的杨桃画了出来。',
     tip: 'AABB 式词语：把「老实」两个字各读两遍。写的时候「老」「实」各写两遍即可。',
@@ -267,7 +267,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-17', char: '时候', pinyin: 'shí hou',
     meaning: '时间里的某一点或某一段。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['小时候', '什么时候'],
     sentence: '上图画课的时候，老师让大家画杨桃。',
     tip: '「时」是日字旁——时间和太阳(日)有关。「候」中间别忘了那一小竖。',
@@ -279,7 +279,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-18', char: '班级', pinyin: 'bān jí',
     meaning: '学校里按年级编成的学习集体。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['我们班级', '班级活动'],
     sentence: '这件事在班级里传开了，大家都很佩服他。',
     tip: '「班」是两个「王」(玉)中间一把「刀」——用刀把玉分成几份，就像把学生分成几个班。',
@@ -291,7 +291,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-19', char: '哈哈大笑', pinyin: 'hā hā dà xiào',
     meaning: '形容放声大笑的样子。',
-    ...UNIT, lesson: '画杨桃', type: 'idiom',
+    ...UNIT, lesson: '12 画杨桃', type: 'idiom',
     examples: ['逗得哈哈大笑'],
     sentence: '看到那幅像五角星的杨桃，同学们哈哈大笑。',
     tip: '「哈」「笑」都和发声、表情有关：「哈」是口字旁(嘴里发声)，「笑」是竹字头。',
@@ -304,7 +304,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-20', char: '举手', pinyin: 'jǔ shǒu',
     meaning: '把手抬起来。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['举手发言', '请举手'],
     sentence: '老师提问后，同学们纷纷举手回答。',
     tip: '「举」是上下结构，下面是「手」的变形——抬起手就是举。',
@@ -316,7 +316,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-21', char: '摆放', pinyin: 'bǎi fàng',
     meaning: '把物品安放、陈列好。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['摆放整齐', '摆放桌椅'],
     sentence: '老师把杨桃摆放在讲桌上，让大家观察。',
     tip: '「摆」是提手旁——用手摆。回忆字族：扌＝手的动作（摆、排、拦、挡、掉）。',
@@ -328,7 +328,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-22', char: '座位', pinyin: 'zuò wèi',
     meaning: '供人坐的位子。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['我的座位', '找座位'],
     sentence: '他回到座位上，又仔细看了看那个杨桃。',
     tip: '「座」是广字头「广」(房屋、场所)，里面是「坐」——房子里坐的地方=座位。',
@@ -340,7 +340,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-23', char: '教诲', pinyin: 'jiào huì',
     meaning: '教导、教育（多指长辈或老师的话）。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['老师的教诲', '谆谆教诲'],
     sentence: '老师的教诲让他一生都不会忘记。',
     tip: '关键易混：「诲」是言字旁「讠」——用话教导；「悔」是竖心旁「忄」——心里懊恼。别写反！',
@@ -352,7 +352,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-24', char: '和颜悦色', pinyin: 'hé yán yuè sè',
     meaning: '形容态度温和、面带笑容。',
-    ...UNIT, lesson: '画杨桃', type: 'idiom',
+    ...UNIT, lesson: '12 画杨桃', type: 'idiom',
     examples: ['和颜悦色地说'],
     sentence: '老师没有批评他，而是和颜悦色地启发大家。',
     tip: '拆开记：「和」(温和)+「颜」(脸色)+「悦」(高兴)+「色」(神色)——脸色温和、神情愉快。',
@@ -368,7 +368,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-25', char: '愿意', pinyin: 'yuàn yì',
     meaning: '心里同意、肯做某件事。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['愿意帮忙', '我愿意'],
     sentence: '小马愿意帮妈妈把麦子驮到磨坊去。',
     tip: '「愿」和「意」都带「心」——心里想做、心里同意。',
@@ -380,7 +380,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-26', char: '麦子', pinyin: 'mài zi',
     meaning: '一种重要的粮食作物，可以磨成面粉。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['一袋麦子', '收麦子'],
     sentence: '小马要把半口袋麦子驮到磨坊去。',
     tip: '「麦」是象形字——古文字画的就是麦子带芒的样子。',
@@ -392,7 +392,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-27', char: '伯伯', pinyin: 'bó bo',
     meaning: '父亲的哥哥；也用来称呼跟父亲差不多大的男子。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['张伯伯', '老伯伯'],
     sentence: '小马在路上遇到了一位老牛伯伯。',
     tip: '「伯」是单人旁「亻」+「白」：「亻」表示是人，「白」表示读音(bái→bó)。',
@@ -403,7 +403,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-28', char: '立刻', pinyin: 'lì kè',
     meaning: '马上、立即。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['立刻出发', '立刻明白'],
     sentence: '听了妈妈的话，小马立刻跑回了河边。',
     tip: '「刻」右边是「刂」(立刀旁)——本意是用刀刻；时间「一刻」也很短，所以「立刻」表示马上。',
@@ -415,7 +415,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-29', char: '突然', pinyin: 'tū rán',
     meaning: '在很短时间里发生，出乎意料。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['突然下雨', '突然出现'],
     sentence: '小马走到河边，突然停住了脚步。',
     tip: '绝妙画面：「突」=「穴」(洞)+「犬」(狗)——一条狗突然从洞里冲出来！',
@@ -427,7 +427,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-30', char: '掉进', pinyin: 'diào jìn',
     meaning: '落到里面去。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['掉进河里', '掉进坑里'],
     sentence: '松鼠说，他的一个伙伴就掉进河里淹死了。',
     tip: '「掉」提手旁(扌)，「进」走之旁(辶)——一个和手有关，一个和走有关。',
@@ -439,7 +439,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-31', char: '应该', pinyin: 'yīng gāi',
     meaning: '理所当然，必须这样做。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['应该这样', '你应该去'],
     sentence: '妈妈说：遇到事情应该自己动脑筋想一想。',
     tip: '「该」是言字旁「讠」+「亥」：「讠」表义，「亥」表音(hài→gāi)。',
@@ -451,7 +451,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-32', char: '拦住', pinyin: 'lán zhù',
     meaning: '挡住，不让通过。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['拦住去路', '被人拦住'],
     sentence: '小马刚想下河，松鼠大叫着拦住了他。',
     tip: '「拦」提手旁——用手拦。「兰」表读音(lán)。',
@@ -463,7 +463,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-33', char: '吃惊', pinyin: 'chī jīng',
     meaning: '受到意外的刺激而感到惊讶。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['大吃一惊', '令人吃惊'],
     sentence: '听说河水淹死过人，小马吃惊地停下了脚步。',
     tip: '「吃」口字旁(用嘴)，「惊」竖心旁(心里的感觉)——两个字部首正好对应「吃」和「惊」的意思。',
@@ -475,7 +475,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-34', char: '挡住', pinyin: 'dǎng zhù',
     meaning: '拦住、遮住。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['挡住阳光', '挡住去路'],
     sentence: '老牛伯伯没有挡住小马，让他自己去试。',
     tip: '「挡」提手旁——用手挡。「当」表读音(dāng→dǎng)。和「拦住」是好朋友。',
@@ -487,7 +487,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-35', char: '亲切', pinyin: 'qīn qiè',
     meaning: '形容态度热情、关系密切，让人感到温暖。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['亲切的笑容', '亲切问候'],
     sentence: '老马亲切地对小马说：「你去试一试就知道了。」',
     tip: '「切」=「七」+「刀」：用刀切东西，「七」提示读音。多音字：亲切 qiè / 一切 qiè（同音）。',
@@ -499,7 +499,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-36', char: '角度', pinyin: 'jiǎo dù',
     meaning: '看事物的方向、立场；数学上指角的大小。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['换个角度', '不同角度'],
     sentence: '从不同的角度看杨桃，样子就不一样。',
     tip: '「角」是象形字——画的是兽角。「度」是广字头(广)。',
@@ -511,7 +511,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-37', char: '难为情', pinyin: 'nán wéi qíng',
     meaning: '不好意思、害羞；也指碍于情面不好办。',
-    ...UNIT, lesson: '画杨桃', type: 'word',
+    ...UNIT, lesson: '12 画杨桃', type: 'word',
     examples: ['感到难为情', '别难为情'],
     sentence: '同学们笑过之后，明白了道理，反而有点难为情。',
     tip: '「情」是竖心旁「忄」+「青」——绝佳字族：青字家族 → 请、清、晴、情、睛。',
@@ -524,7 +524,7 @@ export const WORDS: Word[] = [
   {
     id: 'd5-38', char: '动脑筋', pinyin: 'dòng nǎo jīn',
     meaning: '开动脑子思考、想办法。',
-    ...UNIT, lesson: '小马过河', type: 'word',
+    ...UNIT, lesson: '13 小马过河', type: 'word',
     examples: ['多动脑筋', '动脑筋解决'],
     sentence: '遇到问题要自己动脑筋，光听别人说可不行。',
     tip: '「脑」和「筋」都和身体有关：「脑」是肉月旁(月)，「筋」也有肉月旁——都是身体的一部分。',
@@ -763,7 +763,7 @@ export const WORDS: Word[] = [
     id: 'd6-19', char: '碰上', pinyin: 'pèng shàng',
     ...U6, lesson: '16 要是你在野外迷了路', type: 'word',
     meaning: '遇到、碰见。',
-    examples: ['碰上difficulty', '路上碰上'],
+    examples: ['碰上困难', '路上碰上熟人'],
     sentence: '要是碰上阴天，就看不到太阳了。',
     tip: '「碰」是石字旁——本意是石头相撞。',
     chars: [

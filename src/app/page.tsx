@@ -174,6 +174,9 @@ export default function Home() {
       <main className="max-w-2xl mx-auto px-5 pt-8 pb-10">
         <DailyDoodle childName={displayName || undefined} />
 
+        {/* 今天的工作 —— 让孩子一回到首页就看见自己刚才做的事被记下了 */}
+        <TodayCard todays={stats.todays} />
+
         {/* Stats strip */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           <StatCard label="本单元待复习" value={dueCount} accent="var(--color-vermilion)" hint={dueCount > 0 ? '到点该默的字' : '暂时没有到期的'} />
@@ -298,6 +301,49 @@ function FlowSection({
         ))}
       </div>
     </section>
+  );
+}
+
+// 今天的工作小卡 —— 把孩子刚做的事映回首页,反馈循环立刻闭合
+function TodayCard({ todays }: { todays: { reviewed: number; learned: number; correct: number; wrong: number } | undefined }) {
+  const reviewed = todays?.reviewed ?? 0;
+  const learned = todays?.learned ?? 0;
+  const correct = todays?.correct ?? 0;
+  const total = reviewed + learned;
+  if (total === 0) {
+    return (
+      <Link
+        href="/dictate"
+        className="block mb-6 p-4 rounded-2xl text-sm flex items-center gap-3"
+        style={{ background: 'color-mix(in srgb, var(--color-jade) 8%, var(--color-paper-warm))', border: '1px solid color-mix(in srgb, var(--color-jade) 30%, transparent)' }}
+      >
+        <span className="text-2xl" aria-hidden>🌱</span>
+        <span className="flex-1">
+          <b style={{ color: 'var(--color-ink)' }}>今天还没练 —— 写几个字开个头?</b>
+          <span className="block text-xs mt-0.5" style={{ color: 'var(--color-ink-soft)' }}>哪怕 5 分钟,也胜过周末突击。</span>
+        </span>
+        <span style={{ color: 'var(--color-jade)' }}>→</span>
+      </Link>
+    );
+  }
+  const pct = total === 0 ? 0 : Math.round((correct / Math.max(1, reviewed)) * 100);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+      className="mb-6 p-4 rounded-2xl"
+      style={{ background: 'color-mix(in srgb, var(--color-jade) 8%, var(--color-paper-warm))', border: '1px solid color-mix(in srgb, var(--color-jade) 30%, transparent)' }}
+    >
+      <div className="flex items-baseline justify-between mb-1.5">
+        <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--color-jade)' }}>今天</span>
+        <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>
+          {pct >= 90 ? '今天发挥很稳 ✨' : pct >= 70 ? '继续保持 👍' : '错的字都进了错题本'}
+        </span>
+      </div>
+      <div className="text-[15px]" style={{ color: 'var(--color-ink)' }}>
+        写了 <b style={{ color: 'var(--color-jade)' }}>{total}</b> 题 · 答对 <b style={{ color: 'var(--color-jade)' }}>{correct}</b>
+        {learned > 0 && <> · 新学 <b style={{ color: 'var(--color-mustard)' }}>{learned}</b> 字</>}
+      </div>
+    </motion.div>
   );
 }
 

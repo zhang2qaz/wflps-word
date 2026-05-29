@@ -181,19 +181,24 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
             ) : (
               <HintLadder word={word} level={hintLevel} onMore={() => setHintLevel((l) => Math.min(3, l + 1))} />
             )}
-            <div className="flex justify-center gap-2 mt-5">
+            <div className="flex items-center justify-center gap-6 mt-5 flex-wrap">
               <button
-                onClick={() => gridRef.current?.clear()}
-                className="btn btn-ghost"
+                onClick={() => {
+                  if (window.confirm('清空整页?这会擦掉这一页所有写的字。')) {
+                    gridRef.current?.clear();
+                  }
+                }}
+                className="btn btn-ghost btn-sm"
+                style={{ color: 'var(--color-ink-soft)', textDecoration: 'underline' }}
               >
-                清空
+                清空整页
               </button>
               <button
                 onClick={toCheck}
                 className="btn btn-lg"
                 style={{ background: 'var(--color-ink)', color: 'var(--color-paper)', boxShadow: 'var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
-                写好了，对答案 →
+                写好了,对答案 →
               </button>
             </div>
           </>

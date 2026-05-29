@@ -148,7 +148,15 @@ function NavInner() {
             <NavBookSubtitle />
           </span>
         </Link>
-        <nav className="flex-1 flex flex-wrap items-center gap-1 text-sm">
+        {/* 横向滚动 + snap 对齐 —— iPad portrait 时不再换行抖,小手指也戳得准 */}
+        <nav
+          className="nav-scroller flex-1 flex flex-nowrap items-center gap-2 text-[15px] overflow-x-auto snap-x snap-mandatory"
+          style={{
+            scrollbarWidth: 'none',          // Firefox
+            msOverflowStyle: 'none',         // IE/Edge
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
           {LINKS.map((l, i) => {
             // 拆 pathname + query 判 active —— /recite?kind=poems 与 /recite?kind=sentences 共用 pathname
             const [linkPath, linkQuery = ''] = l.href.split('?');
@@ -158,26 +166,39 @@ function NavInner() {
               ? pathMatch && currentKind === linkKind
               : pathMatch && !(linkPath === '/recite' && currentKind);
             const showDivider = i > 0 && LINKS[i - 1].group === 'kid' && l.group === 'parent';
+            // 家长入口在小屏上隐藏,把空间留给孩子的常用 6 个 tab
+            const parentOnly = l.group === 'parent';
             return (
-              <span key={l.href} className="flex items-center">
+              <span
+                key={l.href}
+                className={`flex items-center flex-shrink-0 snap-start ${parentOnly ? 'hidden md:flex' : ''}`}
+              >
                 {showDivider && (
                   <span
-                    className="mx-1.5 hidden sm:inline-block h-4 w-px"
+                    className="mx-2 hidden md:inline-block h-4 w-px"
                     style={{ background: 'color-mix(in srgb, var(--color-ink) 12%, transparent)' }}
                     aria-hidden
                   />
                 )}
                 <Link
                   href={l.href}
-                  className="px-3.5 py-1.5 rounded-full transition-all"
+                  className="px-4 py-2.5 rounded-full transition-all whitespace-nowrap"
                   style={
                     active
                       ? {
                           background: 'var(--color-ink)',
                           color: 'var(--color-paper)',
                           boxShadow: 'var(--shadow-md)',
+                          minHeight: 44,           // ≥ 44pt 触控目标
+                          display: 'inline-flex',
+                          alignItems: 'center',
                         }
-                      : { color: 'var(--color-ink-soft)' }
+                      : {
+                          color: 'var(--color-ink-soft)',
+                          minHeight: 44,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                        }
                   }
                 >
                   {l.label}

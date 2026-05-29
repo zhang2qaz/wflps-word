@@ -144,6 +144,9 @@
   }
   body.writing-lock .erase-btn { pointer-events: none; }
 
+  /* Nav 横向滚动条隐藏 —— iPad portrait 下不抢空间 */
+  .nav-scroller::-webkit-scrollbar { display: none; }
+
   /* 田字格 */
   .tianzige {
     background-image:

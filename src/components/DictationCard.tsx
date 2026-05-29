@@ -234,6 +234,7 @@ export default function DictationCard({ word, index, total, onDone, noHint = fal
               correct={correct}
               errorTags={errorTags}
               wrongChars={wrongChars}
+              totalChars={word.char.length}
               strength={strengthAfter}
               strengthGained={strengthAfter > strengthBefore}
               onNext={() => onDone({ correct, hintUsed: hintLevel > 0, errorTags, wrongChars, wrongShots })}
@@ -370,16 +371,18 @@ function StrengthBar({ level }: { level: number }) {
 
 // ---------- 结果 ----------
 function ResultPanel({
-  correct, errorTags, wrongChars, strength, strengthGained, onNext, onRedo,
+  correct, errorTags, wrongChars, totalChars, strength, strengthGained, onNext, onRedo,
 }: {
   correct: boolean;
   errorTags: string[];
   wrongChars: string[];
+  totalChars: number;
   strength: number;
   strengthGained: boolean;
   onNext: () => void;
   onRedo: () => void;
 }) {
+  const gotRight = Math.max(0, totalChars - wrongChars.length);
   return (
     <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-center mt-5">
       {correct ? (
@@ -411,8 +414,29 @@ function ResultPanel({
         </>
       ) : (
         <>
-          <div className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-cinnabar)' }}>
-            找到 {wrongChars.length} 个要订正的字
+          {/* 先夸:一句温和的鼓励放最上面 */}
+          <div
+            className="rounded-xl px-4 py-3 mb-3 text-sm mx-auto inline-block"
+            style={{
+              background: 'color-mix(in srgb, var(--color-jade) 10%, var(--color-paper-warm))',
+              border: '1px solid color-mix(in srgb, var(--color-jade) 30%, transparent)',
+              color: 'var(--color-ink)',
+            }}
+          >
+            {gotRight > 0 ? (
+              <>你认出了 <b style={{ color: 'var(--color-jade)' }}>{gotRight}</b> 个,再订正 <b style={{ color: 'var(--color-cinnabar)' }}>{wrongChars.length}</b> 个就更牢 💪</>
+            ) : (
+              <>没关系,刚学过的字本来就难。订正一遍就会记得了 💪</>
+            )}
+          </div>
+          {/* 记忆强度条:即使错了,这个字还在路上 */}
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="text-xs" style={{ color: 'var(--color-ink-soft)' }}>记忆强度</span>
+            <StrengthBar level={strength} />
+          </div>
+          {/* 标题降级:文字加粗但用墨色,不再是大红色 */}
+          <div className="text-base font-semibold mb-2" style={{ fontFamily: 'var(--font-serif-cn)', color: 'var(--color-ink)' }}>
+            订正一下这些字
           </div>
           <div className="flex flex-wrap gap-2 justify-center mb-2">
             {wrongChars.map((c, i) => (
@@ -430,7 +454,7 @@ function ResultPanel({
             ))}
           </div>
           {errorTags.length > 0 && (
-            <div className="flex flex-wrap gap-2 justify-center mb-2">
+            <div className="flex flex-wrap gap-2 justify-center mb-4">
               {errorTags.map((t) => (
                 <span
                   key={t}
@@ -442,9 +466,6 @@ function ResultPanel({
               ))}
             </div>
           )}
-          <p className="text-sm mb-5" style={{ color: 'var(--color-ink-soft)' }}>
-            知道错在哪，就成功了一半。现在订正一遍 —— 这些字会进错题本。
-          </p>
           <button
             onClick={onRedo}
             className="px-8 py-3 rounded-md font-medium"

@@ -79,7 +79,19 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   const loadingChild = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 安全兜底：无论网络如何，8 秒后绝不允许还卡在「加载中」
+  // 冷启快路径:本机有数据 → 立刻进 App,Supabase / config 在后台慢慢拉。
+  // 对每天打开 App 的孩子来说,这一行消掉 5-8s 全屏 Splash。
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem('moxie-dashi');
+      if (raw && raw.length > 10) {
+        setPhase((p) => (p === 'loading' ? 'ready' : p));
+      }
+    } catch {}
+  }, []);
+
+  // 安全兜底:无论网络如何,8 秒后绝不允许还卡在「加载中」
   useEffect(() => {
     const t = setTimeout(() => {
       setPhase((p) => (p === 'loading' ? (hasLocalData() ? 'ready' : 'local') : p));
@@ -159,7 +171,14 @@ export default function AccountProvider({ children }: { children: React.ReactNod
       if (!s) {
         setChildList([]);
         setActiveChildId(null);
-        setPhase('auth');
+        // 本地优先:有本机数据的「返回用户」不要被弹回登录页 ——
+        // 直接进 App 离线模式用本机缓存,云端慢点接上就好。
+        if (hasLocalData()) {
+          setOffline(true);
+          setPhase('ready');
+        } else {
+          setPhase('auth');
+        }
         return;
       }
       // 有会话：返回用户先用本机缓存立刻进 App（不被网络拖死）

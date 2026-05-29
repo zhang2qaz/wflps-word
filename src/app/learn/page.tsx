@@ -322,15 +322,27 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
   const [step, setStep] = useState<Step>('meet');
   const [showStrokes, setShowStrokes] = useState(false);
 
-  const stepIdx = STEPS.findIndex(s => s.key === step);
-  const isLast = step === 'use';
+  // 拆字步骤只在「至少一个字」有详细数据(部首/拆分/记法/字族)时展示;
+  // 全空时把这一步从导航里去掉,免得孩子看到一片空白卡。
+  const hasBreakdown = word.chars.some(
+    (c) => c.radical || c.split || c.kind || c.hook || c.family || c.warn,
+  );
+  const activeSteps = hasBreakdown ? STEPS : STEPS.filter((s) => s.key !== 'split');
+
+  // 切到没有拆字数据的词时,如果当前停在 split,自动跳到记法
+  useEffect(() => {
+    if (step === 'split' && !hasBreakdown) setStep('memory');
+  }, [step, hasBreakdown]);
+
+  const stepIdx = activeSteps.findIndex(s => s.key === step);
+  const isLast = stepIdx === activeSteps.length - 1;
 
   const goNext = () => {
     if (isLast) { onNext(); return; }
-    setStep(STEPS[stepIdx + 1].key);
+    setStep(activeSteps[stepIdx + 1].key);
   };
   const goPrev = () => {
-    if (stepIdx > 0) setStep(STEPS[stepIdx - 1].key);
+    if (stepIdx > 0) setStep(activeSteps[stepIdx - 1].key);
   };
 
   return (
@@ -368,9 +380,9 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
         </button>
       </div>
 
-      {/* 步骤指示 */}
+      {/* 步骤指示 —— 没拆字数据时只展示 3 步 */}
       <div className="flex items-center justify-center gap-1 mb-6">
-        {STEPS.map((s, i) => (
+        {activeSteps.map((s, i) => (
           <div key={s.key} className="flex items-center">
             <button
               onClick={() => setStep(s.key)}
@@ -386,7 +398,7 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
               <span className="font-bold" style={{ fontFamily: 'var(--font-serif-cn)' }}>{s.label}</span>
               <span className="hidden sm:inline text-xs">{s.full}</span>
             </button>
-            {i < STEPS.length - 1 && <span className="mx-0.5" style={{ color: 'var(--color-stone-dark)' }}>›</span>}
+            {i < activeSteps.length - 1 && <span className="mx-0.5" style={{ color: 'var(--color-stone-dark)' }}>›</span>}
           </div>
         ))}
       </div>
@@ -587,7 +599,7 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
           ← 上一步
         </button>
         <div className="flex gap-1">
-          {STEPS.map((s, i) => (
+          {activeSteps.map((s, i) => (
             <span
               key={s.key}
               className="w-1.5 h-1.5 rounded-full"

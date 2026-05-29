@@ -1066,6 +1066,14 @@ WORDS.push(...VAULT_WORDS);
 
 type DraftWord = [char: string, pinyin: string, meaning: string];
 
+// 词级拼音按空格切到每个字 —— 「扇子 shàn zi」 → 扇=shàn,子=zi
+// 这样即使没有详细拆字数据,CharBreakdown 起码能显示每个字的发音。
+function splitPinyin(char: string, wordPinyin: string): CharInfo[] {
+  const chars = Array.from(char);
+  const syllables = wordPinyin.trim().split(/\s+/);
+  return chars.map((c, i) => ({ c, pinyin: syllables[i] || '' }));
+}
+
 function pushDraftUnit(
   grade: number,
   semester: '上' | '下',
@@ -1086,7 +1094,7 @@ function pushDraftUnit(
         examples: [],
         sentence: '',
         tip: '统编版标准词表（草稿，待核对）。把这个词拆成单个字记，再用它造个句子。',
-        chars: Array.from(char).map(c => ({ c, pinyin: '' })),
+        chars: splitPinyin(char, pinyin),
         draft: true,
       });
     }
@@ -1114,7 +1122,7 @@ function pushVerifiedUnit(
         examples: [],
         sentence: '',
         tip: '默写时把词拆成单个字记,再用它造个句子。',
-        chars: Array.from(char).map(c => ({ c, pinyin: '' })),
+        chars: splitPinyin(char, pinyin),
       });
     }
   }

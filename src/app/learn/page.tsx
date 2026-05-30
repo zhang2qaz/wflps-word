@@ -320,7 +320,6 @@ const STEPS: { key: Step; label: string; full: string }[] = [
 
 function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
   const [step, setStep] = useState<Step>('meet');
-  const [showStrokes, setShowStrokes] = useState(false);
 
   // 拆字步骤只在「至少一个字」有详细数据(部首/拆分/记法/字族)时展示;
   // 全空时把这一步从导航里去掉,免得孩子看到一片空白卡。
@@ -556,33 +555,20 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
               </div>
             )}
 
-            {/* 笔顺 — 可选 */}
+            {/* 笔顺 —— 直接展示,不再下拉 */}
             <div
               className="border rounded-xl p-4"
               style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper)' }}
             >
-              <button
-                onClick={() => setShowStrokes(s => !s)}
-                className="w-full flex items-center justify-between text-sm font-medium"
-              >
-                <span>✍️ 想看每个字怎么写？（笔顺动画 + 描红）</span>
-                <span style={{ color: 'var(--color-ink-soft)' }}>{showStrokes ? '收起 ▲' : '展开 ▼'}</span>
-              </button>
-              {showStrokes && (
-                <div className="mt-4 flex justify-center gap-3 flex-wrap">
-                  {Array.from(word.char).map((c, i) => (
-                    <div key={i} className="flex flex-col items-center gap-2">
-                      <HanziStrokes char={c} size={120} />
-                      <WriteCanvas size={120} guideChar={c} />
-                    </div>
-                  ))}
-                </div>
-              )}
-              {!showStrokes && (
-                <p className="text-xs mt-2" style={{ color: 'var(--color-ink-soft)' }}>
-                  笔顺很重要，但它只是「怎么写」。先弄懂「为什么这样写」，笔顺自然就顺了。
-                </p>
-              )}
+              <div className="text-sm font-medium mb-2">✍️ 每个字怎么写</div>
+              <div className="flex justify-center gap-3 flex-wrap">
+                {Array.from(word.char).map((c, i) => (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <HanziStrokes char={c} size={120} />
+                    <WriteCanvas size={120} guideChar={c} />
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         )}

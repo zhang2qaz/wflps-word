@@ -1403,6 +1403,430 @@ WORDS.push(...GRADE6_WORDS);
 // 五年级（统编版上下册）—— 见 ./grade5.ts
 WORDS.push(...GRADE5_WORDS);
 
+// ============================================================
+// 二下 verified 字词 enrichment(单元 1-7) —— 给 pushVerifiedUnit 走出的精简词
+// 补上详细的 chars(部首/笔画/拆分/造字法/记忆联想/字族/易错)、tip、sentence
+// 让「学字词」三个步骤(认 / 拆 / 记 / 用)都有内容。
+// 不动 UNIT 5 / U6 那些手写的精细 entry,只补 1-4 + 7 单元。
+// ============================================================
+type WordEnrichment = Partial<Pick<Word, 'chars' | 'tip' | 'sentence' | 'examples'>>;
+
+const WORD_ENRICHMENT_2B: Record<string, WordEnrichment> = {
+  // ===== 第七单元 改变(用户当前最常学) =====
+  '扇子': {
+    tip: '「扇」是「户」(门)里有「羽」毛 —— 古时摇羽毛扇风。',
+    sentence: '夏天热,奶奶坐在院子里轻轻摇着扇子。',
+    examples: ['一把扇子', '摇扇子'],
+    chars: [
+      { c: '扇', pinyin: 'shàn', radical: '户', strokes: 10, split: '户 + 羽', kind: '会意', hook: '「户」是门,门下有「羽」毛 —— 古人门口用羽毛扇风,就成了「扇」。' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, split: '独体字', kind: '象形', hook: '像个张开手脚的小娃娃。' },
+    ],
+  },
+  '遇到': {
+    tip: '遇 = 走着走着(辶)碰上 —— 在路上「遇到」朋友。',
+    sentence: '我在路上遇到了一只小猫,它一直跟着我。',
+    examples: ['遇到困难', '遇到朋友'],
+    chars: [
+      { c: '遇', pinyin: 'yù', radical: '辶', strokes: 12, split: '辶 + 禺', kind: '形声', hook: '走之底 —— 走着走着碰上。', family: '辶(走之底):遇、过、追、迎 —— 都和「走路」「碰上」有关。' },
+      { c: '到', pinyin: 'dào', radical: '刂', strokes: 8, split: '至 + 刂', kind: '形声', hook: '「至」是到达,「刂」是声旁。' },
+    ],
+  },
+  '生病': {
+    tip: '生 + 病 = 「生」出「病」来 —— 身体不舒服。',
+    sentence: '弟弟生病了,妈妈整夜陪着他。',
+    examples: ['生病住院', '不要生病'],
+    chars: [
+      { c: '生', pinyin: 'shēng', radical: '生', strokes: 5, split: '独体字', kind: '会意', hook: '像植物从地里冒出来 —— 生命的开始。' },
+      { c: '病', pinyin: 'bìng', radical: '疒', strokes: 10, split: '疒 + 丙', kind: '形声', hook: '「疒」病字旁,像人躺在床上 —— 生病了。', family: '疒(病字旁):病、疼、痛、疯 —— 都和身体不适有关。' },
+    ],
+  },
+  '一定': {
+    tip: '「一」次「定」下来,就是必定的事。',
+    sentence: '只要努力,一定能学好中文。',
+    examples: ['一定要', '一定会'],
+    chars: [
+      { c: '一', pinyin: 'yī', radical: '一', strokes: 1, split: '独体字', kind: '指事', hook: '一横,最简单的字 —— 表示「一个」。' },
+      { c: '定', pinyin: 'dìng', radical: '宀', strokes: 8, split: '宀 + 疋', kind: '形声', hook: '「宀」是房顶 —— 在屋里把事「定」下来。' },
+    ],
+  },
+  '不安': {
+    tip: '「不」+「安」=「不安宁」 —— 心里没着落。',
+    sentence: '考试前,他心里一直不安。',
+    examples: ['心里不安', '坐立不安'],
+    chars: [
+      { c: '不', pinyin: 'bù', radical: '一', strokes: 4, split: '独体字', kind: '指事', hook: '上面一横,下面三笔像否定的手势 —— 不。' },
+      { c: '安', pinyin: 'ān', radical: '宀', strokes: 6, split: '宀 + 女', kind: '会意', hook: '「宀」房顶下有「女」—— 古人觉得女子在家就「安」全。' },
+    ],
+  },
+  '两根竹竿': {
+    tip: '「两根」+「竹竿」—— 量词 + 物体,记一串。',
+    sentence: '爷爷用两根竹竿撑起了晾衣绳。',
+    examples: ['一根竹竿', '两根竹竿'],
+    chars: [
+      { c: '两', pinyin: 'liǎng', radical: '一', strokes: 7, kind: '指事', hook: '里面像两个并排的小框 —— 表示「两个」。' },
+      { c: '根', pinyin: 'gēn', radical: '木', strokes: 10, split: '木 + 艮', kind: '形声', hook: '「木」字旁 —— 树根,引申为细长物体的量词。' },
+      { c: '竹', pinyin: 'zhú', radical: '竹', strokes: 6, split: '独体字', kind: '象形', hook: '像两根并排的竹叶。', family: '竹字头:笔、筷、篮、笛 —— 都和竹子有关。' },
+      { c: '竿', pinyin: 'gān', radical: '竹', strokes: 9, split: '竹 + 干', kind: '形声', hook: '「竹」字头 +「干」(声旁)—— 一根竹竿。' },
+    ],
+  },
+  '头痛': {
+    tip: '「头」+「痛」—— 头部疼痛。',
+    sentence: '感冒后我头痛得很厉害。',
+    examples: ['头痛医头', '头痛难忍'],
+    chars: [
+      { c: '头', pinyin: 'tóu', radical: '大', strokes: 5, kind: '象形', hook: '简化字,像人头的轮廓。' },
+      { c: '痛', pinyin: 'tòng', radical: '疒', strokes: 12, split: '疒 + 甬', kind: '形声', hook: '「疒」病字旁 —— 身体不舒服就是痛。', family: '疒:病、痛、疼、痒 —— 病字旁全是身体不舒服。' },
+    ],
+  },
+  '睡觉': {
+    tip: '睡 = 「目」(眼睛)+ 垂下 —— 眼皮往下垂,要睡了。',
+    sentence: '小宝宝吃饱了就要睡觉。',
+    examples: ['睡觉时间', '睡个好觉'],
+    chars: [
+      { c: '睡', pinyin: 'shuì', radical: '目', strokes: 13, split: '目 + 垂', kind: '会意', hook: '「目」(眼睛)+「垂」—— 眼皮往下垂就是要睡了。' },
+      { c: '觉', pinyin: 'jiào', radical: '见', strokes: 9, kind: '会意', hook: '上面一对羽毛盖住「见」—— 看不见东西时就睡觉了。', warn: '多音字:睡觉读 jiào,觉得读 jué。' },
+    ],
+  },
+  '最后': {
+    tip: '「最」+「后」—— 排在最末的。',
+    sentence: '坚持到最后才是真本事。',
+    examples: ['最后一名', '最后胜利'],
+    chars: [
+      { c: '最', pinyin: 'zuì', radical: '曰', strokes: 12, kind: '会意', hook: '上「曰」(说)+ 下「取」—— 说得最多、取得最厉害,就是「最」。' },
+      { c: '后', pinyin: 'hòu', radical: '口', strokes: 6, kind: '会意', hook: '简化字 —— 表示「后面」的方位。' },
+    ],
+  },
+  '耷拉': {
+    tip: '「耷」是大耳朵下垂,「拉」就是垂下来 —— 耷拉。',
+    sentence: '小狗做错事了,耷拉着脑袋不敢看妈妈。',
+    examples: ['耷拉着耳朵', '耷拉着头'],
+    chars: [
+      { c: '耷', pinyin: 'dā', radical: '耳', strokes: 9, split: '大 + 耳', kind: '会意', hook: '上「大」下「耳」 —— 大耳朵往下垂。这个字直接画出了大象耳朵!' },
+      { c: '拉', pinyin: 'lā', radical: '扌', strokes: 8, split: '扌 + 立', kind: '形声', hook: '提手旁 —— 用手往下拉。', family: '扌(提手旁):拉、打、扔、拿 —— 都是手的动作。' },
+    ],
+  },
+  '心烦': {
+    tip: '心里像「火」(烦下面是火)一样烧 —— 烦。',
+    sentence: '考试没考好,他心烦了一整天。',
+    examples: ['心烦意乱', '别心烦'],
+    chars: [
+      { c: '心', pinyin: 'xīn', radical: '心', strokes: 4, split: '独体字', kind: '象形', hook: '像一颗跳动的心脏。' },
+      { c: '烦', pinyin: 'fán', radical: '火', strokes: 10, split: '火 + 页', kind: '会意', hook: '左「火」右「页」(头)—— 头像着了火一样,心里就烦。' },
+    ],
+  },
+  '慢慢地': {
+    tip: '慢 +「地」(副词标记)—— 形容动作不快。',
+    sentence: '老师慢慢地走过来,给我讲题。',
+    examples: ['慢慢地走', '慢慢地学'],
+    chars: [
+      { c: '慢', pinyin: 'màn', radical: '忄', strokes: 14, split: '忄 + 曼', kind: '形声', hook: '「忄」竖心旁 —— 心里不急,就慢。', family: '忄(竖心旁):慢、怕、愉、快 —— 都和心情有关。' },
+      { c: '慢', pinyin: 'màn', radical: '忄', strokes: 14, kind: '形声', hook: '同上 —— 叠词加强语气。' },
+      { c: '地', pinyin: 'de', radical: '土', strokes: 6, kind: '形声', hook: '副词标记 —— 形容词后面带「地」就变副词。', warn: '多音字:这里读轻声 de,不是 dì。' },
+    ],
+  },
+  '自言自语': {
+    tip: '「自言」(自己说)+「自语」(自己说) —— 两个一样的意思,自己跟自己说话。',
+    sentence: '爷爷一边走一边自言自语,好像在想心事。',
+    examples: ['自言自语地说'],
+    chars: [
+      { c: '自', pinyin: 'zì', radical: '自', strokes: 6, kind: '象形', hook: '像鼻子的形状 —— 中国人指自己时常指鼻子,所以「自」就是「自己」。' },
+      { c: '言', pinyin: 'yán', radical: '言', strokes: 7, kind: '会意', hook: '上面一横 + 二 + 口 —— 嘴里说出话来。' },
+      { c: '自', pinyin: 'zì', radical: '自', strokes: 6, kind: '象形', hook: '同上,叠用强调「自己」。' },
+      { c: '语', pinyin: 'yǔ', radical: '讠', strokes: 9, split: '讠 + 吾', kind: '形声', hook: '「讠」言字旁,表说话;「吾」是「我」的古字 —— 说自己的话。', family: '讠(言字旁):说、话、语、读 —— 都和说话有关。' },
+    ],
+  },
+  '商店': {
+    tip: '商 + 店 —— 做生意的店铺。',
+    sentence: '放学路上,我和妈妈进了一家小商店。',
+    examples: ['开商店', '一家商店'],
+    chars: [
+      { c: '商', pinyin: 'shāng', radical: '亠', strokes: 11, kind: '会意', hook: '古代「商」族善于做买卖 —— 后来「商」就指做生意。' },
+      { c: '店', pinyin: 'diàn', radical: '广', strokes: 8, split: '广 + 占', kind: '形声', hook: '「广」是房屋偏旁 —— 一间房用来卖东西就是「店」。', family: '广(广字头):店、床、府、库 —— 都是房屋类。' },
+    ],
+  },
+  '决定': {
+    tip: '决 + 定 —— 心里下定了主意。',
+    sentence: '我决定今天就把作业全写完。',
+    examples: ['做决定', '决定下来'],
+    chars: [
+      { c: '决', pinyin: 'jué', radical: '冫', strokes: 6, split: '冫 + 夬', kind: '形声', hook: '两点水 —— 像水冲破堤坝一样,一下子做决定。' },
+      { c: '定', pinyin: 'dìng', radical: '宀', strokes: 8, kind: '形声', hook: '宀(房顶)下 —— 在屋里坐定,心安定。' },
+    ],
+  },
+  '终于': {
+    tip: '「终」是末尾,「于」标志方向 —— 到了最后,终于成功!',
+    sentence: '练了一个星期,我终于会骑自行车了!',
+    examples: ['终于到了', '终于成功'],
+    chars: [
+      { c: '终', pinyin: 'zhōng', radical: '纟', strokes: 8, split: '纟 + 冬', kind: '形声', hook: '「纟」绞丝旁 —— 一根线绕到尽头就是「终」。', family: '纟(绞丝旁):线、终、绿、纸 —— 都和丝线、布有关。' },
+      { c: '于', pinyin: 'yú', radical: '二', strokes: 3, kind: '指事', hook: '一个简单的标记字 —— 表示「在/到」。' },
+    ],
+  },
+  '需要': {
+    tip: '「需」(下雨等待) +「要」 —— 必须有,缺不了。',
+    sentence: '画画的时候,需要安静的环境。',
+    examples: ['需要帮助', '不需要'],
+    chars: [
+      { c: '需', pinyin: 'xū', radical: '雨', strokes: 14, split: '雨 + 而', kind: '会意', hook: '「雨」字头 —— 下雨时人要等,等就是「需要」。' },
+      { c: '要', pinyin: 'yào', radical: '覀', strokes: 9, kind: '会意', hook: '上面「覀」+ 下面「女」—— 古人觉得娶妻很「要紧」。' },
+    ],
+  },
+  '付钱': {
+    tip: '付 = 「人」+「寸」(手) —— 用手把钱给出去。',
+    sentence: '妈妈付钱后,把零钱包好放进口袋。',
+    examples: ['付钱买东西'],
+    chars: [
+      { c: '付', pinyin: 'fù', radical: '亻', strokes: 5, split: '亻 + 寸', kind: '会意', hook: '「亻」人字旁 +「寸」手 —— 用手把东西交给别人。' },
+      { c: '钱', pinyin: 'qián', radical: '钅', strokes: 10, split: '钅 + 戋', kind: '形声', hook: '「钅」金字旁 —— 古代钱都是金属做的。', family: '钅(金字旁):钱、钢、铁、银 —— 都是金属。' },
+    ],
+  },
+  '袜子': {
+    tip: '袜 = 「衤」(衣字旁) +「末」 —— 穿在脚末端的衣物。',
+    sentence: '冬天太冷了,我要穿厚袜子。',
+    examples: ['一双袜子'],
+    chars: [
+      { c: '袜', pinyin: 'wà', radical: '衤', strokes: 10, split: '衤 + 末', kind: '形声', hook: '「衤」衣字旁,「末」是末端 —— 穿在脚末端的衣物。', warn: '衣字旁「衤」是两点,不是示字旁「礻」一点!' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, kind: '象形', hook: '词尾轻声,无实义。' },
+    ],
+  },
+  '星期': {
+    tip: '星 + 期 —— 月亮和星星走完一圈的时间。',
+    sentence: '这个星期我们要去春游。',
+    examples: ['一个星期', '星期天'],
+    chars: [
+      { c: '星', pinyin: 'xīng', radical: '日', strokes: 9, split: '日 + 生', kind: '形声', hook: '「日」(光)+「生」—— 夜里生出来的发光点 = 星星。' },
+      { c: '期', pinyin: 'qī', radical: '月', strokes: 12, split: '其 + 月', kind: '形声', hook: '「月」字旁 —— 古代以月相的变化划分时间。' },
+    ],
+  },
+  '工夫': {
+    tip: '工 + 夫 = 做事花的「时间 / 功夫」。',
+    sentence: '写这篇作文,他下了不少工夫。',
+    examples: ['一会儿工夫', '花工夫'],
+    chars: [
+      { c: '工', pinyin: 'gōng', radical: '工', strokes: 3, kind: '象形', hook: '像工人用的曲尺 —— 工作。' },
+      { c: '夫', pinyin: 'fu', radical: '大', strokes: 4, kind: '象形', hook: '像成年男人束发插簪的样子。', warn: '这里读轻声 fu。' },
+    ],
+  },
+  '开店': {
+    tip: '「开」一家「店」 —— 做生意。',
+    sentence: '爸爸的朋友在巷口开店,卖文具。',
+    examples: ['开店做生意'],
+    chars: [
+      { c: '开', pinyin: 'kāi', radical: '廾', strokes: 4, kind: '会意', hook: '两手把门栓打开 —— 开。' },
+      { c: '店', pinyin: 'diàn', radical: '广', strokes: 8, kind: '形声', hook: '「广」是房屋 —— 用来做买卖的房子。' },
+    ],
+  },
+  '围巾': {
+    tip: '围 = 用布围起来,巾 = 一条布 —— 围在脖子上的布条。',
+    sentence: '奶奶织了一条彩色围巾送给我。',
+    examples: ['戴围巾', '一条围巾'],
+    chars: [
+      { c: '围', pinyin: 'wéi', radical: '囗', strokes: 7, kind: '形声', hook: '「囗」(大方框)—— 把东西围在里面。' },
+      { c: '巾', pinyin: 'jīn', radical: '巾', strokes: 3, kind: '象形', hook: '像挂着的一块布。', family: '巾字旁:巾、帽、布、帐 —— 都和布有关。' },
+    ],
+  },
+  '简单': {
+    tip: '简 + 单 —— 不复杂,容易。',
+    sentence: '这道题其实很简单,你再想想。',
+    examples: ['简单方便', '说得简单'],
+    chars: [
+      { c: '简', pinyin: 'jiǎn', radical: '⺮', strokes: 13, split: '⺮ + 间', kind: '形声', hook: '竹字头 —— 古人在竹简上写字,后来引申为「简单、简明」。' },
+      { c: '单', pinyin: 'dān', radical: '十', strokes: 8, kind: '会意', hook: '简化字 —— 单一、单个。' },
+    ],
+  },
+  '匆忙': {
+    tip: '匆 + 忙 —— 又急又忙。',
+    sentence: '早上他匆忙吃了几口早饭就跑去上学了。',
+    examples: ['匆匆忙忙'],
+    chars: [
+      { c: '匆', pinyin: 'cōng', radical: '勹', strokes: 5, kind: '会意', hook: '里面一点 —— 急得连话都说不清。' },
+      { c: '忙', pinyin: 'máng', radical: '忄', strokes: 6, split: '忄 + 亡', kind: '形声', hook: '「忄」竖心旁 —— 心里像丢了什么(亡)一样着急。' },
+    ],
+  },
+  '寂寞': {
+    tip: '宀(屋顶)下都是冷清的字 —— 屋里没人,寂寞。',
+    sentence: '蜘蛛一个人开店,有点寂寞。',
+    examples: ['感到寂寞'],
+    chars: [
+      { c: '寂', pinyin: 'jì', radical: '宀', strokes: 11, kind: '形声', hook: '「宀」房顶下,空荡荡的 —— 寂静。' },
+      { c: '寞', pinyin: 'mò', radical: '宀', strokes: 13, kind: '形声', hook: '「宀」房顶下,「莫」(没有)—— 屋里没人,寞。' },
+    ],
+  },
+  '青蛙': {
+    tip: '青色 + 蛙 —— 一种青色的小动物。',
+    sentence: '青蛙呱呱叫,夏天就来了。',
+    examples: ['一只青蛙'],
+    chars: [
+      { c: '青', pinyin: 'qīng', radical: '青', strokes: 8, kind: '会意', hook: '像草木的颜色 —— 青色。', family: '青字旁:清、晴、请、情 —— 都带 qing 音。' },
+      { c: '蛙', pinyin: 'wā', radical: '虫', strokes: 12, split: '虫 + 圭', kind: '形声', hook: '「虫」字旁 —— 古人把小动物都归为虫。', family: '虫字旁:蛙、蛇、蝴、蚂 —— 都是小动物。' },
+    ],
+  },
+  '卖出': {
+    tip: '「卖」+「出」 —— 把东西卖到外面去。',
+    sentence: '小贩很快就把橘子全卖出去了。',
+    examples: ['卖出商品'],
+    chars: [
+      { c: '卖', pinyin: 'mài', radical: '十', strokes: 8, kind: '会意', hook: '上「十」+ 下「买」—— 把买的东西再卖出。', warn: '卖和买上面不一样:卖上面是「十」,买上面是「𠆢」。' },
+      { c: '出', pinyin: 'chū', radical: '凵', strokes: 5, kind: '象形', hook: '像脚从洞口走出 —— 出。' },
+    ],
+  },
+  '搬到': {
+    tip: '搬 + 到 —— 把东西用手挪到别处。',
+    sentence: '我们下个月就要搬到新家了。',
+    examples: ['搬到楼上', '搬到城里'],
+    chars: [
+      { c: '搬', pinyin: 'bān', radical: '扌', strokes: 13, kind: '形声', hook: '提手旁 —— 用手把东西挪走。', family: '扌(提手旁):搬、拉、扔、推 —— 都是手的动作。' },
+      { c: '到', pinyin: 'dào', radical: '刂', strokes: 8, kind: '形声', hook: '「至」表示到达。' },
+    ],
+  },
+  '倒是': {
+    tip: '语气词组合 —— 表示「其实」「反而」。',
+    sentence: '我以为他生气了,倒是他笑了起来。',
+    examples: ['倒是不错'],
+    chars: [
+      { c: '倒', pinyin: 'dào', radical: '亻', strokes: 10, kind: '形声', hook: '「亻」人字旁 —— 这里读 dào,表示反过来。', warn: '多音字:倒过来 dào,倒下 dǎo。' },
+      { c: '是', pinyin: 'shì', radical: '日', strokes: 9, kind: '会意', hook: '判断词 —— 表示「是」。' },
+    ],
+  },
+  '草籽': {
+    tip: '草 + 籽 —— 草的种子。',
+    sentence: '春天到了,把草籽撒到地里。',
+    examples: ['撒草籽'],
+    chars: [
+      { c: '草', pinyin: 'cǎo', radical: '艹', strokes: 9, split: '艹 + 早', kind: '形声', hook: '「艹」草字头 —— 植物类。', family: '艹(草字头):花、草、菜、苗 —— 都是植物。' },
+      { c: '籽', pinyin: 'zǐ', radical: '米', strokes: 9, split: '米 + 子', kind: '形声', hook: '「米」字旁 —— 像谷物的小种子。' },
+    ],
+  },
+  '竖起': {
+    tip: '竖 + 起 —— 立起来。',
+    sentence: '小狗听见声音,竖起了耳朵。',
+    examples: ['竖起大拇指'],
+    chars: [
+      { c: '竖', pinyin: 'shù', radical: '立', strokes: 9, kind: '会意', hook: '下面「立」—— 立起来。' },
+      { c: '起', pinyin: 'qǐ', radical: '走', strokes: 10, split: '走 + 己', kind: '形声', hook: '「走」字旁 —— 站起来才能走。' },
+    ],
+  },
+  '泉水': {
+    tip: '「泉」是从地里冒出的水。',
+    sentence: '山里的泉水清澈又甘甜。',
+    examples: ['一股泉水'],
+    chars: [
+      { c: '泉', pinyin: 'quán', radical: '水', strokes: 9, kind: '象形', hook: '上「白」+ 下「水」 —— 像水从洞里冒出。' },
+      { c: '水', pinyin: 'shuǐ', radical: '水', strokes: 4, kind: '象形', hook: '像水流的样子。' },
+    ],
+  },
+  '打破': {
+    tip: '打 + 破 —— 用力使东西碎。',
+    sentence: '不小心打破了一只杯子,我有点害怕。',
+    examples: ['打破杯子', '打破纪录'],
+    chars: [
+      { c: '打', pinyin: 'dǎ', radical: '扌', strokes: 5, split: '扌 + 丁', kind: '形声', hook: '提手旁 —— 用手做动作。' },
+      { c: '破', pinyin: 'pò', radical: '石', strokes: 10, split: '石 + 皮', kind: '形声', hook: '「石」字旁 —— 石头砸碎了东西。' },
+    ],
+  },
+  '砍树': {
+    tip: '砍 + 树 —— 用斧头把树伐倒。',
+    sentence: '森林里不能随便砍树,要爱护大自然。',
+    examples: ['砍倒大树'],
+    chars: [
+      { c: '砍', pinyin: 'kǎn', radical: '石', strokes: 9, split: '石 + 欠', kind: '形声', hook: '「石」字旁 —— 古时用石斧砍东西。' },
+      { c: '树', pinyin: 'shù', radical: '木', strokes: 9, kind: '形声', hook: '「木」字旁 —— 树就是木。', family: '木字旁:树、林、桃、柳 —— 都是树木类。' },
+    ],
+  },
+  '花丛': {
+    tip: '花 + 丛 —— 一丛丛的花。',
+    sentence: '蝴蝶在花丛中飞舞。',
+    examples: ['一片花丛'],
+    chars: [
+      { c: '花', pinyin: 'huā', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 植物开的花。' },
+      { c: '丛', pinyin: 'cóng', radical: '一', strokes: 5, kind: '会意', hook: '两个「人」在地上 —— 聚在一起,丛。' },
+    ],
+  },
+  '尽情': {
+    tip: '尽 + 情 —— 没有约束地、痛痛快快地。',
+    sentence: '运动会上,大家尽情地跳啊唱啊。',
+    examples: ['尽情玩耍'],
+    chars: [
+      { c: '尽', pinyin: 'jìn', radical: '尸', strokes: 6, kind: '会意', hook: '简化字 —— 表示「全部、完全」。' },
+      { c: '情', pinyin: 'qíng', radical: '忄', strokes: 11, split: '忄 + 青', kind: '形声', hook: '「忄」竖心旁 —— 心里的感情。' },
+    ],
+  },
+  '舒服': {
+    tip: '舒 + 服 —— 身心放松。',
+    sentence: '泡完热水澡,全身都舒服极了。',
+    examples: ['很舒服', '不舒服'],
+    chars: [
+      { c: '舒', pinyin: 'shū', radical: '舌', strokes: 12, kind: '会意', hook: '「舍」+「予」—— 把自己交出去,放松。' },
+      { c: '服', pinyin: 'fu', radical: '月', strokes: 8, kind: '形声', hook: '这里读轻声 fu,无实义。', warn: '多音字:舒服 fu,衣服 fú。' },
+    ],
+  },
+  '游泳': {
+    tip: '游 + 泳 —— 在水里前进。',
+    sentence: '我最喜欢夏天去游泳。',
+    examples: ['学游泳', '游泳池'],
+    chars: [
+      { c: '游', pinyin: 'yóu', radical: '氵', strokes: 12, kind: '形声', hook: '三点水 —— 在水里走动。', family: '氵(三点水):游、泳、河、海 —— 都和水有关。' },
+      { c: '泳', pinyin: 'yǒng', radical: '氵', strokes: 8, split: '氵 + 永', kind: '形声', hook: '「氵」三点水 +「永」(声旁)—— 在水里游。' },
+    ],
+  },
+  '绿茵茵': {
+    tip: '形容草地绿油油 —— ABB 重叠词。',
+    sentence: '远处的草地绿茵茵的,真好看。',
+    examples: ['绿茵茵的草地'],
+    chars: [
+      { c: '绿', pinyin: 'lǜ', radical: '纟', strokes: 11, kind: '形声', hook: '「纟」绞丝旁 —— 古代染绿色的丝线。' },
+      { c: '茵', pinyin: 'yīn', radical: '艹', strokes: 9, kind: '形声', hook: '草字头 —— 草地。' },
+      { c: '茵', pinyin: 'yīn', radical: '艹', strokes: 9, kind: '形声', hook: '叠用加强 —— 形容绿得发亮。' },
+    ],
+  },
+  '吆喝': {
+    tip: '吆 + 喝 —— 大声叫卖、招呼。',
+    sentence: '集市上小贩大声吆喝,卖力气地推销。',
+    examples: ['吆喝叫卖'],
+    chars: [
+      { c: '吆', pinyin: 'yāo', radical: '口', strokes: 6, split: '口 + 幺', kind: '形声', hook: '「口」字旁 —— 用嘴大声叫。' },
+      { c: '喝', pinyin: 'he', radical: '口', strokes: 12, kind: '形声', hook: '「口」字旁 —— 这里读轻声 he,大声招呼。', warn: '多音字:吆喝 he,喝水 hē。' },
+    ],
+  },
+  '可怜': {
+    tip: '可 + 怜 —— 值得同情。',
+    sentence: '小猫淋了一身雨,看起来真可怜。',
+    examples: ['可怜的小动物'],
+    chars: [
+      { c: '可', pinyin: 'kě', radical: '口', strokes: 5, kind: '会意', hook: '「口」字旁 —— 可以、值得。' },
+      { c: '怜', pinyin: 'lián', radical: '忄', strokes: 8, kind: '形声', hook: '「忄」竖心旁 —— 心里同情。' },
+    ],
+  },
+  '尽心竭力': {
+    tip: '「尽心」+「竭力」 —— 用尽全部心思和力气。',
+    sentence: '妈妈尽心竭力地照顾我,我要好好谢谢她。',
+    chars: [
+      { c: '尽', pinyin: 'jìn', radical: '尸', strokes: 6, hook: '用尽全部。' },
+      { c: '心', pinyin: 'xīn', radical: '心', strokes: 4, kind: '象形', hook: '像心脏的形状。' },
+      { c: '竭', pinyin: 'jié', radical: '立', strokes: 14, kind: '形声', hook: '把全部力气用完。' },
+      { c: '力', pinyin: 'lì', radical: '力', strokes: 2, kind: '象形', hook: '像用力的农具 —— 力气。' },
+    ],
+  },
+};
+
+// 应用 enrichment —— 同 char 的词,直接合并 chars/tip/sentence/examples 字段。
+// 不动 UNIT 5 / U6 已经精细写好的 entry(它们已有完整字段)。
+{
+  for (const w of WORDS) {
+    const e = WORD_ENRICHMENT_2B[w.char];
+    if (!e) continue;
+    // 只填没填过的字段(避免覆盖 UNIT 5/U6 精细数据)
+    if (e.chars && w.chars.every((c) => !c.radical && !c.kind && !c.hook)) {
+      w.chars = e.chars;
+    }
+    if (e.tip && (!w.tip || w.tip.includes('草稿') || w.tip.includes('默写时把词拆成单个字记'))) {
+      w.tip = e.tip;
+    }
+    if (e.sentence && !w.sentence) w.sentence = e.sentence;
+    if (e.examples && w.examples.length === 0) w.examples = e.examples;
+  }
+}
+
 // 护栏：所有词语（手写 + vault 笔记 + 草稿）合并后查一遍 id 撞车。
 // vault 笔记若误用了已存在的 id，构建日志里会立刻报出来。
 {

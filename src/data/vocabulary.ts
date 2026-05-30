@@ -1412,6 +1412,336 @@ WORDS.push(...GRADE5_WORDS);
 type WordEnrichment = Partial<Pick<Word, 'chars' | 'tip' | 'sentence' | 'examples'>>;
 
 const WORD_ENRICHMENT_2B: Record<string, WordEnrichment> = {
+  // ===== 第一单元 春天里 =====
+  '冲出': {
+    tip: '冲 + 出 —— 一下子冲到外面。',
+    sentence: '下课铃一响,孩子们就冲出教室,跑向操场。',
+    examples: ['冲出大门'],
+    chars: [
+      { c: '冲', pinyin: 'chōng', radical: '冫', strokes: 6, split: '冫 + 中', kind: '形声', hook: '两点水 —— 像水一下子冲出来。' },
+      { c: '出', pinyin: 'chū', radical: '凵', strokes: 5, kind: '象形', hook: '像脚从洞口走出来。' },
+    ],
+  },
+  '寻找': {
+    tip: '寻 + 找 —— 到处去找。',
+    sentence: '春天来了,我们一起去寻找春天的脚步。',
+    examples: ['寻找答案', '到处寻找'],
+    chars: [
+      { c: '寻', pinyin: 'xún', radical: '寸', strokes: 6, kind: '会意', hook: '简化字 —— 用手细细去找。' },
+      { c: '找', pinyin: 'zhǎo', radical: '扌', strokes: 7, split: '扌 + 戈', kind: '形声', hook: '提手旁 —— 用手去翻、去找。', family: '扌(提手旁):找、打、拉、推 —— 都是手的动作。' },
+    ],
+  },
+  '眉毛': {
+    tip: '「眉」上面是眉毛的形状 —— 眼睛上方的毛。',
+    sentence: '哥哥皱起眉毛,想得很认真。',
+    examples: ['眉毛弯弯'],
+    chars: [
+      { c: '眉', pinyin: 'méi', radical: '目', strokes: 9, kind: '象形', hook: '上面像眉毛的形状,下面「目」是眼睛 —— 眼睛上方的毛。' },
+      { c: '毛', pinyin: 'máo', radical: '毛', strokes: 4, kind: '象形', hook: '像一根弯弯的毛。' },
+    ],
+  },
+  '吐出嫩芽': {
+    tip: '吐 +「嫩芽」(刚长出的柔软小芽)。',
+    sentence: '春天里,小草悄悄地从土里吐出嫩芽。',
+    chars: [
+      { c: '吐', pinyin: 'tǔ', radical: '口', strokes: 6, split: '口 + 土', kind: '形声', hook: '「口」字旁 —— 用嘴往外送。' },
+      { c: '出', pinyin: 'chū', radical: '凵', strokes: 5, kind: '象形', hook: '走出来。' },
+      { c: '嫩', pinyin: 'nèn', radical: '女', strokes: 14, kind: '形声', hook: '柔嫩、刚长出的样子。' },
+      { c: '芽', pinyin: 'yá', radical: '艹', strokes: 7, split: '艹 + 牙', kind: '形声', hook: '草字头 +「牙」—— 小芽像小牙一样冒出来。', family: '艹(草字头):芽、花、草、苗 —— 都是植物。' },
+    ],
+  },
+  '闻到': {
+    tip: '闻 = 门里有耳 —— 古代专心听就是「闻」,后来也指鼻子闻。',
+    sentence: '一进厨房就闻到了米饭的香味。',
+    examples: ['闻到花香'],
+    chars: [
+      { c: '闻', pinyin: 'wén', radical: '门', strokes: 9, split: '门 + 耳', kind: '会意', hook: '门里有耳 —— 用耳朵专心听就是「闻」,引申为用鼻子闻。' },
+      { c: '到', pinyin: 'dào', radical: '刂', strokes: 8, kind: '形声', hook: '到达。' },
+    ],
+  },
+  '柳枝': {
+    tip: '柳 + 枝 —— 柳树的枝条。',
+    sentence: '微风一吹,长长的柳枝跳起了舞。',
+    examples: ['一根柳枝'],
+    chars: [
+      { c: '柳', pinyin: 'liǔ', radical: '木', strokes: 9, split: '木 + 卯', kind: '形声', hook: '「木」字旁 —— 一种树。', family: '木字旁:柳、桃、松、枝 —— 都是树。' },
+      { c: '枝', pinyin: 'zhī', radical: '木', strokes: 8, split: '木 + 支', kind: '形声', hook: '「木」字旁 —— 树长出来的枝条。' },
+    ],
+  },
+  '荡秋千': {
+    tip: '荡 + 秋千 —— 坐在秋千上摇来摇去。',
+    sentence: '公园里,小朋友在荡秋千,笑声不断。',
+    examples: ['一起荡秋千'],
+    chars: [
+      { c: '荡', pinyin: 'dàng', radical: '艹', strokes: 9, kind: '形声', hook: '草字头下有「汤」(水)—— 像水在摇晃,引申为荡来荡去。' },
+      { c: '秋', pinyin: 'qiū', radical: '禾', strokes: 9, split: '禾 + 火', kind: '会意', hook: '左「禾」(庄稼)右「火」—— 庄稼成熟、太阳像火,就是秋天。', family: '禾字旁:秋、稻、租、种 —— 都和庄稼有关。' },
+      { c: '千', pinyin: 'qiān', radical: '十', strokes: 3, kind: '指事', hook: '十的十倍 —— 千。' },
+    ],
+  },
+  '桃花': {
+    tip: '桃 + 花 —— 桃树开的花。',
+    sentence: '春天的桃花开得粉红粉红的,真好看。',
+    examples: ['一片桃花'],
+    chars: [
+      { c: '桃', pinyin: 'táo', radical: '木', strokes: 10, split: '木 + 兆', kind: '形声', hook: '「木」字旁 —— 桃树。' },
+      { c: '花', pinyin: 'huā', radical: '艹', strokes: 7, split: '艹 + 化', kind: '形声', hook: '草字头 —— 植物开的花。' },
+    ],
+  },
+  '仔细': {
+    tip: '仔 + 细 —— 认真、细心。',
+    sentence: '写字要仔细,不能马虎。',
+    examples: ['仔细看', '仔细想'],
+    chars: [
+      { c: '仔', pinyin: 'zǐ', radical: '亻', strokes: 5, split: '亻 + 子', kind: '形声', hook: '「亻」人字旁 —— 一个人很细心。' },
+      { c: '细', pinyin: 'xì', radical: '纟', strokes: 8, split: '纟 + 田', kind: '形声', hook: '「纟」绞丝旁 —— 像丝线一样细。' },
+    ],
+  },
+  '遮遮掩掩': {
+    tip: 'AABB 式重叠词 —— 半遮半掩,藏头露尾。',
+    sentence: '春天像害羞的小姑娘,遮遮掩掩,躲躲藏藏。',
+    chars: [
+      { c: '遮', pinyin: 'zhē', radical: '辶', strokes: 14, kind: '形声', hook: '走之底 —— 走过去挡住。' },
+      { c: '遮', pinyin: 'zhē', radical: '辶', strokes: 14, kind: '形声', hook: '叠用加强 —— 一直挡。' },
+      { c: '掩', pinyin: 'yǎn', radical: '扌', strokes: 11, split: '扌 + 奄', kind: '形声', hook: '提手旁 —— 用手捂住、盖住。' },
+      { c: '掩', pinyin: 'yǎn', radical: '扌', strokes: 11, kind: '形声', hook: '叠用 —— 一直捂。' },
+    ],
+  },
+  '音符': {
+    tip: '音 + 符 —— 记录声音的符号。',
+    sentence: '钢琴谱上一个个黑色音符,像小蝌蚪。',
+    examples: ['跳动的音符'],
+    chars: [
+      { c: '音', pinyin: 'yīn', radical: '音', strokes: 9, kind: '会意', hook: '从口里发出的声音 —— 音。' },
+      { c: '符', pinyin: 'fú', radical: '⺮', strokes: 11, split: '⺮ + 付', kind: '形声', hook: '竹字头 —— 古代把符号刻在竹片上。' },
+    ],
+  },
+  '解冻': {
+    tip: '解 + 冻 —— 把冻住的东西化开。',
+    sentence: '春天到了,小河里的冰开始解冻。',
+    examples: ['冰雪解冻'],
+    chars: [
+      { c: '解', pinyin: 'jiě', radical: '角', strokes: 13, kind: '会意', hook: '「角」+「刀」+「牛」—— 用刀把牛角解开。引申为「化开」。' },
+      { c: '冻', pinyin: 'dòng', radical: '冫', strokes: 7, split: '冫 + 东', kind: '形声', hook: '两点水 —— 像冰,引申为冻住。', family: '冫(两点水):冷、冻、净、决 —— 都和「冷」有关。' },
+    ],
+  },
+  '杜鹃': {
+    tip: '杜 + 鹃 —— 一种鸟,也是一种花。',
+    sentence: '山上的杜鹃花开得满山红。',
+    examples: ['杜鹃花', '杜鹃鸟'],
+    chars: [
+      { c: '杜', pinyin: 'dù', radical: '木', strokes: 7, kind: '形声', hook: '「木」字旁 —— 一种树。' },
+      { c: '鹃', pinyin: 'juān', radical: '鸟', strokes: 12, kind: '形声', hook: '「鸟」字旁 —— 一种鸟。', family: '鸟字旁:鹃、鸡、鸭、鹅 —— 都是鸟。' },
+    ],
+  },
+  '鲜花': {
+    tip: '鲜 + 花 —— 新鲜美丽的花。',
+    sentence: '妈妈生日那天,我送了一束鲜花给她。',
+    examples: ['一束鲜花'],
+    chars: [
+      { c: '鲜', pinyin: 'xiān', radical: '鱼', strokes: 14, split: '鱼 + 羊', kind: '会意', hook: '「鱼」+「羊」—— 新鲜的鱼和羊肉味道最美。' },
+      { c: '花', pinyin: 'huā', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 花。' },
+    ],
+  },
+  '原来': {
+    tip: '原 + 来 —— 表示发现真相。',
+    sentence: '原来是小弟弟在按门铃,我还以为是客人。',
+    examples: ['原来如此'],
+    chars: [
+      { c: '原', pinyin: 'yuán', radical: '厂', strokes: 10, kind: '会意', hook: '「厂」(山崖)下有泉水 —— 水的源头。' },
+      { c: '来', pinyin: 'lái', radical: '一', strokes: 7, kind: '象形', hook: '简化字 —— 表示来。' },
+    ],
+  },
+  '大叔': {
+    tip: '大 + 叔 —— 对中年男子的称呼。',
+    sentence: '邮递员大叔笑着把信送给了我。',
+    examples: ['一位大叔'],
+    chars: [
+      { c: '大', pinyin: 'dà', radical: '大', strokes: 3, kind: '象形', hook: '像人张开手臂 —— 大。' },
+      { c: '叔', pinyin: 'shū', radical: '又', strokes: 8, kind: '会意', hook: '父亲的弟弟 —— 引申为对成年男子的称呼。' },
+    ],
+  },
+  '通往': {
+    tip: '通 + 往 —— 通向某个地方。',
+    sentence: '这条小路通往山顶。',
+    examples: ['通往学校'],
+    chars: [
+      { c: '通', pinyin: 'tōng', radical: '辶', strokes: 10, split: '辶 + 甬', kind: '形声', hook: '走之底 —— 走得通,引申为通往。' },
+      { c: '往', pinyin: 'wǎng', radical: '彳', strokes: 8, kind: '形声', hook: '双人旁 —— 走向某地。' },
+    ],
+  },
+  '惊奇': {
+    tip: '惊 + 奇 —— 觉得意外又奇怪。',
+    sentence: '看到门前开满鲜花,狐狸太太一脸惊奇。',
+    examples: ['十分惊奇'],
+    chars: [
+      { c: '惊', pinyin: 'jīng', radical: '忄', strokes: 11, split: '忄 + 京', kind: '形声', hook: '「忄」竖心旁 —— 心里被吓到。' },
+      { c: '奇', pinyin: 'qí', radical: '大', strokes: 8, kind: '会意', hook: '上「大」下「可」—— 不一般、特别。' },
+    ],
+  },
+  '正巧': {
+    tip: '正 + 巧 —— 恰好碰上。',
+    sentence: '我刚走到门口,正巧爸爸开车回来了。',
+    examples: ['正巧赶上'],
+    chars: [
+      { c: '正', pinyin: 'zhèng', radical: '止', strokes: 5, kind: '指事', hook: '一横加止 —— 站正。' },
+      { c: '巧', pinyin: 'qiǎo', radical: '工', strokes: 5, kind: '形声', hook: '「工」字旁 —— 手巧、灵巧。' },
+    ],
+  },
+  '礼物': {
+    tip: '礼 + 物 —— 表达心意送的东西。',
+    sentence: '生日那天,我收到了好多礼物。',
+    examples: ['一份礼物', '生日礼物'],
+    chars: [
+      { c: '礼', pinyin: 'lǐ', radical: '礻', strokes: 5, kind: '会意', hook: '「礻」示字旁 —— 古代祭祀的仪式,引申为礼节、礼物。', warn: '是「礻」示字旁(一点),不是「衤」衣字旁(两点)!' },
+      { c: '物', pinyin: 'wù', radical: '牜', strokes: 8, kind: '形声', hook: '牛字旁 —— 古代以牛代表财物。' },
+    ],
+  },
+  '懊丧': {
+    tip: '懊 + 丧 —— 失意烦闷。',
+    sentence: '比赛输了,他懊丧了好几天。',
+    chars: [
+      { c: '懊', pinyin: 'ào', radical: '忄', strokes: 15, kind: '形声', hook: '「忄」竖心旁 —— 心里后悔难过。' },
+      { c: '丧', pinyin: 'sàng', radical: '十', strokes: 8, kind: '会意', hook: '失去 —— 心里很难过。' },
+    ],
+  },
+  '邮递员': {
+    tip: '邮 + 递 + 员 —— 送信的工作人员。',
+    sentence: '邮递员叔叔每天骑着自行车送信。',
+    chars: [
+      { c: '邮', pinyin: 'yóu', radical: '阝', strokes: 7, kind: '会意', hook: '「阝」是城邑 —— 古代邮政从城里送信。' },
+      { c: '递', pinyin: 'dì', radical: '辶', strokes: 10, kind: '形声', hook: '走之底 —— 一路送过去。' },
+      { c: '员', pinyin: 'yuán', radical: '口', strokes: 7, kind: '会意', hook: '某个工作的人 —— 演员、邮递员。' },
+    ],
+  },
+  '花籽': {
+    tip: '花 + 籽 —— 花的种子。',
+    sentence: '春天到了,把花籽撒进土里。',
+    chars: [
+      { c: '花', pinyin: 'huā', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 植物的花。' },
+      { c: '籽', pinyin: 'zǐ', radical: '米', strokes: 9, split: '米 + 子', kind: '形声', hook: '「米」字旁 —— 像谷物的小种子。' },
+    ],
+  },
+  '五颜六色': {
+    tip: '五 + 颜 + 六 + 色 —— 颜色多。',
+    sentence: '花坛里开着五颜六色的花,真热闹。',
+    chars: [
+      { c: '五', pinyin: 'wǔ', radical: '一', strokes: 4, kind: '指事', hook: '数字五。' },
+      { c: '颜', pinyin: 'yán', radical: '页', strokes: 15, kind: '形声', hook: '「页」字旁 —— 脸的颜色。' },
+      { c: '六', pinyin: 'liù', radical: '亠', strokes: 4, kind: '指事', hook: '数字六。' },
+      { c: '色', pinyin: 'sè', radical: '色', strokes: 6, kind: '会意', hook: '颜色。' },
+    ],
+  },
+  '破洞': {
+    tip: '破 + 洞 —— 破了的洞。',
+    sentence: '我的袜子有个破洞,妈妈帮我补上了。',
+    chars: [
+      { c: '破', pinyin: 'pò', radical: '石', strokes: 10, split: '石 + 皮', kind: '形声', hook: '「石」字旁 —— 石头砸坏了东西。' },
+      { c: '洞', pinyin: 'dòng', radical: '氵', strokes: 9, kind: '形声', hook: '三点水 —— 像水冲出来的洞。' },
+    ],
+  },
+  '邓小平': {
+    tip: '人名 —— 中国伟人。',
+    sentence: '邓小平爷爷在天坛公园种下了一棵柏树。',
+    chars: [
+      { c: '邓', pinyin: 'dèng', radical: '阝', strokes: 4, kind: '形声', hook: '姓氏。' },
+      { c: '小', pinyin: 'xiǎo', radical: '小', strokes: 3, kind: '会意', hook: '一竖加两点 —— 小。' },
+      { c: '平', pinyin: 'píng', radical: '一', strokes: 5, kind: '象形', hook: '平直、平整。' },
+    ],
+  },
+  '植树': {
+    tip: '植 + 树 —— 种树。',
+    sentence: '春天是植树的好季节。',
+    examples: ['植树节'],
+    chars: [
+      { c: '植', pinyin: 'zhí', radical: '木', strokes: 12, split: '木 + 直', kind: '形声', hook: '「木」字旁 —— 把树直直地栽下去。' },
+      { c: '树', pinyin: 'shù', radical: '木', strokes: 9, kind: '形声', hook: '「木」字旁 —— 树。' },
+    ],
+  },
+  '格外': {
+    tip: '格 + 外 —— 特别、分外。',
+    sentence: '春天的早晨,空气格外清新。',
+    examples: ['格外漂亮'],
+    chars: [
+      { c: '格', pinyin: 'gé', radical: '木', strokes: 10, kind: '形声', hook: '「木」字旁 —— 木格子,引申为「规格」。' },
+      { c: '外', pinyin: 'wài', radical: '夕', strokes: 5, kind: '会意', hook: '夕(月亮)+ 卜 —— 古人晚上占卜在外面。' },
+    ],
+  },
+  '引人注目': {
+    tip: '「引」+「人」+「注目」 —— 吸引大家注意。',
+    sentence: '他穿了一件红色外套,在人群中很引人注目。',
+    chars: [
+      { c: '引', pinyin: 'yǐn', radical: '弓', strokes: 4, kind: '会意', hook: '「弓」+ 竖 —— 拉弓,引申为吸引。' },
+      { c: '人', pinyin: 'rén', radical: '人', strokes: 2, kind: '象形', hook: '像一个站立的人。' },
+      { c: '注', pinyin: 'zhù', radical: '氵', strokes: 8, kind: '形声', hook: '三点水 —— 引申为「注意、集中」。' },
+      { c: '目', pinyin: 'mù', radical: '目', strokes: 5, kind: '象形', hook: '像眼睛的形状。' },
+    ],
+  },
+  '圆满': {
+    tip: '圆 + 满 —— 完美、没有缺憾。',
+    sentence: '运动会圆满结束,大家都开心地回了家。',
+    chars: [
+      { c: '圆', pinyin: 'yuán', radical: '囗', strokes: 10, kind: '形声', hook: '「囗」大方框 —— 圆形。' },
+      { c: '满', pinyin: 'mǎn', radical: '氵', strokes: 13, kind: '形声', hook: '三点水 —— 水装满了。' },
+    ],
+  },
+  '休息': {
+    tip: '休 + 息 —— 停下来歇一歇。',
+    sentence: '种完树,大家坐在树下休息。',
+    examples: ['休息一下'],
+    chars: [
+      { c: '休', pinyin: 'xiū', radical: '亻', strokes: 6, split: '亻 + 木', kind: '会意', hook: '「亻」人 +「木」树 —— 人靠在树下休息。' },
+      { c: '息', pinyin: 'xī', radical: '心', strokes: 10, kind: '会意', hook: '上「自」(鼻子)下「心」—— 鼻子呼吸的气息。' },
+    ],
+  },
+  '茁壮': {
+    tip: '茁 + 壮 —— 健壮、强健。',
+    sentence: '小苗一天天茁壮起来。',
+    examples: ['茁壮成长'],
+    chars: [
+      { c: '茁', pinyin: 'zhuó', radical: '艹', strokes: 8, kind: '形声', hook: '草字头 —— 草木长得健壮。' },
+      { c: '壮', pinyin: 'zhuàng', radical: '士', strokes: 6, kind: '形声', hook: '强壮、健壮。' },
+    ],
+  },
+  '挑选': {
+    tip: '挑 + 选 —— 仔细选出。',
+    sentence: '我从一堆苹果里挑选了最大的一个。',
+    examples: ['挑选礼物'],
+    chars: [
+      { c: '挑', pinyin: 'tiāo', radical: '扌', strokes: 9, kind: '形声', hook: '提手旁 —— 用手挑出来。' },
+      { c: '选', pinyin: 'xuǎn', radical: '辶', strokes: 9, kind: '形声', hook: '走之底 —— 走过去挑出。' },
+    ],
+  },
+  '碧空如洗': {
+    tip: '碧空 + 如洗 —— 天空蓝得像洗过一样。',
+    sentence: '今天天气真好,碧空如洗。',
+    chars: [
+      { c: '碧', pinyin: 'bì', radical: '石', strokes: 14, kind: '形声', hook: '青绿色,像玉石的颜色。' },
+      { c: '空', pinyin: 'kōng', radical: '穴', strokes: 8, kind: '形声', hook: '穴字头 —— 空空的。' },
+      { c: '如', pinyin: 'rú', radical: '女', strokes: 6, kind: '会意', hook: '好像、如同。' },
+      { c: '洗', pinyin: 'xǐ', radical: '氵', strokes: 9, kind: '形声', hook: '三点水 —— 用水洗。' },
+    ],
+  },
+  '万里无云': {
+    tip: '万里 + 无云 —— 天上一点云也没有。',
+    sentence: '万里无云的天空像一块蓝宝石。',
+    chars: [
+      { c: '万', pinyin: 'wàn', radical: '一', strokes: 3, kind: '指事', hook: '数字万,形容很多。' },
+      { c: '里', pinyin: 'lǐ', radical: '里', strokes: 7, kind: '会意', hook: '里面,也是长度单位。' },
+      { c: '无', pinyin: 'wú', radical: '一', strokes: 4, kind: '会意', hook: '没有。' },
+      { c: '云', pinyin: 'yún', radical: '二', strokes: 4, kind: '象形', hook: '像天上的云朵。' },
+    ],
+  },
+  '兴致勃勃': {
+    tip: '兴致 + 勃勃 —— 兴趣很高,劲头足。',
+    sentence: '同学们兴致勃勃地参加了春游。',
+    chars: [
+      { c: '兴', pinyin: 'xìng', radical: '八', strokes: 6, kind: '会意', hook: '高兴、兴致。', warn: '多音字:兴致 xìng,高兴 xìng,兴办 xīng。' },
+      { c: '致', pinyin: 'zhì', radical: '至', strokes: 10, kind: '会意', hook: '到达 —— 引申为「专心」「致力」。' },
+      { c: '勃', pinyin: 'bó', radical: '力', strokes: 9, kind: '形声', hook: '「力」字旁 —— 旺盛、有劲。' },
+      { c: '勃', pinyin: 'bó', radical: '力', strokes: 9, kind: '形声', hook: '叠用 —— 形容劲头很足。' },
+    ],
+  },
+
   // ===== 第七单元 改变(用户当前最常学) =====
   '扇子': {
     tip: '「扇」是「户」(门)里有「羽」毛 —— 古时摇羽毛扇风。',

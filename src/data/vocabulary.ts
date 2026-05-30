@@ -1742,6 +1742,969 @@ const WORD_ENRICHMENT_2B: Record<string, WordEnrichment> = {
     ],
   },
 
+  // ===== 第二单元 关爱他人 =====
+  '雷锋': {
+    tip: '雷 + 锋 —— 人名,助人为乐的榜样。',
+    sentence: '雷锋叔叔帮过的人数也数不清。',
+    chars: [
+      { c: '雷', pinyin: 'léi', radical: '雨', strokes: 13, kind: '会意', hook: '「雨」字头下「田」—— 雨天田里轰隆作响,雷声。' },
+      { c: '锋', pinyin: 'fēng', radical: '钅', strokes: 12, kind: '形声', hook: '「钅」金字旁 —— 刀剑的锋利尖端。' },
+    ],
+  },
+  '昨天': {
+    tip: '昨 + 天 —— 今天的前一天。',
+    sentence: '昨天我去图书馆借了三本书。',
+    examples: ['昨天晚上'],
+    chars: [
+      { c: '昨', pinyin: 'zuó', radical: '日', strokes: 9, split: '日 + 乍', kind: '形声', hook: '「日」字旁 —— 和时间有关。' },
+      { c: '天', pinyin: 'tiān', radical: '大', strokes: 4, kind: '会意', hook: '一横在「大」之上 —— 头顶上方,天。' },
+    ],
+  },
+  '背包': {
+    tip: '背 + 包 —— 背在背上的包。',
+    sentence: '雷锋叔叔的背包装满了帮人用的东西。',
+    examples: ['一个背包'],
+    chars: [
+      { c: '背', pinyin: 'bēi', radical: '月', strokes: 9, kind: '形声', hook: '「月」(肉)+ 北 —— 背部。这里读 bēi 表示「用背扛」。', warn: '多音字:背包 bēi,背诵 bèi。' },
+      { c: '包', pinyin: 'bāo', radical: '勹', strokes: 5, kind: '会意', hook: '像一个手提的包裹。' },
+    ],
+  },
+  '洒水': {
+    tip: '洒 + 水 —— 把水撒出去。',
+    sentence: '夏天傍晚,环卫工人开着洒水车在街上洒水。',
+    chars: [
+      { c: '洒', pinyin: 'sǎ', radical: '氵', strokes: 9, kind: '形声', hook: '三点水 —— 把水散开。' },
+      { c: '水', pinyin: 'shuǐ', radical: '水', strokes: 4, kind: '象形', hook: '像水流。' },
+    ],
+  },
+  '温暖': {
+    tip: '温 + 暖 —— 不冷,让人舒服。',
+    sentence: '妈妈的怀抱总是那么温暖。',
+    examples: ['温暖的阳光'],
+    chars: [
+      { c: '温', pinyin: 'wēn', radical: '氵', strokes: 12, kind: '形声', hook: '三点水 —— 水不冷不热,温温的。' },
+      { c: '暖', pinyin: 'nuǎn', radical: '日', strokes: 13, kind: '形声', hook: '「日」字旁 —— 太阳带来暖意。' },
+    ],
+  },
+  '汗水': {
+    tip: '汗 + 水 —— 出汗流的水。',
+    sentence: '雷锋叔叔的汗水洒在了泥泞的路上。',
+    chars: [
+      { c: '汗', pinyin: 'hàn', radical: '氵', strokes: 6, split: '氵 + 干', kind: '形声', hook: '三点水 —— 身上流出的水。' },
+      { c: '水', pinyin: 'shuǐ', radical: '水', strokes: 4, kind: '象形', hook: '水。' },
+    ],
+  },
+  '足迹': {
+    tip: '足 + 迹 —— 脚印。',
+    sentence: '沙滩上留下了一串小小的足迹。',
+    examples: ['留下足迹'],
+    chars: [
+      { c: '足', pinyin: 'zú', radical: '足', strokes: 7, kind: '象形', hook: '像脚的形状。' },
+      { c: '迹', pinyin: 'jì', radical: '辶', strokes: 9, kind: '形声', hook: '走之底 —— 走过留下的痕迹。' },
+    ],
+  },
+  '迷路': {
+    tip: '迷 + 路 —— 找不着路。',
+    sentence: '小红帽在森林里迷路了。',
+    examples: ['迷路的孩子'],
+    chars: [
+      { c: '迷', pinyin: 'mí', radical: '辶', strokes: 9, split: '辶 + 米', kind: '形声', hook: '走之底 —— 走得迷糊了。' },
+      { c: '路', pinyin: 'lù', radical: '足', strokes: 13, kind: '形声', hook: '「足」字旁 —— 用脚走的路。' },
+    ],
+  },
+  '泥泞': {
+    tip: '泥 + 泞 —— 又湿又烂的泥。',
+    sentence: '雨后的小路泥泞得很难走。',
+    chars: [
+      { c: '泥', pinyin: 'ní', radical: '氵', strokes: 8, kind: '形声', hook: '三点水 —— 水和土混在一起。' },
+      { c: '泞', pinyin: 'nìng', radical: '氵', strokes: 8, kind: '形声', hook: '三点水 —— 烂泥。' },
+    ],
+  },
+  '年迈': {
+    tip: '年 + 迈 —— 年纪大了。',
+    sentence: '雷锋叔叔搀扶着年迈的奶奶过马路。',
+    chars: [
+      { c: '年', pinyin: 'nián', radical: '丿', strokes: 6, kind: '象形', hook: '年。' },
+      { c: '迈', pinyin: 'mài', radical: '辶', strokes: 6, kind: '形声', hook: '走之底 —— 年纪大了脚步沉重。' },
+    ],
+  },
+  '晶莹': {
+    tip: '晶 + 莹 —— 光亮透明。',
+    sentence: '晨雾里的露珠晶莹剔透。',
+    chars: [
+      { c: '晶', pinyin: 'jīng', radical: '日', strokes: 12, kind: '会意', hook: '三个「日」—— 光亮闪闪。' },
+      { c: '莹', pinyin: 'yíng', radical: '艹', strokes: 10, kind: '形声', hook: '草字头 —— 像玉一样透亮。' },
+    ],
+  },
+  '顺利': {
+    tip: '顺 + 利 —— 事情进行得很好。',
+    sentence: '考试很顺利,我提前半小时做完了。',
+    examples: ['一切顺利'],
+    chars: [
+      { c: '顺', pinyin: 'shùn', radical: '页', strokes: 9, split: '川 + 页', kind: '会意', hook: '「川」(水)+「页」(头)—— 像水流一样顺。' },
+      { c: '利', pinyin: 'lì', radical: '刂', strokes: 7, split: '禾 + 刂', kind: '会意', hook: '「禾」+「刂」—— 收割庄稼锋利,引申为顺利。' },
+    ],
+  },
+  '弯曲': {
+    tip: '弯 + 曲 —— 不直、弯弯的。',
+    sentence: '小溪弯弯曲曲地流过田野。',
+    chars: [
+      { c: '弯', pinyin: 'wān', radical: '弓', strokes: 9, kind: '会意', hook: '「弓」字底 —— 像弓一样弯。' },
+      { c: '曲', pinyin: 'qū', radical: '曰', strokes: 6, kind: '象形', hook: '像弯曲的形状。', warn: '多音字:弯曲 qū,歌曲 qǔ。' },
+    ],
+  },
+  '桌子': {
+    tip: '桌 + 子 —— 吃饭写字的家具。',
+    sentence: '我的桌子上放着课本和铅笔盒。',
+    examples: ['一张桌子'],
+    chars: [
+      { c: '桌', pinyin: 'zhuō', radical: '木', strokes: 10, kind: '形声', hook: '「木」字底 —— 木头做的家具。' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, kind: '象形', hook: '词尾,无实义。' },
+    ],
+  },
+  '品尝': {
+    tip: '品 + 尝 —— 仔细尝尝味道。',
+    sentence: '客人品尝了一口糕点,直夸好吃。',
+    examples: ['品尝美食'],
+    chars: [
+      { c: '品', pinyin: 'pǐn', radical: '口', strokes: 9, kind: '会意', hook: '三个「口」—— 反复尝味道。' },
+      { c: '尝', pinyin: 'cháng', radical: '小', strokes: 9, kind: '会意', hook: '用「口」舔一口 —— 尝。' },
+    ],
+  },
+  '买卖': {
+    tip: '买 + 卖 —— 做生意。',
+    sentence: '集市上买卖热闹,人来人往。',
+    examples: ['做买卖'],
+    chars: [
+      { c: '买', pinyin: 'mǎi', radical: '乙', strokes: 6, kind: '会意', hook: '简化字 —— 用钱换东西。', warn: '上面是「𠆢」点头点,不是「十」。买和卖刚好相反。' },
+      { c: '卖', pinyin: 'mài', radical: '十', strokes: 8, kind: '会意', hook: '上「十」+ 下「买」—— 把买来的东西再卖出。', warn: '上面是「十」,和「买」(上面𠆢)对照记。' },
+    ],
+  },
+  '工具': {
+    tip: '工 + 具 —— 做事用的器具。',
+    sentence: '木匠师傅的工具箱里装着锯子和锤子。',
+    examples: ['学习工具'],
+    chars: [
+      { c: '工', pinyin: 'gōng', radical: '工', strokes: 3, kind: '象形', hook: '像曲尺 —— 工人的工具。' },
+      { c: '具', pinyin: 'jù', radical: '八', strokes: 8, kind: '会意', hook: '器具。' },
+    ],
+  },
+  '甘甜': {
+    tip: '甘 + 甜 —— 又甜又香。',
+    sentence: '一口下去,清泉水甘甜清凉。',
+    chars: [
+      { c: '甘', pinyin: 'gān', radical: '甘', strokes: 5, kind: '指事', hook: '口中一横 —— 嘴里有甜味。' },
+      { c: '甜', pinyin: 'tián', radical: '舌', strokes: 11, split: '舌 + 甘', kind: '会意', hook: '「舌」+「甘」—— 舌头尝到甜味。' },
+    ],
+  },
+  '甜菜汁': {
+    tip: '甜菜的汁 —— 一种榨汁。',
+    sentence: '糖厂用甜菜汁熬糖。',
+    chars: [
+      { c: '甜', pinyin: 'tián', radical: '舌', strokes: 11, kind: '会意', hook: '舌头尝甜。' },
+      { c: '菜', pinyin: 'cài', radical: '艹', strokes: 11, kind: '形声', hook: '草字头 —— 蔬菜。' },
+      { c: '汁', pinyin: 'zhī', radical: '氵', strokes: 5, split: '氵 + 十', kind: '形声', hook: '三点水 —— 液体。' },
+    ],
+  },
+  '劳动': {
+    tip: '劳 + 动 —— 出力气做事。',
+    sentence: '每一粒米都是农民劳动的果实。',
+    examples: ['劳动光荣'],
+    chars: [
+      { c: '劳', pinyin: 'láo', radical: '艹', strokes: 7, kind: '会意', hook: '上面「艹」+ 下「力」—— 在田里出力。' },
+      { c: '动', pinyin: 'dòng', radical: '力', strokes: 6, kind: '形声', hook: '「力」字旁 —— 用力气动起来。' },
+    ],
+  },
+  '应该': {
+    tip: '应 + 该 —— 理所当然。',
+    sentence: '看到别人摔倒,我们应该去扶一把。',
+    chars: [
+      { c: '应', pinyin: 'yīng', radical: '广', strokes: 7, kind: '形声', hook: '应当、应该。', warn: '多音字:应该 yīng,答应 yìng。' },
+      { c: '该', pinyin: 'gāi', radical: '讠', strokes: 8, kind: '形声', hook: '言字旁 —— 说话表示「应当」。' },
+    ],
+  },
+  '特别': {
+    tip: '特 + 别 —— 不同寻常。',
+    sentence: '今天我穿了一件特别的衣服去学校。',
+    examples: ['特别好'],
+    chars: [
+      { c: '特', pinyin: 'tè', radical: '牜', strokes: 10, split: '牜 + 寺', kind: '形声', hook: '「牜」牛字旁 —— 公牛,引申为「特殊」。' },
+      { c: '别', pinyin: 'bié', radical: '刂', strokes: 7, kind: '会意', hook: '用刀分开 —— 区别。' },
+    ],
+  },
+  '能干': {
+    tip: '能 + 干 —— 有本事。',
+    sentence: '姐姐又能干又勤劳,大家都喜欢她。',
+    chars: [
+      { c: '能', pinyin: 'néng', radical: '月', strokes: 10, kind: '会意', hook: '有能力。' },
+      { c: '干', pinyin: 'gàn', radical: '干', strokes: 3, kind: '象形', hook: '这里读 gàn,做事。', warn: '多音字:能干 gàn,干燥 gān。' },
+    ],
+  },
+  '千人糕': {
+    tip: '千人 + 糕 —— 故事里要很多人才能做出的糕。',
+    sentence: '爸爸告诉我,一块平常的糕叫「千人糕」。',
+    chars: [
+      { c: '千', pinyin: 'qiān', radical: '十', strokes: 3, kind: '指事', hook: '十的百倍。' },
+      { c: '人', pinyin: 'rén', radical: '人', strokes: 2, kind: '象形', hook: '像站立的人。' },
+      { c: '糕', pinyin: 'gāo', radical: '米', strokes: 16, kind: '形声', hook: '「米」字旁 —— 米做的糕点。' },
+    ],
+  },
+  '的确': {
+    tip: '的 + 确 —— 真的、实在。',
+    sentence: '这本书的确好看,我一晚上就读完了。',
+    chars: [
+      { c: '的', pinyin: 'dí', radical: '白', strokes: 8, kind: '形声', hook: '这里读 dí,表示「真的」。', warn: '多音字:的确 dí,我的 de,目的 dì。' },
+      { c: '确', pinyin: 'què', radical: '石', strokes: 12, kind: '形声', hook: '「石」字旁 —— 像石头一样确实。' },
+    ],
+  },
+  '磨成粉': {
+    tip: '磨 + 成 + 粉 —— 磨碎成粉末。',
+    sentence: '把麦子磨成粉,才能做面包。',
+    chars: [
+      { c: '磨', pinyin: 'mó', radical: '石', strokes: 16, kind: '形声', hook: '「石」字底 —— 用石头磨。', warn: '多音字:磨成 mó,石磨 mò。' },
+      { c: '成', pinyin: 'chéng', radical: '戈', strokes: 6, kind: '会意', hook: '完成、变成。' },
+      { c: '粉', pinyin: 'fěn', radical: '米', strokes: 10, split: '米 + 分', kind: '形声', hook: '「米」字旁 —— 像细碎的米。' },
+    ],
+  },
+  '弱小': {
+    tip: '弱 + 小 —— 又弱又小。',
+    sentence: '小蘑菇看起来很弱小,但很顽强。',
+    chars: [
+      { c: '弱', pinyin: 'ruò', radical: '弓', strokes: 10, kind: '会意', hook: '像两张折断的弓 —— 力气弱。' },
+      { c: '小', pinyin: 'xiǎo', radical: '小', strokes: 3, kind: '会意', hook: '小。' },
+    ],
+  },
+  '周末': {
+    tip: '周 + 末 —— 一周的末尾。',
+    sentence: '周末我和爸妈一起去公园。',
+    examples: ['这个周末'],
+    chars: [
+      { c: '周', pinyin: 'zhōu', radical: '冂', strokes: 8, kind: '形声', hook: '一周、星期。' },
+      { c: '末', pinyin: 'mò', radical: '木', strokes: 5, kind: '指事', hook: '「木」上一横 —— 树梢,引申为「末尾」。' },
+    ],
+  },
+  '母亲': {
+    tip: '母 + 亲 —— 妈妈。',
+    sentence: '母亲是世界上最爱我的人。',
+    chars: [
+      { c: '母', pinyin: 'mǔ', radical: '母', strokes: 5, kind: '象形', hook: '中间两点像妈妈胸前的奶 —— 母亲。' },
+      { c: '亲', pinyin: 'qīn', radical: '亠', strokes: 9, kind: '会意', hook: '亲人、亲近。' },
+    ],
+  },
+  '吸引': {
+    tip: '吸 + 引 —— 把注意力引过来。',
+    sentence: '彩虹吸引了所有孩子的目光。',
+    examples: ['吸引人'],
+    chars: [
+      { c: '吸', pinyin: 'xī', radical: '口', strokes: 6, kind: '形声', hook: '「口」字旁 —— 用嘴吸。' },
+      { c: '引', pinyin: 'yǐn', radical: '弓', strokes: 4, kind: '会意', hook: '拉弓 —— 引申为吸引。' },
+    ],
+  },
+  '芬芳': {
+    tip: '芬 + 芳 —— 香味。',
+    sentence: '花园里芬芳扑鼻,真好闻。',
+    chars: [
+      { c: '芬', pinyin: 'fēn', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 花草香。' },
+      { c: '芳', pinyin: 'fāng', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 香味。' },
+    ],
+  },
+  '递给': {
+    tip: '递 + 给 —— 把东西交给别人。',
+    sentence: '老师把书递给了第一排的同学。',
+    chars: [
+      { c: '递', pinyin: 'dì', radical: '辶', strokes: 10, kind: '形声', hook: '走之底 —— 一路传过去。' },
+      { c: '给', pinyin: 'gěi', radical: '纟', strokes: 9, kind: '形声', hook: '「纟」绞丝旁 —— 把东西交给别人。', warn: '多音字:递给 gěi,供给 jǐ。' },
+    ],
+  },
+  '勇敢': {
+    tip: '勇 + 敢 —— 不怕困难和危险。',
+    sentence: '消防员叔叔真勇敢,冲进火里救人。',
+    examples: ['勇敢的人'],
+    chars: [
+      { c: '勇', pinyin: 'yǒng', radical: '力', strokes: 9, kind: '形声', hook: '下「力」—— 有力气、有胆量。' },
+      { c: '敢', pinyin: 'gǎn', radical: '攵', strokes: 11, kind: '会意', hook: '敢于做。' },
+    ],
+  },
+  '簇拥': {
+    tip: '簇 + 拥 —— 紧紧围绕。',
+    sentence: '同学们簇拥着老师,听她讲故事。',
+    chars: [
+      { c: '簇', pinyin: 'cù', radical: '⺮', strokes: 17, kind: '形声', hook: '竹字头 —— 像一丛竹子。' },
+      { c: '拥', pinyin: 'yōng', radical: '扌', strokes: 8, kind: '形声', hook: '提手旁 —— 用手抱、围。' },
+    ],
+  },
+  '显得': {
+    tip: '显 + 得 —— 看起来像。',
+    sentence: '穿上新衣服,他显得很神气。',
+    chars: [
+      { c: '显', pinyin: 'xiǎn', radical: '日', strokes: 9, kind: '会意', hook: '「日」字头 —— 在阳光下显现出来。' },
+      { c: '得', pinyin: 'de', radical: '彳', strokes: 11, kind: '会意', hook: '助词,无实义。', warn: '多音字:显得 de,得到 dé,得 děi。' },
+    ],
+  },
+  '较弱': {
+    tip: '较 + 弱 —— 比较弱。',
+    sentence: '今天的风较弱,适合放风筝。',
+    chars: [
+      { c: '较', pinyin: 'jiào', radical: '车', strokes: 10, kind: '形声', hook: '「车」字旁 —— 引申为「比较」。' },
+      { c: '弱', pinyin: 'ruò', radical: '弓', strokes: 10, kind: '会意', hook: '力气弱。' },
+    ],
+  },
+
+  // ===== 第三单元 中华传统(识字单元) =====
+  '神州大地': {
+    tip: '「神州」+「大地」 —— 中国的代称。',
+    sentence: '我们的神州大地有山有水,十分壮丽。',
+    chars: [
+      { c: '神', pinyin: 'shén', radical: '礻', strokes: 9, kind: '形声', hook: '「礻」示字旁 —— 古代祭祀神灵。', warn: '是「礻」(一点),不是「衤」(两点)。' },
+      { c: '州', pinyin: 'zhōu', radical: '川', strokes: 6, kind: '象形', hook: '像河中间的陆地 —— 古代的行政区划。' },
+      { c: '大', pinyin: 'dà', radical: '大', strokes: 3, kind: '象形', hook: '像人张开手臂。' },
+      { c: '地', pinyin: 'dì', radical: '土', strokes: 6, split: '土 + 也', kind: '形声', hook: '「土」字旁 —— 大地。' },
+    ],
+  },
+  '华夏儿女': {
+    tip: '「华夏」+「儿女」 —— 中国人。',
+    sentence: '我们都是华夏儿女,炎黄子孙。',
+    chars: [
+      { c: '华', pinyin: 'huá', radical: '十', strokes: 6, kind: '会意', hook: '中华、华丽。' },
+      { c: '夏', pinyin: 'xià', radical: '夊', strokes: 10, kind: '会意', hook: '夏天,也指华夏民族。' },
+      { c: '儿', pinyin: 'ér', radical: '儿', strokes: 2, kind: '象形', hook: '像孩童的头和腿。' },
+      { c: '女', pinyin: 'nǚ', radical: '女', strokes: 3, kind: '象形', hook: '像女子端坐的样子。' },
+    ],
+  },
+  '各民族': {
+    tip: '「各」+「民族」 —— 各种各样的民族。',
+    sentence: '中国有 56 个各民族,大家都是一家人。',
+    chars: [
+      { c: '各', pinyin: 'gè', radical: '口', strokes: 6, kind: '会意', hook: '各自、每一个。' },
+      { c: '民', pinyin: 'mín', radical: '𠄌', strokes: 5, kind: '会意', hook: '人民、民众。' },
+      { c: '族', pinyin: 'zú', radical: '方', strokes: 11, kind: '会意', hook: '同一族的人聚在一起。' },
+    ],
+  },
+  '情谊': {
+    tip: '情 + 谊 —— 感情和友谊。',
+    sentence: '我和小伙伴的情谊很深。',
+    chars: [
+      { c: '情', pinyin: 'qíng', radical: '忄', strokes: 11, split: '忄 + 青', kind: '形声', hook: '「忄」竖心旁 —— 心里的感情。' },
+      { c: '谊', pinyin: 'yì', radical: '讠', strokes: 10, kind: '形声', hook: '言字旁 —— 朋友间的情义。' },
+    ],
+  },
+  '齐奋发': {
+    tip: '齐 + 奋发 —— 一起努力上进。',
+    sentence: '同学们齐奋发,争取好成绩。',
+    chars: [
+      { c: '齐', pinyin: 'qí', radical: '齐', strokes: 6, kind: '象形', hook: '整齐、一起。' },
+      { c: '奋', pinyin: 'fèn', radical: '大', strokes: 8, kind: '会意', hook: '奋力、努力。' },
+      { c: '发', pinyin: 'fā', radical: '又', strokes: 5, kind: '会意', hook: '出发、向前。' },
+    ],
+  },
+  '山川': {
+    tip: '山 + 川 —— 山和河。',
+    sentence: '祖国的山川多么壮美。',
+    chars: [
+      { c: '山', pinyin: 'shān', radical: '山', strokes: 3, kind: '象形', hook: '像山峰的形状。' },
+      { c: '川', pinyin: 'chuān', radical: '川', strokes: 3, kind: '象形', hook: '像流动的河水。' },
+    ],
+  },
+  '长城': {
+    tip: '长 + 城 —— 中国的伟大建筑。',
+    sentence: '长城像一条巨龙,蜿蜒在群山之间。',
+    chars: [
+      { c: '长', pinyin: 'cháng', radical: '长', strokes: 4, kind: '象形', hook: '像头发飘长 —— 长。', warn: '多音字:长城 cháng,生长 zhǎng。' },
+      { c: '城', pinyin: 'chéng', radical: '土', strokes: 9, split: '土 + 成', kind: '形声', hook: '「土」字旁 —— 古代用土筑成。' },
+    ],
+  },
+  '奔跑': {
+    tip: '奔 + 跑 —— 快速地跑。',
+    sentence: '操场上,孩子们奔跑追逐。',
+    chars: [
+      { c: '奔', pinyin: 'bēn', radical: '大', strokes: 8, kind: '会意', hook: '上「大」+ 下「卉」—— 飞快地跑。' },
+      { c: '跑', pinyin: 'pǎo', radical: '足', strokes: 12, split: '足 + 包', kind: '形声', hook: '「足」字旁 —— 用脚跑。', family: '足字旁:跑、跳、踢、踩 —— 都和脚有关。' },
+    ],
+  },
+  '海峡': {
+    tip: '海 + 峡 —— 两块陆地之间的海。',
+    sentence: '台湾海峡两岸都是中国人。',
+    chars: [
+      { c: '海', pinyin: 'hǎi', radical: '氵', strokes: 10, kind: '形声', hook: '三点水 —— 大海。' },
+      { c: '峡', pinyin: 'xiá', radical: '山', strokes: 9, kind: '形声', hook: '「山」字旁 —— 两山中间的水道。' },
+    ],
+  },
+  '传统': {
+    tip: '传 + 统 —— 代代相传的风俗。',
+    sentence: '春节贴对联是中国的传统。',
+    examples: ['传统节日'],
+    chars: [
+      { c: '传', pinyin: 'chuán', radical: '亻', strokes: 6, kind: '形声', hook: '「亻」人字旁 —— 人传人。', warn: '多音字:传统 chuán,传记 zhuàn。' },
+      { c: '统', pinyin: 'tǒng', radical: '纟', strokes: 9, kind: '形声', hook: '「纟」绞丝旁 —— 一根线把所有的东西连起来。' },
+    ],
+  },
+  '贴窗花': {
+    tip: '贴 + 窗花 —— 在窗上贴剪纸。',
+    sentence: '过年了,奶奶教我贴窗花。',
+    chars: [
+      { c: '贴', pinyin: 'tiē', radical: '贝', strokes: 9, kind: '形声', hook: '「贝」字旁 —— 古代花钱贴东西。' },
+      { c: '窗', pinyin: 'chuāng', radical: '穴', strokes: 12, kind: '形声', hook: '「穴」字头 —— 房屋上开的洞 = 窗。' },
+      { c: '花', pinyin: 'huā', radical: '艹', strokes: 7, kind: '形声', hook: '草字头 —— 花朵。' },
+    ],
+  },
+  '大街小巷': {
+    tip: '大街 + 小巷 —— 街道和小巷,到处。',
+    sentence: '过年时,大街小巷都挂着红灯笼。',
+    chars: [
+      { c: '大', pinyin: 'dà', radical: '大', strokes: 3, kind: '象形', hook: '大。' },
+      { c: '街', pinyin: 'jiē', radical: '行', strokes: 12, kind: '形声', hook: '「行」字中间 —— 街道。' },
+      { c: '小', pinyin: 'xiǎo', radical: '小', strokes: 3, kind: '会意', hook: '小。' },
+      { c: '巷', pinyin: 'xiàng', radical: '巳', strokes: 9, kind: '会意', hook: '小巷子。' },
+    ],
+  },
+  '龙舟': {
+    tip: '龙 + 舟 —— 端午节赛的船。',
+    sentence: '端午节我们一起去看龙舟赛。',
+    chars: [
+      { c: '龙', pinyin: 'lóng', radical: '龙', strokes: 5, kind: '象形', hook: '简化字 —— 像龙的形状。' },
+      { c: '舟', pinyin: 'zhōu', radical: '舟', strokes: 6, kind: '象形', hook: '像小船的形状。' },
+    ],
+  },
+  '艾叶': {
+    tip: '艾 + 叶 —— 端午节挂的艾草叶。',
+    sentence: '端午节,门上要挂艾叶辟邪。',
+    chars: [
+      { c: '艾', pinyin: 'ài', radical: '艹', strokes: 5, kind: '形声', hook: '草字头 —— 一种草。' },
+      { c: '叶', pinyin: 'yè', radical: '口', strokes: 5, kind: '形声', hook: '简化字 —— 叶子。' },
+    ],
+  },
+  '全家': {
+    tip: '全 + 家 —— 一家人。',
+    sentence: '过年时全家围在一起吃团圆饭。',
+    examples: ['全家福'],
+    chars: [
+      { c: '全', pinyin: 'quán', radical: '人', strokes: 6, kind: '会意', hook: '完整、全部。' },
+      { c: '家', pinyin: 'jiā', radical: '宀', strokes: 10, split: '宀 + 豕', kind: '会意', hook: '「宀」屋顶 +「豕」(猪)—— 古人家里养猪,就是「家」。' },
+    ],
+  },
+  '团圆': {
+    tip: '团 + 圆 —— 亲人聚在一起。',
+    sentence: '中秋节是团圆的日子。',
+    examples: ['一家团圆'],
+    chars: [
+      { c: '团', pinyin: 'tuán', radical: '囗', strokes: 6, kind: '形声', hook: '「囗」大方框 —— 圈起来,团聚。' },
+      { c: '圆', pinyin: 'yuán', radical: '囗', strokes: 10, kind: '形声', hook: '「囗」大方框 —— 圆形。' },
+    ],
+  },
+  '真热闹': {
+    tip: '「真」+「热闹」 —— 十分喧闹。',
+    sentence: '春节的街上真热闹,到处是欢声笑语。',
+    chars: [
+      { c: '真', pinyin: 'zhēn', radical: '十', strokes: 10, kind: '会意', hook: '真实、确实。' },
+      { c: '热', pinyin: 'rè', radical: '灬', strokes: 10, kind: '形声', hook: '「灬」四点底(火)—— 火很热。' },
+      { c: '闹', pinyin: 'nào', radical: '门', strokes: 8, kind: '会意', hook: '「门」里有「市」—— 集市最热闹。' },
+    ],
+  },
+  '清明节': {
+    tip: '清明节 —— 扫墓踏青的节日。',
+    sentence: '清明节那天,我们去给爷爷扫墓。',
+    chars: [
+      { c: '清', pinyin: 'qīng', radical: '氵', strokes: 11, split: '氵 + 青', kind: '形声', hook: '三点水 +「青」—— 水清见底。' },
+      { c: '明', pinyin: 'míng', radical: '日', strokes: 8, kind: '会意', hook: '「日」+「月」—— 都很亮 = 明。' },
+      { c: '节', pinyin: 'jié', radical: '艹', strokes: 5, kind: '形声', hook: '草字头 —— 竹节,引申为节日。' },
+    ],
+  },
+  '甲骨文': {
+    tip: '甲骨 + 文 —— 古代刻在龟甲上的字。',
+    sentence: '甲骨文是中国最古老的文字。',
+    chars: [
+      { c: '甲', pinyin: 'jiǎ', radical: '田', strokes: 5, kind: '象形', hook: '像龟甲的形状。' },
+      { c: '骨', pinyin: 'gǔ', radical: '骨', strokes: 9, kind: '象形', hook: '像骨头的样子。' },
+      { c: '文', pinyin: 'wén', radical: '文', strokes: 4, kind: '象形', hook: '像花纹,引申为文字。' },
+    ],
+  },
+  '骨头': {
+    tip: '骨 + 头 —— 身体里的支架。',
+    sentence: '小狗最喜欢啃骨头。',
+    chars: [
+      { c: '骨', pinyin: 'gǔ', radical: '骨', strokes: 9, kind: '象形', hook: '像骨头的样子。' },
+      { c: '头', pinyin: 'tou', radical: '大', strokes: 5, kind: '象形', hook: '词尾轻声。', warn: '骨头读 gǔ tou,轻声。' },
+    ],
+  },
+  '饰品': {
+    tip: '饰 + 品 —— 装饰用的东西。',
+    sentence: '商店里摆满了各种漂亮的饰品。',
+    chars: [
+      { c: '饰', pinyin: 'shì', radical: '饣', strokes: 8, kind: '形声', hook: '装饰。' },
+      { c: '品', pinyin: 'pǐn', radical: '口', strokes: 9, kind: '会意', hook: '三个「口」—— 物品、产品。' },
+    ],
+  },
+  '钱币': {
+    tip: '钱 + 币 —— 钱。',
+    sentence: '古代用贝壳作钱币。',
+    chars: [
+      { c: '钱', pinyin: 'qián', radical: '钅', strokes: 10, kind: '形声', hook: '「钅」金字旁 —— 古代钱是金属做的。' },
+      { c: '币', pinyin: 'bì', radical: '巾', strokes: 4, kind: '会意', hook: '钱币、货币。' },
+    ],
+  },
+  '与众不同': {
+    tip: '与 + 众 + 不同 —— 跟大家都不一样。',
+    sentence: '她的画风很特别,与众不同。',
+    chars: [
+      { c: '与', pinyin: 'yǔ', radical: '一', strokes: 3, kind: '会意', hook: '和、跟。' },
+      { c: '众', pinyin: 'zhòng', radical: '人', strokes: 6, kind: '会意', hook: '三个「人」—— 很多人,大众。' },
+      { c: '不', pinyin: 'bù', radical: '一', strokes: 4, kind: '指事', hook: '否定。' },
+      { c: '同', pinyin: 'tóng', radical: '冂', strokes: 6, kind: '会意', hook: '相同、一样。' },
+    ],
+  },
+  '钱财': {
+    tip: '钱 + 财 —— 钱和财物。',
+    sentence: '钱财不是最重要的,健康才是。',
+    chars: [
+      { c: '钱', pinyin: 'qián', radical: '钅', strokes: 10, kind: '形声', hook: '金字旁 —— 钱。' },
+      { c: '财', pinyin: 'cái', radical: '贝', strokes: 7, split: '贝 + 才', kind: '形声', hook: '「贝」字旁 —— 古代贝壳是钱。' },
+    ],
+  },
+  '贝壳': {
+    tip: '贝 + 壳 —— 贝类的硬壳。',
+    sentence: '海边捡到一个漂亮的贝壳。',
+    examples: ['一个贝壳'],
+    chars: [
+      { c: '贝', pinyin: 'bèi', radical: '贝', strokes: 4, kind: '象形', hook: '像贝壳的形状。古代用贝壳当钱。', family: '贝字旁:贝、财、货、贵 —— 都和钱财有关。' },
+      { c: '壳', pinyin: 'ké', radical: '士', strokes: 7, kind: '会意', hook: '硬硬的外壳。', warn: '多音字:贝壳 ké,地壳 qiào。' },
+    ],
+  },
+  '珍贵': {
+    tip: '珍 + 贵 —— 宝贵、价值高。',
+    sentence: '这本书是奶奶送给我的珍贵礼物。',
+    chars: [
+      { c: '珍', pinyin: 'zhēn', radical: '王', strokes: 9, kind: '形声', hook: '「王」(玉)字旁 —— 珍宝。', family: '王字旁(玉):珍、玲、珠、玩 —— 都和玉石有关。' },
+      { c: '贵', pinyin: 'guì', radical: '贝', strokes: 9, kind: '形声', hook: '「贝」字头 —— 值钱。' },
+    ],
+  },
+  '漂亮': {
+    tip: '漂 + 亮 —— 好看。',
+    sentence: '妈妈今天打扮得真漂亮。',
+    examples: ['好漂亮'],
+    chars: [
+      { c: '漂', pinyin: 'piào', radical: '氵', strokes: 14, kind: '形声', hook: '三点水 —— 引申为漂亮。', warn: '多音字:漂亮 piào,漂浮 piāo。' },
+      { c: '亮', pinyin: 'liàng', radical: '亠', strokes: 9, kind: '会意', hook: '光亮、明亮。' },
+    ],
+  },
+  '容易': {
+    tip: '容 + 易 —— 不难。',
+    sentence: '这道题很容易,几秒钟就做完了。',
+    examples: ['容易做到'],
+    chars: [
+      { c: '容', pinyin: 'róng', radical: '宀', strokes: 10, kind: '会意', hook: '容纳、宽容。' },
+      { c: '易', pinyin: 'yì', radical: '日', strokes: 8, kind: '会意', hook: '容易、变化。' },
+    ],
+  },
+  '损坏': {
+    tip: '损 + 坏 —— 弄坏。',
+    sentence: '请不要损坏公共设施。',
+    chars: [
+      { c: '损', pinyin: 'sǔn', radical: '扌', strokes: 10, kind: '形声', hook: '提手旁 —— 用手弄坏。' },
+      { c: '坏', pinyin: 'huài', radical: '土', strokes: 7, kind: '形声', hook: '「土」字旁 —— 土被破坏。' },
+    ],
+  },
+  '茄子': {
+    tip: '茄 + 子 —— 紫色蔬菜。',
+    sentence: '我最爱吃妈妈烧的红烧茄子。',
+    chars: [
+      { c: '茄', pinyin: 'qié', radical: '艹', strokes: 8, kind: '形声', hook: '草字头 —— 一种蔬菜。' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, kind: '象形', hook: '词尾。' },
+    ],
+  },
+  '烧烤': {
+    tip: '烧 + 烤 —— 用火烤食物。',
+    sentence: '周末爸爸带我们去烧烤,香喷喷的。',
+    chars: [
+      { c: '烧', pinyin: 'shāo', radical: '火', strokes: 10, kind: '形声', hook: '「火」字旁 —— 用火烧。', family: '火字旁:烧、烤、烟、灯 —— 都和火有关。' },
+      { c: '烤', pinyin: 'kǎo', radical: '火', strokes: 10, kind: '形声', hook: '「火」字旁 —— 用火烤。' },
+    ],
+  },
+  '烤鸭': {
+    tip: '烤 + 鸭 —— 烤过的鸭子。',
+    sentence: '北京烤鸭是有名的美食。',
+    examples: ['北京烤鸭'],
+    chars: [
+      { c: '烤', pinyin: 'kǎo', radical: '火', strokes: 10, kind: '形声', hook: '用火烤。' },
+      { c: '鸭', pinyin: 'yā', radical: '鸟', strokes: 10, kind: '形声', hook: '「鸟」字旁 —— 一种水禽。' },
+    ],
+  },
+  '鸡蛋': {
+    tip: '鸡 + 蛋 —— 鸡下的蛋。',
+    sentence: '早餐我吃了两个鸡蛋。',
+    chars: [
+      { c: '鸡', pinyin: 'jī', radical: '鸟', strokes: 7, kind: '形声', hook: '「鸟」字旁 —— 鸡是鸟。' },
+      { c: '蛋', pinyin: 'dàn', radical: '虫', strokes: 11, kind: '形声', hook: '蛋。' },
+    ],
+  },
+  '蛋壳': {
+    tip: '蛋 + 壳 —— 蛋的外壳。',
+    sentence: '小鸡破蛋壳出来了。',
+    chars: [
+      { c: '蛋', pinyin: 'dàn', radical: '虫', strokes: 11, kind: '形声', hook: '蛋。' },
+      { c: '壳', pinyin: 'ké', radical: '士', strokes: 7, kind: '会意', hook: '外壳。' },
+    ],
+  },
+  '美食': {
+    tip: '美 + 食 —— 好吃的食物。',
+    sentence: '中国到处都有美食。',
+    chars: [
+      { c: '美', pinyin: 'měi', radical: '羊', strokes: 9, split: '羊 + 大', kind: '会意', hook: '上「羊」+ 下「大」—— 古人觉得大肥羊最美味。' },
+      { c: '食', pinyin: 'shí', radical: '食', strokes: 9, kind: '象形', hook: '食物。' },
+    ],
+  },
+  '饺子': {
+    tip: '饺 + 子 —— 春节常吃的食物。',
+    sentence: '过年了,全家一起包饺子。',
+    examples: ['包饺子'],
+    chars: [
+      { c: '饺', pinyin: 'jiǎo', radical: '饣', strokes: 9, split: '饣 + 交', kind: '形声', hook: '食字旁 —— 一种食物。', family: '饣(食字旁):饺、饭、饱、饼 —— 都和食物有关。' },
+      { c: '子', pinyin: 'zi', radical: '子', strokes: 3, kind: '象形', hook: '词尾。' },
+    ],
+  },
+  '炸土豆': {
+    tip: '炸 + 土豆 —— 油炸土豆。',
+    sentence: '炸土豆又香又脆,我最爱吃。',
+    chars: [
+      { c: '炸', pinyin: 'zhá', radical: '火', strokes: 9, kind: '形声', hook: '「火」字旁 —— 用油炸。', warn: '多音字:炸土豆 zhá,炸弹 zhà。' },
+      { c: '土', pinyin: 'tǔ', radical: '土', strokes: 3, kind: '象形', hook: '泥土。' },
+      { c: '豆', pinyin: 'dòu', radical: '豆', strokes: 7, kind: '象形', hook: '像古代盛食物的器皿,引申为豆类。' },
+    ],
+  },
+  '水煮鱼': {
+    tip: '水 + 煮 + 鱼 —— 一道川菜。',
+    sentence: '叔叔点了一份水煮鱼,辣得我直冒汗。',
+    chars: [
+      { c: '水', pinyin: 'shuǐ', radical: '水', strokes: 4, kind: '象形', hook: '水。' },
+      { c: '煮', pinyin: 'zhǔ', radical: '灬', strokes: 12, kind: '形声', hook: '四点底(火)—— 用火煮。' },
+      { c: '鱼', pinyin: 'yú', radical: '鱼', strokes: 8, kind: '象形', hook: '像鱼的形状。' },
+    ],
+  },
+  '蛋炒饭': {
+    tip: '蛋 + 炒 + 饭 —— 用蛋炒的饭。',
+    sentence: '我最爱妈妈做的蛋炒饭。',
+    chars: [
+      { c: '蛋', pinyin: 'dàn', radical: '虫', strokes: 11, kind: '形声', hook: '蛋。' },
+      { c: '炒', pinyin: 'chǎo', radical: '火', strokes: 8, kind: '形声', hook: '「火」字旁 —— 用火炒。' },
+      { c: '饭', pinyin: 'fàn', radical: '饣', strokes: 7, kind: '形声', hook: '食字旁 —— 米饭。' },
+    ],
+  },
+
+  // ===== 第四单元 奇妙的想象 =====
+  '彩色': {
+    tip: '彩 + 色 —— 多种颜色。',
+    sentence: '我画了一幅彩色的画,送给妈妈。',
+    examples: ['彩色铅笔'],
+    chars: [
+      { c: '彩', pinyin: 'cǎi', radical: '彡', strokes: 11, kind: '形声', hook: '右边「彡」是花纹 —— 颜色花花的。' },
+      { c: '色', pinyin: 'sè', radical: '色', strokes: 6, kind: '会意', hook: '颜色。' },
+    ],
+  },
+  '梦想': {
+    tip: '梦 + 想 —— 美好的愿望。',
+    sentence: '我的梦想是成为一名宇航员。',
+    examples: ['美好的梦想'],
+    chars: [
+      { c: '梦', pinyin: 'mèng', radical: '夕', strokes: 11, kind: '会意', hook: '「夕」夜晚 —— 夜里做的梦。' },
+      { c: '想', pinyin: 'xiǎng', radical: '心', strokes: 13, kind: '形声', hook: '下面「心」—— 心里想的。' },
+    ],
+  },
+  '坚硬': {
+    tip: '坚 + 硬 —— 又坚又硬。',
+    sentence: '小石头坚硬得很,摔不烂。',
+    chars: [
+      { c: '坚', pinyin: 'jiān', radical: '土', strokes: 7, kind: '会意', hook: '「土」字底 —— 像土一样坚实。' },
+      { c: '硬', pinyin: 'yìng', radical: '石', strokes: 12, kind: '形声', hook: '「石」字旁 —— 像石头一样硬。' },
+    ],
+  },
+  '铅笔盒': {
+    tip: '铅笔 + 盒 —— 装铅笔的盒子。',
+    sentence: '我有一个新的铅笔盒,上面画着小熊。',
+    chars: [
+      { c: '铅', pinyin: 'qiān', radical: '钅', strokes: 10, kind: '形声', hook: '金字旁 —— 一种金属。' },
+      { c: '笔', pinyin: 'bǐ', radical: '⺮', strokes: 10, kind: '会意', hook: '竹字头 +「毛」—— 古代毛笔用竹子做。' },
+      { c: '盒', pinyin: 'hé', radical: '皿', strokes: 11, kind: '形声', hook: '装东西的器具。' },
+    ],
+  },
+  '森林': {
+    tip: '森 + 林 —— 大片树木。',
+    sentence: '小红帽穿过森林去看奶奶。',
+    examples: ['一片森林'],
+    chars: [
+      { c: '森', pinyin: 'sēn', radical: '木', strokes: 12, kind: '会意', hook: '三个「木」—— 树多得像森林。' },
+      { c: '林', pinyin: 'lín', radical: '木', strokes: 8, kind: '会意', hook: '两个「木」—— 树林。' },
+    ],
+  },
+  '结苹果': {
+    tip: '结 + 苹果 —— 树上长出苹果。',
+    sentence: '我家院子里的苹果树今年结了好多苹果。',
+    chars: [
+      { c: '结', pinyin: 'jiē', radical: '纟', strokes: 9, kind: '形声', hook: '这里读 jiē,长出果实。', warn: '多音字:结苹果 jiē,结实 jié。' },
+      { c: '苹', pinyin: 'píng', radical: '艹', strokes: 8, kind: '形声', hook: '草字头 —— 苹果。' },
+      { c: '果', pinyin: 'guǒ', radical: '木', strokes: 8, kind: '象形', hook: '像树上结的果实。' },
+    ],
+  },
+  '精灵': {
+    tip: '精 + 灵 —— 童话里的小精灵。',
+    sentence: '故事里的小精灵会变魔法。',
+    chars: [
+      { c: '精', pinyin: 'jīng', radical: '米', strokes: 14, kind: '形声', hook: '精细、精灵。' },
+      { c: '灵', pinyin: 'líng', radical: '火', strokes: 7, kind: '会意', hook: '简化字 —— 灵巧、机灵。' },
+    ],
+  },
+  '流动': {
+    tip: '流 + 动 —— 像水一样流来流去。',
+    sentence: '小溪的水缓缓地流动。',
+    chars: [
+      { c: '流', pinyin: 'liú', radical: '氵', strokes: 10, kind: '形声', hook: '三点水 —— 水的流动。' },
+      { c: '动', pinyin: 'dòng', radical: '力', strokes: 6, kind: '形声', hook: '「力」字旁 —— 用力动。' },
+    ],
+  },
+  '聊天': {
+    tip: '聊 + 天 —— 随意说话。',
+    sentence: '放学后,我和小伙伴聊天。',
+    examples: ['聊聊天'],
+    chars: [
+      { c: '聊', pinyin: 'liáo', radical: '耳', strokes: 11, kind: '形声', hook: '「耳」字旁 —— 边听边说。' },
+      { c: '天', pinyin: 'tiān', radical: '大', strokes: 4, kind: '会意', hook: '天南海北聊。' },
+    ],
+  },
+  '拉手': {
+    tip: '拉 + 手 —— 手拉手。',
+    sentence: '过马路时一定要和大人拉手。',
+    chars: [
+      { c: '拉', pinyin: 'lā', radical: '扌', strokes: 8, kind: '形声', hook: '提手旁 —— 用手拉。' },
+      { c: '手', pinyin: 'shǒu', radical: '手', strokes: 4, kind: '象形', hook: '像张开五指的手。' },
+    ],
+  },
+  '脚尖': {
+    tip: '脚 + 尖 —— 脚的最前端。',
+    sentence: '为了不吵醒妈妈,我踮着脚尖走。',
+    chars: [
+      { c: '脚', pinyin: 'jiǎo', radical: '月', strokes: 11, kind: '形声', hook: '「月」(肉)字旁 —— 身体的一部分。' },
+      { c: '尖', pinyin: 'jiān', radical: '小', strokes: 6, kind: '会意', hook: '上「小」下「大」—— 一头尖一头大。' },
+    ],
+  },
+  '草坪': {
+    tip: '草 + 坪 —— 一片平整的草地。',
+    sentence: '校园里的草坪绿油油的。',
+    chars: [
+      { c: '草', pinyin: 'cǎo', radical: '艹', strokes: 9, kind: '形声', hook: '草字头 —— 草。' },
+      { c: '坪', pinyin: 'píng', radical: '土', strokes: 8, kind: '形声', hook: '「土」字旁 —— 平地。' },
+    ],
+  },
+  '叮咛': {
+    tip: '叮 + 咛 —— 反复嘱咐。',
+    sentence: '出门前,妈妈叮咛我小心车辆。',
+    chars: [
+      { c: '叮', pinyin: 'dīng', radical: '口', strokes: 5, kind: '形声', hook: '「口」字旁 —— 反复说。' },
+      { c: '咛', pinyin: 'níng', radical: '口', strokes: 8, kind: '形声', hook: '「口」字旁 —— 嘱咐。' },
+    ],
+  },
+  '葱郁': {
+    tip: '葱 + 郁 —— 草木茂密青翠。',
+    sentence: '山林葱郁,远远望去像一片绿海。',
+    chars: [
+      { c: '葱', pinyin: 'cōng', radical: '艹', strokes: 12, kind: '形声', hook: '草字头 —— 形容草绿油油。' },
+      { c: '郁', pinyin: 'yù', radical: '阝', strokes: 8, kind: '形声', hook: '繁茂、浓郁。' },
+    ],
+  },
+  '马匹': {
+    tip: '马 + 匹 —— 马的总称。',
+    sentence: '草原上的马匹奔跑得很欢。',
+    chars: [
+      { c: '马', pinyin: 'mǎ', radical: '马', strokes: 3, kind: '象形', hook: '像马的形状。' },
+      { c: '匹', pinyin: 'pǐ', radical: '匚', strokes: 4, kind: '象形', hook: '量词,用于马、布等。' },
+    ],
+  },
+  '妹妹': {
+    tip: '妹 + 妹 —— 同父母的小女孩。',
+    sentence: '我有一个可爱的妹妹。',
+    chars: [
+      { c: '妹', pinyin: 'mèi', radical: '女', strokes: 8, split: '女 + 未', kind: '形声', hook: '「女」字旁 —— 妹妹是女孩。' },
+      { c: '妹', pinyin: 'mei', radical: '女', strokes: 8, kind: '形声', hook: '叠用 —— 轻声。', warn: '叠用第二个字读轻声 mei。' },
+    ],
+  },
+  '泛起波纹': {
+    tip: '泛起 + 波纹 —— 水面起小波。',
+    sentence: '小石子落入水面,泛起波纹。',
+    chars: [
+      { c: '泛', pinyin: 'fàn', radical: '氵', strokes: 7, kind: '形声', hook: '三点水 —— 水面浮起。' },
+      { c: '起', pinyin: 'qǐ', radical: '走', strokes: 10, kind: '形声', hook: '起来。' },
+      { c: '波', pinyin: 'bō', radical: '氵', strokes: 8, kind: '形声', hook: '三点水 —— 水波。' },
+      { c: '纹', pinyin: 'wén', radical: '纟', strokes: 7, kind: '形声', hook: '绞丝旁 —— 像丝一样的纹路。' },
+    ],
+  },
+  '恋恋不舍': {
+    tip: '恋恋 + 不舍 —— 舍不得离开。',
+    sentence: '夏令营结束时,大家都恋恋不舍。',
+    chars: [
+      { c: '恋', pinyin: 'liàn', radical: '心', strokes: 10, kind: '形声', hook: '下面「心」—— 心里舍不得。' },
+      { c: '恋', pinyin: 'liàn', radical: '心', strokes: 10, kind: '形声', hook: '叠用 —— 一直舍不得。' },
+      { c: '不', pinyin: 'bù', radical: '一', strokes: 4, kind: '指事', hook: '否定。' },
+      { c: '舍', pinyin: 'shě', radical: '人', strokes: 8, kind: '会意', hook: '舍弃、离开。' },
+    ],
+  },
+  '请求': {
+    tip: '请 + 求 —— 恳求。',
+    sentence: '小弟弟请求妈妈给他买玩具。',
+    chars: [
+      { c: '请', pinyin: 'qǐng', radical: '讠', strokes: 10, split: '讠 + 青', kind: '形声', hook: '「讠」言字旁 —— 用话请求。' },
+      { c: '求', pinyin: 'qiú', radical: '一', strokes: 7, kind: '象形', hook: '请求。' },
+    ],
+  },
+  '异常': {
+    tip: '异 + 常 —— 不寻常。',
+    sentence: '今天的天气异常炎热。',
+    chars: [
+      { c: '异', pinyin: 'yì', radical: '巳', strokes: 6, kind: '会意', hook: '不同、特殊。' },
+      { c: '常', pinyin: 'cháng', radical: '巾', strokes: 11, kind: '形声', hook: '经常、常常。' },
+    ],
+  },
+  '好像': {
+    tip: '好 + 像 —— 看起来像。',
+    sentence: '云朵好像一只大白兔。',
+    chars: [
+      { c: '好', pinyin: 'hǎo', radical: '女', strokes: 6, split: '女 + 子', kind: '会意', hook: '「女」+「子」—— 好。' },
+      { c: '像', pinyin: 'xiàng', radical: '亻', strokes: 13, kind: '形声', hook: '「亻」人字旁 —— 像。' },
+    ],
+  },
+  '出色': {
+    tip: '出 + 色 —— 特别好。',
+    sentence: '她的画画得很出色。',
+    chars: [
+      { c: '出', pinyin: 'chū', radical: '凵', strokes: 5, kind: '象形', hook: '突出。' },
+      { c: '色', pinyin: 'sè', radical: '色', strokes: 6, kind: '会意', hook: '颜色 —— 引申为特色、出色。' },
+    ],
+  },
+  '柔软': {
+    tip: '柔 + 软 —— 又软又松。',
+    sentence: '小白兔的毛柔软极了。',
+    chars: [
+      { c: '柔', pinyin: 'róu', radical: '木', strokes: 9, kind: '会意', hook: '柔软。' },
+      { c: '软', pinyin: 'ruǎn', radical: '车', strokes: 8, kind: '形声', hook: '「车」字旁 —— 引申为软。' },
+    ],
+  },
+  '拾起': {
+    tip: '拾 + 起 —— 从地上捡起来。',
+    sentence: '我弯腰拾起地上的钱包。',
+    chars: [
+      { c: '拾', pinyin: 'shí', radical: '扌', strokes: 9, kind: '形声', hook: '提手旁 —— 用手捡。' },
+      { c: '起', pinyin: 'qǐ', radical: '走', strokes: 10, kind: '形声', hook: '起来。' },
+    ],
+  },
+  '郊外': {
+    tip: '郊 + 外 —— 城市外面。',
+    sentence: '春天我们一起去郊外踏青。',
+    examples: ['郊外散步'],
+    chars: [
+      { c: '郊', pinyin: 'jiāo', radical: '阝', strokes: 8, kind: '形声', hook: '阝旁 —— 城外。' },
+      { c: '外', pinyin: 'wài', radical: '夕', strokes: 5, kind: '会意', hook: '外面。' },
+    ],
+  },
+  '葱葱绿绿': {
+    tip: 'AABB 重叠 —— 绿油油的样子。',
+    sentence: '田野葱葱绿绿,像一块大地毯。',
+    chars: [
+      { c: '葱', pinyin: 'cōng', radical: '艹', strokes: 12, kind: '形声', hook: '草字头 —— 绿油油。' },
+      { c: '葱', pinyin: 'cōng', radical: '艹', strokes: 12, kind: '形声', hook: '叠用。' },
+      { c: '绿', pinyin: 'lǜ', radical: '纟', strokes: 11, kind: '形声', hook: '绞丝旁 —— 绿色。' },
+      { c: '绿', pinyin: 'lǜ', radical: '纟', strokes: 11, kind: '形声', hook: '叠用。' },
+    ],
+  },
+  '旁边': {
+    tip: '旁 + 边 —— 左右两侧。',
+    sentence: '坐在我旁边的同学叫小红。',
+    examples: ['旁边的人'],
+    chars: [
+      { c: '旁', pinyin: 'páng', radical: '方', strokes: 10, kind: '形声', hook: '一边、旁边。' },
+      { c: '边', pinyin: 'biān', radical: '辶', strokes: 5, kind: '形声', hook: '走之底 —— 边缘。' },
+    ],
+  },
+  '阿姨': {
+    tip: '阿 + 姨 —— 对女性长辈的称呼。',
+    sentence: '邻居阿姨经常给我送好吃的。',
+    chars: [
+      { c: '阿', pinyin: 'ā', radical: '阝', strokes: 7, kind: '形声', hook: '亲切称呼前缀。' },
+      { c: '姨', pinyin: 'yí', radical: '女', strokes: 9, kind: '形声', hook: '「女」字旁 —— 妈妈的姐妹。' },
+    ],
+  },
+  '弟弟': {
+    tip: '弟 + 弟 —— 比自己小的男孩。',
+    sentence: '我的弟弟今年才两岁,胖嘟嘟的。',
+    chars: [
+      { c: '弟', pinyin: 'dì', radical: '丶', strokes: 7, kind: '会意', hook: '哥哥之下的小男孩。' },
+      { c: '弟', pinyin: 'di', radical: '丶', strokes: 7, kind: '会意', hook: '叠用 —— 轻声。', warn: '叠用第二个字读轻声 di。' },
+    ],
+  },
+  '方便': {
+    tip: '方 + 便 —— 便利。',
+    sentence: '楼下开了一家便利店,买东西很方便。',
+    chars: [
+      { c: '方', pinyin: 'fāng', radical: '方', strokes: 4, kind: '象形', hook: '方向、方便。' },
+      { c: '便', pinyin: 'biàn', radical: '亻', strokes: 9, kind: '会意', hook: '「亻」人字旁 —— 让人方便。' },
+    ],
+  },
+  '教书': {
+    tip: '教 + 书 —— 当老师上课。',
+    sentence: '我的妈妈在小学教书,很多孩子都喜欢她。',
+    chars: [
+      { c: '教', pinyin: 'jiāo', radical: '攵', strokes: 11, kind: '形声', hook: '这里读 jiāo,教别人。', warn: '多音字:教书 jiāo,教师 jiào,教育 jiào。' },
+      { c: '书', pinyin: 'shū', radical: '乙', strokes: 4, kind: '会意', hook: '书本。' },
+    ],
+  },
+  '拼音字母': {
+    tip: '拼音 + 字母 —— 汉语拼音的字母。',
+    sentence: '一年级学的就是拼音字母。',
+    chars: [
+      { c: '拼', pinyin: 'pīn', radical: '扌', strokes: 9, kind: '形声', hook: '提手旁 —— 用手拼起来。' },
+      { c: '音', pinyin: 'yīn', radical: '音', strokes: 9, kind: '会意', hook: '声音。' },
+      { c: '字', pinyin: 'zì', radical: '宀', strokes: 6, kind: '会意', hook: '宀下「子」—— 字。' },
+      { c: '母', pinyin: 'mǔ', radical: '母', strokes: 5, kind: '象形', hook: '字母。' },
+    ],
+  },
+  '游戏': {
+    tip: '游 + 戏 —— 玩耍。',
+    sentence: '课间我们玩老鹰捉小鸡的游戏。',
+    examples: ['玩游戏'],
+    chars: [
+      { c: '游', pinyin: 'yóu', radical: '氵', strokes: 12, kind: '形声', hook: '三点水 —— 引申为玩耍。' },
+      { c: '戏', pinyin: 'xì', radical: '戈', strokes: 6, kind: '形声', hook: '游戏、戏耍。' },
+    ],
+  },
+  '喜欢': {
+    tip: '喜 + 欢 —— 喜爱。',
+    sentence: '我喜欢看故事书。',
+    examples: ['喜欢吃'],
+    chars: [
+      { c: '喜', pinyin: 'xǐ', radical: '士', strokes: 12, kind: '会意', hook: '高兴、喜爱。' },
+      { c: '欢', pinyin: 'huān', radical: '欠', strokes: 6, kind: '形声', hook: '欢乐。' },
+    ],
+  },
+  '童话': {
+    tip: '童 + 话 —— 儿童故事。',
+    sentence: '《白雪公主》是我最爱的童话。',
+    chars: [
+      { c: '童', pinyin: 'tóng', radical: '立', strokes: 12, kind: '会意', hook: '儿童。' },
+      { c: '话', pinyin: 'huà', radical: '讠', strokes: 8, kind: '形声', hook: '言字旁 —— 故事。' },
+    ],
+  },
+  '绿荫': {
+    tip: '绿 + 荫 —— 树荫。',
+    sentence: '夏天我们躲在大树的绿荫下乘凉。',
+    chars: [
+      { c: '绿', pinyin: 'lǜ', radical: '纟', strokes: 11, kind: '形声', hook: '绿色。' },
+      { c: '荫', pinyin: 'yīn', radical: '艹', strokes: 9, kind: '形声', hook: '草字头 —— 树叶的阴影。' },
+    ],
+  },
+  '喜鹊': {
+    tip: '喜 + 鹊 —— 一种鸟。',
+    sentence: '喜鹊在枝头叫,据说预示好事。',
+    chars: [
+      { c: '喜', pinyin: 'xǐ', radical: '士', strokes: 12, kind: '会意', hook: '喜事。' },
+      { c: '鹊', pinyin: 'què', radical: '鸟', strokes: 13, kind: '形声', hook: '「鸟」字旁 —— 一种鸟。' },
+    ],
+  },
+
   // ===== 第七单元 改变(用户当前最常学) =====
   '扇子': {
     tip: '「扇」是「户」(门)里有「羽」毛 —— 古时摇羽毛扇风。',

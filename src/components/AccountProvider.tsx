@@ -6,6 +6,8 @@ import {
 import type { SupabaseClient, Session } from '@supabase/supabase-js';
 import { initSupabase } from '@/lib/supabase';
 import { useStore } from '@/lib/store';
+import { useEssays } from '@/lib/essays';
+import { useShots } from '@/lib/shots';
 
 // ============================================================
 // 账号系统 —— 多家庭注册登录 + 学习数据云同步
@@ -46,6 +48,8 @@ function hasLocalData(): boolean {
 }
 
 // ---- 学习数据 ↔ Zustand store ----
+// 包含:主进度(moxie-dashi) + 作文(moxie-essays) + 听写手迹(moxie-shots)。
+// 后两者也上云,这样换设备登录后,孩子写的作文和手写图都能恢复。
 function extractStudyBlob() {
   const s = useStore.getState();
   return {
@@ -54,6 +58,9 @@ function extractStudyBlob() {
     childName: s.childName,
     customWords: s.customWords,
     milestoneSeen: s.milestoneSeen,
+    selectedBook: s.selectedBook,
+    essays: useEssays.getState().essays,
+    shots: useShots.getState().shots,
   };
 }
 function loadStudyBlob(data: Record<string, unknown>) {
@@ -64,7 +71,16 @@ function loadStudyBlob(data: Record<string, unknown>) {
     childName: (data.childName as string) ?? '',
     customWords: (data.customWords as typeof s.customWords) ?? [],
     milestoneSeen: (data.milestoneSeen as number) ?? 0,
+    // selectedBook 云端没有就保留本机当前选择(老存档兼容)
+    ...(data.selectedBook !== undefined ? { selectedBook: data.selectedBook as typeof s.selectedBook } : {}),
   });
+  // 作文 + 手写图:云端有就覆盖本机
+  if (Array.isArray(data.essays)) {
+    useEssays.setState({ essays: data.essays as ReturnType<typeof useEssays.getState>['essays'] });
+  }
+  if (data.shots && typeof data.shots === 'object') {
+    useShots.setState({ shots: data.shots as ReturnType<typeof useShots.getState>['shots'] });
+  }
 }
 
 type Phase = 'loading' | 'local' | 'auth' | 'no-child' | 'ready';
@@ -207,9 +223,10 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   }, [sb, activateChild]);
 
   // 3. store 变化 → 防抖同步到云端（失败静默，离线不影响）
+  //    主进度 + 作文 + 手写图 三个 store 任一变化都触发同步。
   useEffect(() => {
     if (!sb || !activeChildId) return;
-    const unsub = useStore.subscribe(() => {
+    const scheduleSave = () => {
       if (loadingChild.current) return;
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
@@ -219,8 +236,14 @@ export default function AccountProvider({ children }: { children: React.ReactNod
           .eq('id', activeChildId)
           .then(() => {}, () => {});
       }, 1500);
-    });
-    return () => { unsub(); if (saveTimer.current) clearTimeout(saveTimer.current); };
+    };
+    const unsubMain = useStore.subscribe(scheduleSave);
+    const unsubEssays = useEssays.subscribe(scheduleSave);
+    const unsubShots = useShots.subscribe(scheduleSave);
+    return () => {
+      unsubMain(); unsubEssays(); unsubShots();
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
   }, [sb, activeChildId]);
 
   const switchChild = useCallback(async (id: string) => {

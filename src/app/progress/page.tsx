@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { unitGroups, reciteRefs, books, getPoem, getSentence } from '@/data/vocabulary';
 import { isMastered } from '@/lib/srs';
 import ChildWork from '@/components/ChildWork';
+import ParentGate from '@/components/ParentGate';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -106,11 +107,16 @@ export default function ProgressPage() {
     return c + w === 0 ? null : Math.round((c / (c + w)) * 100);
   })();
 
-  // 导出 / 导入学习存档（本地数据备份）
+  // 导出 / 导入学习存档（本地数据备份）—— 含主进度 + 作文 + 听写手迹
   const exportData = () => {
     if (typeof window === 'undefined') return;
-    const raw = window.localStorage.getItem('moxie-dashi') ?? '{}';
-    const blob = new Blob([raw], { type: 'application/json' });
+    const bundle = {
+      __moxie_backup__: 2,
+      'moxie-dashi': window.localStorage.getItem('moxie-dashi'),
+      'moxie-essays': window.localStorage.getItem('moxie-essays'),
+      'moxie-shots': window.localStorage.getItem('moxie-shots'),
+    };
+    const blob = new Blob([JSON.stringify(bundle)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -127,8 +133,18 @@ export default function ProgressPage() {
       try {
         const text = String(reader.result);
         const parsed = JSON.parse(text);
-        if (!parsed || typeof parsed !== 'object' || !('state' in parsed)) throw new Error('bad');
-        window.localStorage.setItem('moxie-dashi', text);
+        if (!parsed || typeof parsed !== 'object') throw new Error('bad');
+        if (parsed.__moxie_backup__) {
+          // 新版打包格式:含作文 + 手写图
+          for (const key of ['moxie-dashi', 'moxie-essays', 'moxie-shots'] as const) {
+            if (typeof parsed[key] === 'string') window.localStorage.setItem(key, parsed[key]);
+          }
+        } else if ('state' in parsed) {
+          // 旧版只有主进度
+          window.localStorage.setItem('moxie-dashi', text);
+        } else {
+          throw new Error('bad');
+        }
         alert('存档已导入，页面将刷新。');
         window.location.reload();
       } catch {
@@ -140,6 +156,7 @@ export default function ProgressPage() {
   };
 
   return (
+    <ParentGate>
     <div className="min-h-screen">
       <Nav />
       <main className="max-w-4xl mx-auto px-5 py-8">
@@ -324,6 +341,7 @@ export default function ProgressPage() {
         </section>
       </main>
     </div>
+    </ParentGate>
   );
 }
 

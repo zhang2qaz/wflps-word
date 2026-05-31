@@ -6,6 +6,7 @@ import { useStore, selectStats } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { unitGroups, reciteRefs, books, getPoem, getSentence } from '@/data/vocabulary';
 import { isMastered } from '@/lib/srs';
+import ChildWork from '@/components/ChildWork';
 
 export default function ProgressPage() {
   const stats = useStore(useShallow(selectStats));
@@ -277,6 +278,9 @@ export default function ProgressPage() {
             ))}
           </ul>
         </section>
+
+        {/* 孩子写的内容 —— 作文全文 + 听写手迹 */}
+        <ChildWork />
 
         {/* 学习存档 */}
         <section className="mb-10 p-5 rounded-xl border" style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}>

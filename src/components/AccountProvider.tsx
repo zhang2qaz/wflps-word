@@ -47,6 +47,12 @@ function hasLocalData(): boolean {
   try { return Object.keys(useStore.getState().progress).length > 0; } catch { return false; }
 }
 
+// 这台设备是否真用过云同步(激活过云端孩子档案)。
+// 纯本地用户没有云可断,不该被「离线模式」横幅打扰。
+function hadCloudBefore(): boolean {
+  try { return !!localStorage.getItem('moxie-active-child'); } catch { return false; }
+}
+
 // ---- 学习数据 ↔ Zustand store ----
 // 包含:主进度(moxie-dashi) + 作文(moxie-essays) + 听写手迹(moxie-shots)。
 // 后两者也上云,这样换设备登录后,孩子写的作文和手写图都能恢复。
@@ -92,6 +98,13 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   const [childList, setChildList] = useState<Child[]>([]);
   const [activeChildId, setActiveChildId] = useState<string | null>(null);
   const [offline, setOffline] = useState(false);   // 云端连不上 → 顶部提示「离线模式」
+  const [bannerHidden, setBannerHidden] = useState(false); // 横幅 8 秒后自动收起(点按也可收起)
+
+  useEffect(() => {
+    if (!offline) { setBannerHidden(false); return; }
+    const t = setTimeout(() => setBannerHidden(true), 8000);
+    return () => clearTimeout(t);
+  }, [offline]);
   const loadingChild = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -188,9 +201,10 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         setChildList([]);
         setActiveChildId(null);
         // 本地优先:有本机数据的「返回用户」不要被弹回登录页 ——
-        // 直接进 App 离线模式用本机缓存,云端慢点接上就好。
+        // 直接进 App 用本机缓存。只有真用过云同步的设备才标「离线」,
+        // 纯本地用户不显示横幅(本地存储是设计,不是故障)。
         if (hasLocalData()) {
-          setOffline(true);
+          setOffline(hadCloudBefore());
           setPhase('ready');
         } else {
           setPhase('auth');
@@ -213,7 +227,7 @@ export default function AccountProvider({ children }: { children: React.ReactNod
       .catch(() => {
         // getSession 超时（Supabase 可能不可达）：有缓存就离线进 App
         if (!cancelled) {
-          setOffline(true);
+          setOffline(hadCloudBefore());
           setPhase(hasLocalData() ? 'ready' : 'auth');
         }
       });
@@ -289,13 +303,15 @@ export default function AccountProvider({ children }: { children: React.ReactNod
         signOut,
       }}
     >
-      {offline && (
+      {offline && !bannerHidden && (
         <div
           role="status"
-          className="text-center text-xs py-1.5 safe-top"
+          onClick={() => setBannerHidden(true)}
+          className="text-center text-xs py-1.5 safe-top cursor-pointer"
           style={{ background: 'rgba(224,163,42,0.18)', color: 'var(--color-mustard)' }}
+          title="点按收起"
         >
-          📡 离线模式 · 进度暂存本机,联网后自动同步
+          📡 离线模式 · 进度暂存本机,联网后自动同步 ✕
         </div>
       )}
       {children}

@@ -7,6 +7,7 @@
 
 import type { Word, Poem, Sentence, CharInfo } from './vocabulary';
 import { GRADE3_CHAR_X } from './grade3-chars';
+import { GRADE3_WORD_X } from './grade3-words';
 
 type Row = [c: string, pinyin: string, meaning: string, radical: string, strokes: number];
 type Lesson = [lesson: string, chars: Row[]];
@@ -20,14 +21,16 @@ function build(semester: '上' | '下', unit: number, unitTitle: string, lessons
       n += 1;
       // 合并拆字学习数据(grade3-chars.ts):split/kind/hook/family/warn
       const ci: CharInfo = { c, pinyin, radical, strokes, ...GRADE3_CHAR_X[c] };
+      // 合并记法/运用数据(grade3-words.ts):tip/sentence/examples
+      const wx = GRADE3_WORD_X[c];
       out.push({
         id: `${prefix}${unit}-${String(n).padStart(2, '0')}`,
         char: c, pinyin, meaning,
         grade: 3, semester, unit, unitTitle, lesson,
         type: 'word',
-        examples: [],
-        sentence: '',
-        tip: '统编版三年级·会写字。先看部首/笔画记字形,再读释义记用法。',
+        examples: wx?.examples ?? [],
+        sentence: wx?.sentence ?? '',
+        tip: wx?.tip ?? '统编版三年级·会写字。先看部首/笔画记字形,再读释义记用法。',
         chars: [ci],
         draft: false,
       });
@@ -678,6 +681,14 @@ export const GRADE3_WORDS: Word[] = [
 {
   const missing = [...new Set(GRADE3_WORDS.filter((w) => !GRADE3_CHAR_X[w.char]).map((w) => w.char))];
   if (missing.length) console.warn(`[grade3] ${missing.length} 个生字缺拆字数据：${missing.join('')}`);
+}
+
+// 护栏：三年级每个生字都应有记法/运用数据(grade3-words.ts)，且例句必须含该字。
+{
+  const noWx = [...new Set(GRADE3_WORDS.filter((w) => !GRADE3_WORD_X[w.char]).map((w) => w.char))];
+  if (noWx.length) console.warn(`[grade3] ${noWx.length} 个生字缺记法/运用数据：${noWx.join('')}`);
+  const badSent = [...new Set(GRADE3_WORDS.filter((w) => w.sentence && !w.sentence.includes(w.char)).map((w) => w.char))];
+  if (badSent.length) console.warn(`[grade3] ${badSent.length} 个生字的例句不含该字：${badSent.join('')}`);
 }
 
 // ============================================================

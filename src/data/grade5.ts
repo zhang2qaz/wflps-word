@@ -7,6 +7,7 @@
 // ============================================================
 
 import type { Word, Poem, Sentence, CharInfo, CharKind } from './vocabulary';
+import { GRADE5_CHAR_X } from './grade5-chars';
 
 type Deep = {
   split?: string;
@@ -38,7 +39,8 @@ function build(
       n += 1;
       const [c, pinyin, meaning, radical, strokes, deep] = row as
         [string, string, string, string, number, Deep | undefined];
-      const ci: CharInfo = { c, pinyin, radical, strokes, ...(deep ?? {}) };
+      // 合并拆字学习数据(grade5-chars.ts);行内 deep 数据优先
+      const ci: CharInfo = { c, pinyin, radical, strokes, ...GRADE5_CHAR_X[c], ...(deep ?? {}) };
       out.push({
         id: `${prefix}${unit}-${String(n).padStart(2, '0')}`,
         char: c, pinyin, meaning,
@@ -538,6 +540,14 @@ export const GRADE5_WORDS: Word[] = [
     ]],
   ]),
 ];
+
+// 护栏：五年级每个生字都应有拆字数据(行内 deep 或 grade5-chars.ts)。
+{
+  const missing = [...new Set(
+    GRADE5_WORDS.filter((w) => !w.chars.some((ci) => ci.split || ci.kind || ci.hook)).map((w) => w.char),
+  )];
+  if (missing.length) console.warn(`[grade5] ${missing.length} 个生字缺拆字数据：${missing.join('')}`);
+}
 
 // ============================================================
 // 五年级·古诗 + 词

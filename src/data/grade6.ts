@@ -5,6 +5,7 @@
 // ============================================================
 
 import type { Word, Poem, Sentence, CharInfo } from './vocabulary';
+import { GRADE6_CHAR_X } from './grade6-chars';
 
 type Row = [c: string, pinyin: string, meaning: string, radical: string, strokes: number];
 type Lesson = [lesson: string, chars: Row[]];
@@ -16,7 +17,8 @@ function build(semester: '上' | '下', unit: number, unitTitle: string, lessons
   for (const [lesson, chars] of lessons) {
     for (const [c, pinyin, meaning, radical, strokes] of chars) {
       n += 1;
-      const ci: CharInfo = { c, pinyin, radical, strokes };
+      // 合并拆字学习数据(grade6-chars.ts):split/kind/hook/family/warn
+      const ci: CharInfo = { c, pinyin, radical, strokes, ...GRADE6_CHAR_X[c] };
       out.push({
         id: `${prefix}${unit}-${String(n).padStart(2, '0')}`,
         char: c, pinyin, meaning,
@@ -446,6 +448,12 @@ export const GRADE6_WORDS: Word[] = [
     ]],
   ]),
 ];
+
+// 护栏：六年级每个生字都应有拆字数据(grade6-chars.ts)。缺了在构建日志里报出来。
+{
+  const missing = [...new Set(GRADE6_WORDS.filter((w) => !GRADE6_CHAR_X[w.char]).map((w) => w.char))];
+  if (missing.length) console.warn(`[grade6] ${missing.length} 个生字缺拆字数据：${missing.join('')}`);
+}
 
 // ============================================================
 // 六年级 古诗 + 文言文

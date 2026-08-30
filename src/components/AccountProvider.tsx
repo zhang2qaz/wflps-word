@@ -100,11 +100,23 @@ export default function AccountProvider({ children }: { children: React.ReactNod
   const [offline, setOffline] = useState(false);   // 云端连不上 → 顶部提示「离线模式」
   const [bannerHidden, setBannerHidden] = useState(false); // 横幅 8 秒后自动收起(点按也可收起)
 
+  // 横幅每天最多打扰一次：收起时记下日期,当天不再出现
+  const dismissBanner = useCallback(() => {
+    setBannerHidden(true);
+    try { localStorage.setItem('moxie-offline-banner-day', new Date().toISOString().slice(0, 10)); } catch {}
+  }, []);
+
   useEffect(() => {
     if (!offline) { setBannerHidden(false); return; }
-    const t = setTimeout(() => setBannerHidden(true), 8000);
+    try {
+      if (localStorage.getItem('moxie-offline-banner-day') === new Date().toISOString().slice(0, 10)) {
+        setBannerHidden(true);
+        return;
+      }
+    } catch {}
+    const t = setTimeout(dismissBanner, 8000);
     return () => clearTimeout(t);
-  }, [offline]);
+  }, [offline, dismissBanner]);
   const loadingChild = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -306,7 +318,7 @@ export default function AccountProvider({ children }: { children: React.ReactNod
       {offline && !bannerHidden && (
         <div
           role="status"
-          onClick={() => setBannerHidden(true)}
+          onClick={dismissBanner}
           className="text-center text-xs py-1.5 safe-top cursor-pointer"
           style={{ background: 'rgba(224,163,42,0.18)', color: 'var(--color-mustard)' }}
           title="点按收起"

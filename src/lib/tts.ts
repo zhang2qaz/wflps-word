@@ -33,6 +33,21 @@ if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       pickVoice();
     });
   } catch { /* 老浏览器没有 addEventListener 也不影响发声 */ }
+
+  // iOS 解锁：引擎要在用户手势里"开过嗓"才肯出声。
+  // 第一次全局点击/触摸时静默说一个空格,把引擎唤醒,
+  // 之后哪怕 dictate() 里异步链上的 speak 也能正常发声。
+  const unlock = () => {
+    try {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    } catch { /* ignore */ }
+    window.removeEventListener('touchend', unlock);
+    window.removeEventListener('click', unlock);
+  };
+  window.addEventListener('touchend', unlock, { once: true });
+  window.addEventListener('click', unlock, { once: true });
 }
 
 export function speak(text: string, opts: { rate?: number; pitch?: number } = {}): Promise<void> {
@@ -50,7 +65,9 @@ export function speak(text: string, opts: { rate?: number; pitch?: number } = {}
     if (v) u.voice = v;
     u.onend = () => resolve();
     u.onerror = () => resolve();
-    synth.cancel();
+    // iOS WebKit bug：引擎空闲时 cancel() 紧跟 speak() 会吞掉这次发声,
+    // 所以只有确实在说/在排队时才打断。
+    if (synth.speaking || synth.pending) synth.cancel();
     // 同步发声 —— 必须保持在用户点击的调用栈内(iOS 要求)
     synth.speak(u);
   });

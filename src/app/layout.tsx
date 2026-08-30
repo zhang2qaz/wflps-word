@@ -5,6 +5,11 @@ import AccountProvider from "@/components/AccountProvider";
 import MotionProvider from "@/components/MotionProvider";
 import TTSGuard from "@/components/TTSGuard";
 
+// 强制所有页面动态渲染 —— 静态预渲染页会带 s-maxage=31536000 的缓存头,
+// 经过 HF/国内 CDN 链路时旧版 HTML 会被缓存一年,用户永远拿不到新版。
+// 动态渲染后响应头变为 no-store,每次都取最新;JS/CSS 走内容哈希不受影响。
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "世外默写 · 上海世界外国语小学校本版",
   description: "上海市世界外国语小学（WFLPS）国际部 P2 校本定制 · 中文词语默写科学记忆 App：拆字 + 形声字规律 + 字族 + 故事记成语 + 艾宾浩斯间隔重复。",

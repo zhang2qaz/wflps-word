@@ -9,6 +9,7 @@ import { useStore, selectStats, selectMistakeWords, selectNewWords } from '@/lib
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect, useState } from 'react';
 import { useAccount } from '@/components/AccountProvider';
+import { APP_VERSION } from '@/lib/version';
 
 // 三大分组(顺序就是孩子学习的顺序):
 // 1️⃣ 核心学习: 学字词 → 学句子 → 学古诗
@@ -237,7 +238,7 @@ export default function Home() {
         </details>
 
         <footer className="text-center text-xs py-6" style={{ color: 'var(--color-ink-soft)' }}>
-          每天 10 分钟,胜过周末突击 2 小时
+          每天 10 分钟,胜过周末突击 2 小时 · {APP_VERSION}
         </footer>
       </main>
     </div>

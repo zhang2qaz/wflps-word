@@ -1,34 +1,47 @@
 'use client';
 
 // 浏览器 TTS 封装 — 使用中文女声，模拟老师听写
+//
+// 关键约束(iOS/移动端 Safari)：
+//   1. speechSynthesis.speak() 必须和用户点击在同一个调用栈里，
+//      任何 await/setTimeout 之后再 speak 都可能被系统静音 —— 所以
+//      speak() 里发声前绝不能有异步等待，voices 改为模块加载时预热。
+//   2. 从后台切回来后引擎可能卡在 paused 状态，speak 前要 resume()。
+//   3. voices 首次可能为空，此时不要把英文嗓音缓存死 —— 只设 lang，
+//      让系统自己挑中文声；等 voiceschanged 到了再缓存中文女声。
 
 let cachedVoice: SpeechSynthesisVoice | null = null;
 
 function pickVoice(): SpeechSynthesisVoice | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
   if (cachedVoice) return cachedVoice;
   const voices = window.speechSynthesis.getVoices();
-  // 优先级：中文女声 > 任意中文 > 任意
+  // 优先级：中文女声 > 任意中文；没有中文声就返回 null(靠 u.lang 让系统选)
   const zh = voices.filter(v => /zh|cmn|Chinese/i.test(v.lang + v.name));
   const female = zh.find(v => /female|女|Tingting|Sinji|Mei-Jia|Yaoyao|普通话/i.test(v.name));
-  cachedVoice = female ?? zh[0] ?? voices[0] ?? null;
-  return cachedVoice;
+  const picked = female ?? zh[0] ?? null;
+  if (picked) cachedVoice = picked; // 只缓存中文声，避免把英文嗓音缓存死
+  return picked;
 }
 
-export async function speak(text: string, opts: { rate?: number; pitch?: number } = {}): Promise<void> {
-  if (typeof window === 'undefined') return;
-  // 等 voices 加载（首次可能为空）
-  if (window.speechSynthesis.getVoices().length === 0) {
-    await new Promise<void>((res) => {
-      const handler = () => {
-        window.speechSynthesis.removeEventListener('voiceschanged', handler);
-        res();
-      };
-      window.speechSynthesis.addEventListener('voiceschanged', handler);
-      setTimeout(() => res(), 800);
+// 模块加载时就预热 voices；列表变化时清缓存重挑
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  try {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.addEventListener?.('voiceschanged', () => {
+      cachedVoice = null;
+      pickVoice();
     });
-  }
+  } catch { /* 老浏览器没有 addEventListener 也不影响发声 */ }
+}
+
+export function speak(text: string, opts: { rate?: number; pitch?: number } = {}): Promise<void> {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return Promise.resolve();
+  if (!text || !text.trim()) return Promise.resolve();
   return new Promise<void>((resolve) => {
+    const synth = window.speechSynthesis;
+    // iOS：后台回来可能卡在 paused，先恢复
+    try { if (synth.paused) synth.resume(); } catch { /* ignore */ }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'zh-CN';
     u.rate = opts.rate ?? 0.85;
@@ -37,13 +50,14 @@ export async function speak(text: string, opts: { rate?: number; pitch?: number 
     if (v) u.voice = v;
     u.onend = () => resolve();
     u.onerror = () => resolve();
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
+    synth.cancel();
+    // 同步发声 —— 必须保持在用户点击的调用栈内(iOS 要求)
+    synth.speak(u);
   });
 }
 
 export function stopSpeak() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
 }
 

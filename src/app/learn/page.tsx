@@ -513,7 +513,8 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
         {/* ---------- 步骤 4 · 运用 ---------- */}
         {step === 'use' && (
           <section className="space-y-4">
-            {/* 语境例句 */}
+            {/* 语境例句 —— 没有例句数据时整块隐藏，避免出现读空句子的死按钮 */}
+            {word.sentence && (
             <div
               className="border rounded-xl p-5"
               style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
@@ -534,6 +535,7 @@ function LearnCard({ word, onNext }: { word: Word; onNext: () => void }) {
                 {highlightWord(word.sentence, word.char)}
               </p>
             </div>
+            )}
 
             {/* 组词 */}
             {word.examples.length > 0 && (

@@ -8,6 +8,8 @@ export const dynamic = 'force-dynamic';
 // 简易 LRU:听写重读/复习会反复朗读同一文本,命中后不重复合成
 const cache = new Map<string, Buffer>();
 const CACHE_MAX = 300;
+// 合并同飞:全班同时点同一课的同一个词时,同 key 的并发未命中共用一次合成
+const inflight = new Map<string, Promise<Buffer>>();
 
 async function synth(text: string, rate: number): Promise<Buffer> {
   const key = `${rate}|${text}`;
@@ -17,6 +19,14 @@ async function synth(text: string, rate: number): Promise<Buffer> {
     cache.set(key, hit);
     return hit;
   }
+  const pending = inflight.get(key);
+  if (pending) return pending;
+  const job = doSynth(key, text, rate).finally(() => inflight.delete(key));
+  inflight.set(key, job);
+  return job;
+}
+
+async function doSynth(key: string, text: string, rate: number): Promise<Buffer> {
   const tts = new MsEdgeTTS();
   await tts.setMetadata('zh-CN-XiaoxiaoNeural', OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
   try {

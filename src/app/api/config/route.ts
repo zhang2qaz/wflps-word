@@ -10,8 +10,12 @@ const DEFAULT_URL = 'https://qrxldkyxhobyphndwuly.supabase.co';
 const DEFAULT_ANON = 'sb_publishable_5SXP16ZmAdWtYhYSMliqPQ_SrSgKu_S';
 
 export function GET() {
-  return NextResponse.json({
-    supabaseUrl: process.env.SUPABASE_URL ?? DEFAULT_URL,
-    supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? DEFAULT_ANON,
-  });
+  return NextResponse.json(
+    {
+      supabaseUrl: process.env.SUPABASE_URL ?? DEFAULT_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? DEFAULT_ANON,
+    },
+    // 配置几乎不变:让浏览器缓存 1 小时,全班同用时少打一大波请求(降低共享 IP 触发限流的概率)
+    { headers: { 'Cache-Control': 'public, max-age=3600' } },
+  );
 }

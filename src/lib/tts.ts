@@ -42,12 +42,19 @@ function getAudio(): HTMLAudioElement {
   return sharedAudio;
 }
 
-function speakViaServer(text: string, rate: number): Promise<void> {
+function speakViaServer(text: string, rate: number, attempt = 0): Promise<void> {
   return new Promise((resolve) => {
     try {
       const a = getAudio();
       a.onended = () => resolve();
-      a.onerror = () => resolve();
+      a.onerror = () => {
+        // 偶发 429(共享 WiFi 限流)/网络抖动:1.5 秒后重试一次
+        if (attempt === 0) {
+          setTimeout(() => { void speakViaServer(text, rate, 1).then(resolve); }, 1500);
+        } else {
+          resolve();
+        }
+      };
       a.src = `/api/tts?text=${encodeURIComponent(text)}&rate=${rate}`;
       void a.play().catch(() => resolve());
     } catch {

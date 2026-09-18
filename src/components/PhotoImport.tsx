@@ -185,6 +185,8 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
         workerPath: '/ocr/worker.min.js',
         corePath: '/ocr/core',
         langPath: '/ocr/lang',
+        // Safari/iPad 兼容:不走 blob worker(部分 WebKit 环境 blob worker 加载失败),直接用同源路径
+        workerBlobURL: false,
         logger: (m: { status: string; progress: number }) => {
           if (done) return;
           const label = PHASE[m.status];
@@ -230,8 +232,12 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
         (window as unknown as { __ocr?: PhotoExtract }).__ocr = parsed; // 调试:核对识别原文
         onExtract(parsed);
       }
-    } catch {
-      if (!done) setStatus('⚠ 识别失败 —— 可能是识别引擎没加载出来,请刷新重试或手动输入。');
+    } catch (e) {
+      // 把真实报错显示出来,方便远程定位(设备/浏览器特定问题)
+      if (!done) {
+        const msg = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+        setStatus(`⚠ 识别出错,请把这行发给爸爸:\n${msg}\n(也可以直接在下面手动输入)`);
+      }
       try { worker?.terminate(); } catch { /* ignore */ }
     } finally {
       done = true;
@@ -247,7 +253,7 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
         <div>
           <div className="text-sm font-bold mb-0.5">📷 拍照导入</div>
           <div className="text-xs leading-relaxed" style={{ color: 'var(--color-ink-soft)' }}>
-            对着老师词语表的<b>一课</b>拍照,自动识别课文、词语和句子。识别在你手机上完成,不上传。
+            拍老师词语表的<b>一课</b>,或从<b>相册选已拍好的照片</b>,自动识别课文、词语和句子。识别在手机上完成,不上传。
           </div>
         </div>
         <button
@@ -256,14 +262,13 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
           className="px-4 py-2.5 rounded-lg text-sm font-medium disabled:opacity-50 flex-shrink-0"
           style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}
         >
-          {busy ? '识别中…' : '拍照 / 选图'}
+          {busy ? '识别中…' : '拍照 / 相册'}
         </button>
       </div>
       <input
         ref={fileRef}
         type="file"
         accept="image/*"
-        capture="environment"
         hidden
         onChange={e => { const f = e.target.files?.[0]; if (f) void run(f); }}
       />
@@ -273,7 +278,7 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
         </div>
       )}
       {status && (
-        <p className="mt-2 text-xs leading-relaxed" style={{ color: status.startsWith('⚠') ? 'var(--color-mustard)' : 'var(--color-jade)' }}>
+        <p className="mt-2 text-xs leading-relaxed" style={{ whiteSpace: 'pre-line', color: status.startsWith('⚠') ? 'var(--color-mustard)' : 'var(--color-jade)' }}>
           {status}
         </p>
       )}

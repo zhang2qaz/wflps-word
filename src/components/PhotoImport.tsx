@@ -126,25 +126,53 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
 
   const run = async (file: File) => {
     setBusy(true);
-    setStatus('准备识别引擎…(首次约 20MB,之后有缓存)');
+    setStatus('正在读取图片…');
     setProgress(0);
+    // 看门狗:任何阶段卡超过 3 分钟就判定失败,给手动输入的退路,绝不无限转
+    let worker: Awaited<ReturnType<typeof import('tesseract.js').createWorker>> | null = null;
+    let done = false;
+    const watchdog = setTimeout(() => {
+      if (done) return;
+      done = true;
+      setBusy(false);
+      setStatus('⚠ 识别太久(可能网络慢没下完引擎)。请在 WiFi 下重试,或直接在下面手动输入。');
+      try { worker?.terminate(); } catch { /* ignore */ }
+    }, 180_000);
     try {
       const canvas = await toCanvas(file);
+      if (done) return;
       setPreview(canvas.toDataURL('image/jpeg', 0.6));
       const { createWorker } = await import('tesseract.js');
-      const worker = await createWorker('chi_sim', 1, {
+      // 每个阶段都给中文进度 —— 下载引擎、加载字库、识别,都不再是「一动不动」
+      const PHASE: Record<string, string> = {
+        'loading tesseract core': '下载识别引擎(首次约 23MB)',
+        'initializing tesseract': '启动识别引擎',
+        'loading language traineddata': '下载中文字库',
+        'loaded language traineddata': '中文字库就绪',
+        'initializing api': '准备识别',
+        'recognizing text': '识别文字中',
+      };
+      worker = await createWorker('chi_sim', 1, {
         workerPath: '/ocr/worker.min.js',
         corePath: '/ocr/core',
         langPath: '/ocr/lang',
         logger: (m: { status: string; progress: number }) => {
-          if (m.status === 'recognizing text') {
-            setStatus('识别文字中…');
-            setProgress(Math.round(m.progress * 100));
+          if (done) return;
+          const label = PHASE[m.status];
+          if (label) {
+            const pct = Math.round((m.progress ?? 0) * 100);
+            setStatus(`${label}… ${pct}%`);
+            setProgress(pct);
           }
         },
       });
+      if (done) return;
       const { data } = await worker.recognize(canvas, {}, { blocks: true, text: true });
       await worker.terminate();
+      worker = null;
+      if (done) return;
+      done = true;
+      clearTimeout(watchdog);
       // 从字符包围盒重建「带词间空格」的行;拿不到坐标时退回纯文本
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const lineSyms: Sym[][] = [];
@@ -174,8 +202,11 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
         onExtract(parsed);
       }
     } catch {
-      setStatus('⚠ 识别失败 —— 可能是识别引擎没加载出来,请刷新重试或手动输入。');
+      if (!done) setStatus('⚠ 识别失败 —— 可能是识别引擎没加载出来,请刷新重试或手动输入。');
+      try { worker?.terminate(); } catch { /* ignore */ }
     } finally {
+      done = true;
+      clearTimeout(watchdog);
       setBusy(false);
       if (fileRef.current) fileRef.current.value = '';
     }

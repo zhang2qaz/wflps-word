@@ -96,6 +96,25 @@ export function parseSheet(lines: string[], rawText: string): PhotoExtract {
   return { lessonNo, lessonName, words, sentences, poemNote, rawText };
 }
 
+// 先把中文字库(~19MB)流式下载一遍,显示真实 MB 进度 —— 这一步以前 tesseract
+// 内部下载不报进度,20MB 静默 ~28s 就是「卡住」的元凶。下载后 HTTP 缓存已暖,
+// 紧接着 createWorker 再取同一 URL 命中缓存,不会重复下载。失败不致命(退回让 tesseract 自己下)。
+async function preloadLang(onProgress: (loaded: number, total: number) => void): Promise<void> {
+  try {
+    const res = await fetch('/ocr/lang/chi_sim.traineddata.gz');
+    if (!res.ok || !res.body) return;
+    const total = Number(res.headers.get('content-length')) || 0;
+    const reader = res.body.getReader();
+    let loaded = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      loaded += value.length;
+      onProgress(loaded, total);
+    }
+  } catch { /* 交给 tesseract 自己下 */ }
+}
+
 // 大图缩到 ≤1600px,降内存加速识别
 async function toCanvas(file: File): Promise<HTMLCanvasElement> {
   const url = URL.createObjectURL(file);
@@ -142,6 +161,16 @@ export default function PhotoImport({ onExtract }: { onExtract: (r: PhotoExtract
       const canvas = await toCanvas(file);
       if (done) return;
       setPreview(canvas.toDataURL('image/jpeg', 0.6));
+      // 先带进度预下载字库(首次~19MB;之后命中缓存瞬间完成)
+      await preloadLang((loaded, total) => {
+        if (done) return;
+        const mb = (loaded / 1048576).toFixed(1);
+        const totMb = total ? `/${(total / 1048576).toFixed(0)}` : '';
+        const pct = total ? Math.round((loaded / total) * 100) : 0;
+        setStatus(`下载中文字库(仅首次)… ${mb}${totMb} MB`);
+        setProgress(pct);
+      });
+      if (done) return;
       const { createWorker } = await import('tesseract.js');
       // 每个阶段都给中文进度 —— 下载引擎、加载字库、识别,都不再是「一动不动」
       const PHASE: Record<string, string> = {

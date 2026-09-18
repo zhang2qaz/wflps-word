@@ -14,6 +14,8 @@ const OCR_DIR = join(ROOT, 'public', 'ocr');
 const CORE_DIR = join(OCR_DIR, 'core');
 const LANG_DIR = join(OCR_DIR, 'lang');
 const LANG_FILE = join(LANG_DIR, 'chi_sim.traineddata.gz');
+// 标准字库(~19MB) —— 精简版(fast)对复杂汉字误识太多,家长核对负担反而更大。
+// 首次下载慢的问题靠 PhotoImport 里的「流式进度条 + HTTP 长缓存」解决,不靠缩字库。
 const LANG_URL = 'https://tessdata.projectnaptha.com/4.0.0/chi_sim.traineddata.gz';
 const LANG_MIN = 8 * 1024 * 1024; // 小于 8MB 视为下载失败
 

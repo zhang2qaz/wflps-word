@@ -4,7 +4,7 @@
 //   · chi_sim 中文识别数据 —— 下载一次(约 12MB),幂等
 // 与 fetch-vosk-model.mjs 同一套路:HF Docker 构建时烤进镜像,国内无外联。
 
-import { existsSync, mkdirSync, statSync, unlinkSync, copyFileSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, statSync, unlinkSync, copyFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -34,23 +34,40 @@ function copyDist() {
   console.log(`✓ OCR worker + core 已拷贝 (${n} 个 core 文件)`);
 }
 
-function downloadLang() {
+// curl → wget → Node fetch 三级兜底(alpine 构建镜像没有 curl,但有 busybox wget)
+function tryShellDownload(url, dest) {
+  try {
+    execFileSync('curl', ['-fsSL', '--retry', '3', '--max-time', '300', '-o', dest, url], { stdio: 'inherit', timeout: 300_000 });
+    return true;
+  } catch { /* 试下一个 */ }
+  try {
+    execFileSync('wget', ['-q', '--tries=3', '-O', dest, url], { stdio: 'inherit', timeout: 300_000 });
+    return true;
+  } catch { /* 试下一个 */ }
+  return false;
+}
+
+async function downloadLang() {
   if (existsSync(LANG_FILE) && statSync(LANG_FILE).size >= LANG_MIN) {
     console.log(`✓ 中文识别数据已就位 (${(statSync(LANG_FILE).size / 1024 / 1024).toFixed(1)} MB) —— 跳过下载`);
     return;
   }
   mkdirSync(LANG_DIR, { recursive: true });
-  console.log(`↓ 下载 ${LANG_URL} (约 12MB)`);
-  try {
-    execFileSync('curl', ['-fsSL', '--retry', '3', '--max-time', '300', '-o', LANG_FILE, LANG_URL], { stdio: 'inherit' });
-  } catch {
-    console.warn('⚠ 中文识别数据下载失败 —— 拍照导入将不可用(手动录入不受影响)');
-    try { unlinkSync(LANG_FILE); } catch { /* ignore */ }
-    return;
+  console.log(`↓ 下载 ${LANG_URL} (约 19MB)`);
+  let ok = tryShellDownload(LANG_URL, LANG_FILE);
+  if (!ok) {
+    try {
+      const res = await fetch(LANG_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      writeFileSync(LANG_FILE, Buffer.from(await res.arrayBuffer()));
+      ok = true;
+    } catch (e) {
+      console.warn(`  node fetch 也失败:${e instanceof Error ? e.message : String(e)}`);
+    }
   }
   const sz = existsSync(LANG_FILE) ? statSync(LANG_FILE).size : 0;
-  if (sz < LANG_MIN) {
-    console.warn(`⚠ 下载文件太小 (${sz} B),已删除。拍照导入将不可用。`);
+  if (!ok || sz < LANG_MIN) {
+    console.warn(`⚠ 中文识别数据下载失败/文件太小 (${sz} B) —— 拍照导入将不可用(手动录入不受影响)`);
     try { unlinkSync(LANG_FILE); } catch { /* ignore */ }
     return;
   }
@@ -58,4 +75,4 @@ function downloadLang() {
 }
 
 copyDist();
-downloadLang();
+await downloadLang();

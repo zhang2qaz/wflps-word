@@ -159,7 +159,7 @@ export default function LearnPage() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    {g.lessons.map(({ lesson, words }) => {
+                    {g.lessons.map(({ lesson, words, custom }) => {
                       const learned = words.filter(w => progress[w.id]?.lastReview).length;
                       return (
                         <button
@@ -169,8 +169,14 @@ export default function LearnPage() {
                           style={{ borderColor: 'var(--color-stone-dark)', background: 'var(--color-paper-warm)' }}
                         >
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs mb-1" style={{ color: 'var(--color-vermilion)' }}>
-                              课文《{lesson}》
+                            <div className="text-xs mb-1 flex items-center gap-1.5 flex-wrap" style={{ color: 'var(--color-vermilion)' }}>
+                              <span>课文《{lesson}》</span>
+                              {custom && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                                  style={{ background: 'var(--color-jade)', color: 'var(--color-paper)' }}>
+                                  ✓ 老师默写
+                                </span>
+                              )}
                             </div>
                             <div className="text-lg font-bold mb-2 truncate" style={{ fontFamily: 'var(--font-serif-cn)' }}>
                               {words.slice(0, 4).map(w => w.char).join('  ')} …

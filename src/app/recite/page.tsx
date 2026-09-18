@@ -99,13 +99,15 @@ function ReciteInner() {
 function SelectScreen({ kind, onPick }: { kind: Kind; onPick: (v: View) => void }) {
   const progress = useStore(s => s.progress);
   const selectedBook = useStore(s => s.selectedBook);
+  const customSentences = useStore(useShallow(s => s.customSentences));
   const dueRecite = useStore(useShallow(s => selectDueRecite(s)));
 
   // 按 kind 过滤;同时按 selectedBook 限定到「当前课本」(没选过则不限)
   const matchesBook = <T extends { grade?: number; semester: '上' | '下' }>(x: T) =>
     !selectedBook || ((x.grade ?? 2) === selectedBook.grade && x.semester === selectedBook.semester);
   const filteredPoems = (kind === 'sentences' ? [] : POEMS).filter(matchesBook);
-  const filteredSentences = (kind === 'poems' ? [] : SENTENCES).filter(matchesBook);
+  // 家长导入的「老师默写句」排在内置句子前面
+  const filteredSentences = (kind === 'poems' ? [] : [...customSentences, ...SENTENCES]).filter(matchesBook);
 
   const groups = Array.from(
     new Map(

@@ -746,14 +746,26 @@ export const GRADE3_POEMS: Poem[] = [
       { text: '淡妆浓抹总相宜', pinyin: 'dàn zhuāng nóng mǒ zǒng xiāng yí', meaning: '不管淡妆还是浓抹都很合适' },
     ],
   },
+  // 2026 五四制新版:《望洞庭》在第 2 单元(第 4 课)与《山行》《夜书所见》同课
   { id: 'g3a-p6', title: '望洞庭', author: '刘禹锡', dynasty: '唐', grade: 3,
-    semester: '上', unit: 6, unitTitle: '祖国山河', lesson: '古诗三首',
+    semester: '上', unit: 2, unitTitle: '秋天的景物', lesson: '古诗三首',
     theme: '秋夜遥望洞庭湖,湖面如未磨的铜镜,湖中山如盘中青螺。',
     lines: [
       { text: '湖光秋月两相和', pinyin: 'hú guāng qiū yuè liǎng xiāng hé', meaning: '湖水和秋月相互映照,和谐美好' },
       { text: '潭面无风镜未磨', pinyin: 'tán miàn wú fēng jìng wèi mó', meaning: '湖面无风,像一面没有磨过的铜镜' },
       { text: '遥望洞庭山水翠', pinyin: 'yáo wàng dòng tíng shān shuǐ cuì', meaning: '远远望去,洞庭湖的山水都是翠绿的' },
       { text: '白银盘里一青螺', pinyin: 'bái yín pán lǐ yī qīng luó', meaning: '就像白银盘里放着一只青色的小螺' },
+    ],
+  },
+  // 2026 五四制新版第 20 课新增《鹿柴》(与《望天门山》《饮湖上初晴后雨》同课)
+  { id: 'g3a-p7', title: '鹿柴', author: '王维', dynasty: '唐', grade: 3,
+    semester: '上', unit: 6, unitTitle: '祖国山河', lesson: '古诗三首',
+    theme: '空山深林傍晚,不见人只闻人声,夕阳返照青苔,幽静至极。',
+    lines: [
+      { text: '空山不见人', pinyin: 'kōng shān bú jiàn rén', meaning: '空寂的山里看不见人影' },
+      { text: '但闻人语响', pinyin: 'dàn wén rén yǔ xiǎng', meaning: '只听得见人说话的声音。「但」是只的意思' },
+      { text: '返景入深林', pinyin: 'fǎn yǐng rù shēn lín', meaning: '夕阳的余光照进幽深的树林。「景」同「影」,指日光' },
+      { text: '复照青苔上', pinyin: 'fù zhào qīng tái shàng', meaning: '又映照在青苔上' },
     ],
   },
   // ─── 三下 ───

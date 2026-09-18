@@ -63,6 +63,7 @@ function extractStudyBlob() {
     history: s.history,
     childName: s.childName,
     customWords: s.customWords,
+    customSentences: s.customSentences,
     milestoneSeen: s.milestoneSeen,
     selectedBook: s.selectedBook,
     essays: useEssays.getState().essays,
@@ -76,6 +77,7 @@ function loadStudyBlob(data: Record<string, unknown>) {
     history: (data.history as typeof s.history) ?? [],
     childName: (data.childName as string) ?? '',
     customWords: (data.customWords as typeof s.customWords) ?? [],
+    customSentences: (data.customSentences as typeof s.customSentences) ?? [],
     milestoneSeen: (data.milestoneSeen as number) ?? 0,
     // selectedBook 云端没有就保留本机当前选择(老存档兼容)
     ...(data.selectedBook !== undefined ? { selectedBook: data.selectedBook as typeof s.selectedBook } : {}),

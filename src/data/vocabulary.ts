@@ -8,6 +8,11 @@
 // ============================================================
 
 import { VAULT_WORDS } from './vault-words.generated';
+import { GRADE2_CHAR_X } from './grade2-chars';
+import { GRADE3_CHAR_X, type CharX } from './grade3-chars';
+import { GRADE4_CHAR_X } from './grade4-chars';
+import { GRADE5_CHAR_X } from './grade5-chars';
+import { GRADE6_CHAR_X } from './grade6-chars';
 import { GRADE2_WORDS, GRADE2_POEMS, GRADE2_SENTENCES } from './grade2';
 import { GRADE3_WORDS, GRADE3_POEMS, GRADE3_SENTENCES } from './grade3';
 import { GRADE4_WORDS, GRADE4_POEMS, GRADE4_SENTENCES } from './grade4';
@@ -47,6 +52,17 @@ export type Word = {
   story?: string;        // 寓言 / 成语故事
   custom?: boolean;      // 用户导入
   draft?: boolean;       // 草稿（统编版标准词表，待家长核对）
+};
+
+// ---- 全小学拆字资产合并表（约 1800 字）----
+// 给「导入」的老师词单用:家长贴词进来,每个字自动带上拆解/口诀/字族/易错。
+// 合并顺序:三年级(Amy 当前年级,内容最全)最后合并,重复字以三年级版本为准。
+export const CHAR_X_ALL: Record<string, CharX> = {
+  ...GRADE2_CHAR_X,
+  ...GRADE4_CHAR_X,
+  ...GRADE5_CHAR_X,
+  ...GRADE6_CHAR_X,
+  ...GRADE3_CHAR_X,
 };
 
 const UNIT = { semester: '下' as const, unit: 5, unitTitle: '办法' };
@@ -3315,7 +3331,8 @@ export function getReciteRef(id: string): ReciteRef | undefined {
 }
 
 export function isReciteId(id: string): boolean {
-  return POEMS.some(p => p.id === id) || SENTENCES.some(s => s.id === id);
+  // customs- 前缀 = 家长导入的老师默写句(存在 store 里,不在内置 SENTENCES)
+  return id.startsWith('customs-') || POEMS.some(p => p.id === id) || SENTENCES.some(s => s.id === id);
 }
 
 export function getUnits(semester: '上' | '下'): { unit: number; title: string; count: number }[] {
@@ -3348,7 +3365,7 @@ export function wordsByLesson(): { lesson: string; words: Word[] }[] {
 export type UnitGroup = {
   unit: number;
   unitTitle: string;
-  lessons: { lesson: string; words: Word[] }[];
+  lessons: { lesson: string; words: Word[]; custom?: boolean }[];
   poems: Poem[];
   sentences: Sentence[];
   draft: boolean;   // 是否为草稿单元（统编版标准词表，待核对）
@@ -3392,7 +3409,12 @@ export function unitGroups(grade: number, semester: '上' | '下', extra: Word[]
   }
   return unitOrder.sort((a, b) => a - b).map(unit => {
     const u = byUnit.get(unit)!;
-    const lessons = u.lessonOrder.map(lesson => ({ lesson, words: u.lessons.get(lesson)! }));
+    const built = u.lessonOrder.map(lesson => {
+      const words = u.lessons.get(lesson)!;
+      return { lesson, words, custom: words.every(w => w.custom) || undefined };
+    });
+    // 家长导入的「老师默写」课置顶 —— 默写以老师词单为准,孩子先看到它
+    const lessons = [...built.filter(l => l.custom), ...built.filter(l => !l.custom)];
     const draft = lessons.every(l => l.words.every(w => w.draft));
     return {
       unit,

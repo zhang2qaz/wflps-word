@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { defaultSrs, review, isDue, isMastered, binaryToGrade, type SrsState, type Grade } from './srs';
-import { WORDS, POEMS, SENTENCES, isReciteId, currentPosition, unitWords, type Word } from '@/data/vocabulary';
+import { WORDS, POEMS, SENTENCES, isReciteId, currentPosition, unitWords, type Word, type Sentence } from '@/data/vocabulary';
 import { useShots } from './shots';
 
 type WordProgress = SrsState & {
@@ -36,6 +36,7 @@ type State = {
   history: SessionStats[];
   childName: string;
   customWords: Word[];           // 家长导入的词语
+  customSentences: Sentence[];   // 家长导入的默写句子（老师词语表里的「句子」）
   milestoneSeen: number;         // 已庆祝过的「掌握字数」里程碑
   selectedBook: SelectedBook | null; // null = 还没选过,展示选课本界面
   setChildName: (name: string) => void;
@@ -45,7 +46,9 @@ type State = {
   recordGrade: (id: string, grade: Grade) => void;
   markLearned: (id: string) => void;
   addCustomWords: (words: Word[]) => void;
+  addCustomSentences: (sentences: Sentence[]) => void;
   clearCustomWords: () => void;
+  removeCustomLesson: (unit: number, lesson: string) => void; // 删除某一课的导入词+句(重录用)
   reset: () => void;
 };
 
@@ -81,6 +84,7 @@ export const useStore = create<State>()(
       history: [],
       childName: '',
       customWords: [],
+      customSentences: [],
       milestoneSeen: 0,
       selectedBook: null,
       setChildName: (name) => set({ childName: name }),
@@ -143,7 +147,20 @@ export const useStore = create<State>()(
         });
       },
 
-      clearCustomWords: () => set({ customWords: [] }),
+      addCustomSentences: (sentences) => {
+        set(s => {
+          const existing = new Set(s.customSentences.map(x => x.id));
+          const fresh = sentences.filter(x => !existing.has(x.id));
+          return { customSentences: [...s.customSentences, ...fresh] };
+        });
+      },
+
+      clearCustomWords: () => set({ customWords: [], customSentences: [] }),
+
+      removeCustomLesson: (unit, lesson) => set(s => ({
+        customWords: s.customWords.filter(w => !(w.unit === unit && w.lesson === lesson)),
+        customSentences: s.customSentences.filter(x => !(x.unit === unit && x.lesson === lesson)),
+      })),
 
       reset: () => {
         useShots.getState().resetShots();

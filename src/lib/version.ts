@@ -1,4 +1,4 @@
 // App 版本号 —— 每次部署手动 +1。
 // 显示在首页页脚,用于排查「用户设备是否拿到新版」:
 // 用户念出这个号,即可判断是新代码还是旧缓存。
-export const APP_VERSION = 'v0918.1';
+export const APP_VERSION = 'v0918.2';

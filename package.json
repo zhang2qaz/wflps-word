@@ -7,9 +7,10 @@
     "dev:ipad": "next dev -H 0.0.0.0",
     "vault": "node scripts/vault-to-words.mjs",
     "fetch-model": "node scripts/fetch-vosk-model.mjs",
-    "build": "npm run vault && npm run fetch-model && next build",
+    "build": "npm run vault && npm run fetch-model && npm run ocr-assets && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ocr-assets": "node scripts/fetch-ocr-assets.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
@@ -20,6 +21,7 @@
     "pinyin-pro": "^3.27.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "tesseract.js": "^7.0.0",
     "vosk-browser": "^0.0.8",
     "zustand": "^5.0.11"
   },

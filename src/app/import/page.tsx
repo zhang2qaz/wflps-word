@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { CHAR_X_ALL, type Word, type CharInfo, type Sentence } from '@/data/vocabulary';
 import { GRADE3_WORD_X } from '@/data/grade3-words';
 import { useRequireBook } from '@/components/RequireBook';
+import PhotoImport, { type PhotoExtract } from '@/components/PhotoImport';
 
 type Draft = { char: string; pinyin: string };
 
@@ -50,6 +51,16 @@ export default function ImportPage() {
     }
     setDrafts(list);
     setSavedMsg('');
+  };
+
+  // 拍照识别结果 → 回填表单 + 直接生成拼音预览(家长核对后保存)
+  const applyExtract = (r: PhotoExtract) => {
+    if (r.lessonNo) setLessonNo(r.lessonNo);
+    if (r.lessonName) setLessonName(r.lessonName);
+    setRaw(r.words.join(' '));
+    setRawSentences(r.sentences.join('\n'));
+    setDrafts(r.words.map(w => ({ char: w, pinyin: pinyin(w, { toneType: 'symbol', type: 'string' }) })));
+    setSavedMsg(r.poemNote ? `📜 这一课是「${r.poemNote}」—— 古诗已内置在「学古诗」里,整首背默即可,不用导入。` : '');
   };
 
   const sentenceList = useMemo(
@@ -158,6 +169,9 @@ export default function ImportPage() {
             {savedMsg}
           </div>
         )}
+
+        {/* 拍照导入 */}
+        <PhotoImport onExtract={applyExtract} />
 
         {/* 这一课是哪课 */}
         <div className="flex gap-2 mb-3">

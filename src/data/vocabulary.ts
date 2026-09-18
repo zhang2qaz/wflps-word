@@ -19,6 +19,9 @@ import { GRADE4_WORDS, GRADE4_POEMS, GRADE4_SENTENCES } from './grade4';
 import { GRADE5_WORDS, GRADE5_POEMS, GRADE5_SENTENCES } from './grade5';
 import { GRADE6_WORDS, GRADE6_POEMS, GRADE6_SENTENCES } from './grade6';
 import { MODERN_SENTENCES } from './sentences-modern';
+import { GRADE3_TEACHER } from './grade3-teacher';
+import { GRADE3_WORD_X } from './grade3-words';
+import { pinyin as toPinyin } from 'pinyin-pro';
 
 export type CharKind = '象形' | '指事' | '会意' | '形声' | '独体';
 
@@ -3279,6 +3282,50 @@ SENTENCES.push(...GRADE4_SENTENCES);
 SENTENCES.push(...GRADE5_SENTENCES);
 SENTENCES.push(...GRADE6_SENTENCES);
 SENTENCES.push(...MODERN_SENTENCES);
+
+// ============================================================
+// 世外 · 三上 · 老师默写清单 —— 逐课转录,置顶为默写主线(custom 标记 → 学字词里置顶 + ✓老师默写)
+// 词自动挂全小学拆字资产(CHAR_X_ALL)+ 单字记法/例句(GRADE3_WORD_X);句子进 SENTENCES。
+// ============================================================
+{
+  // 单元标题对齐 grade3.ts(老师课并入真实单元,置顶显示)
+  const U_TITLE: Record<number, string> = {
+    1: '学校生活', 2: '秋天的景物', 5: '留心观察', 6: '祖国山河', 7: '我与自然', 8: '美好品质',
+  };
+  for (const L of GRADE3_TEACHER) {
+    const lesson = `${L.no}、${L.name}`;
+    L.words.forEach((word, i) => {
+      const chars: CharInfo[] = Array.from(word).map((c) => ({
+        c,
+        pinyin: toPinyin(c, { toneType: 'symbol', type: 'string' }),
+        ...CHAR_X_ALL[c],
+      }));
+      const wx = word.length === 1 ? GRADE3_WORD_X[word] : undefined;
+      WORDS.push({
+        id: `g3t-${L.no}-${String(i + 1).padStart(2, '0')}`,
+        char: word,
+        pinyin: toPinyin(word, { toneType: 'symbol', type: 'string' }),
+        meaning: '',
+        grade: 3, semester: '上', unit: L.unit, unitTitle: U_TITLE[L.unit] ?? '老师默写', lesson,
+        type: word.length >= 4 ? 'idiom' : 'word',
+        examples: wx?.examples ?? [],
+        sentence: wx?.sentence ?? '',
+        tip: wx?.tip ?? '老师默写词 —— 拆成单个字记,口诀在「拆字」步骤;红黑都要会默。',
+        chars,
+        custom: true,
+        draft: false,
+      });
+    });
+    (L.sentences ?? []).forEach((text, i) => {
+      SENTENCES.push({
+        id: `g3ts-${L.no}-${String(i + 1).padStart(2, '0')}`,
+        text,
+        grade: 3, semester: '上', unit: L.unit, unitTitle: U_TITLE[L.unit] ?? '老师默写', lesson,
+        tip: '老师默写句 —— 注意标点符号,写完逐字对一遍。',
+      });
+    });
+  }
+}
 
 // ============================================================
 // 工具函数
